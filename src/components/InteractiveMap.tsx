@@ -63,11 +63,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [showMap, setShowMap] = useState(false);
   const [mapboxgl, setMapboxgl] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   // Dynamically import mapbox-gl to avoid build issues
   useEffect(() => {
     const loadMapbox = async () => {
       try {
+        console.log('Loading Mapbox GL...');
         const mapboxModule = await import('mapbox-gl');
         // Import CSS separately and ensure it's loaded
         await import('mapbox-gl/dist/mapbox-gl.css');
@@ -75,6 +77,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         console.log('Mapbox GL loaded successfully');
       } catch (error) {
         console.error('Failed to load Mapbox GL:', error);
+        setError('Failed to load Mapbox GL library');
       }
     };
     loadMapbox();
@@ -83,82 +86,120 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Initialize map when showMap becomes true and container is available
   useEffect(() => {
     if (showMap && mapContainer.current && mapboxgl && mapboxToken) {
-      console.log('Initializing map with container available');
+      console.log('Starting map initialization...');
+      console.log('Container available:', !!mapContainer.current);
+      console.log('Mapbox GL available:', !!mapboxgl);
+      console.log('Token provided:', mapboxToken.substring(0, 10) + '...');
       
-      try {
-        mapboxgl.accessToken = mapboxToken;
-        
-        map.current = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/light-v11',
-          center: [-0.1276, 51.5074], // London center
-          zoom: 12
-        });
-
-        console.log('Map created, adding controls and markers...');
-
-        // Add navigation controls
-        map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-        // Add markers for venues
-        venues.forEach((venue) => {
-          const el = document.createElement('div');
-          el.className = 'custom-marker';
-          el.style.width = '30px';
-          el.style.height = '30px';
-          el.style.borderRadius = '50%';
-          el.style.cursor = 'pointer';
-          el.style.border = '2px solid white';
-          el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+      const initMap = async () => {
+        try {
+          console.log('Setting Mapbox access token...');
+          mapboxgl.accessToken = mapboxToken;
           
-          // Color code by venue type
-          if (venue.type === 'Pub') {
-            el.style.backgroundColor = '#60a5fa'; // trans-blue
-          } else if (venue.type === 'Restaurant') {
-            el.style.backgroundColor = '#f472b6'; // trans-pink
-          } else {
-            el.style.backgroundColor = '#374151'; // brand-navy
-          }
+          console.log('Creating map instance...');
+          map.current = new mapboxgl.Map({
+            container: mapContainer.current,
+            style: 'mapbox://styles/mapbox/light-v11',
+            center: [-0.1276, 51.5074], // London center
+            zoom: 12
+          });
 
-          const marker = new mapboxgl.Marker(el)
-            .setLngLat(venue.coordinates)
-            .addTo(map.current!);
+          console.log('Map instance created, adding event listeners...');
 
-          // Create popup
-          const popup = new mapboxgl.Popup({ offset: 25 })
-            .setHTML(`
-              <div class="p-3">
-                <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
-                <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
-                    ${venue.openNow ? 'Open Now' : 'Closed'}
-                  </span>
-                  <span class="text-xs font-medium">★ ${venue.rating}</span>
-                </div>
-              </div>
-            `);
+          // Add error handler for map
+          map.current.on('error', (e: any) => {
+            console.error('Mapbox error:', e);
+            setError(`Map error: ${e.error?.message || 'Unknown error'}`);
+            setIsLoading(false);
+            setShowMap(false);
+          });
 
-          marker.setPopup(popup);
+          // Add load handler
+          map.current.on('load', () => {
+            console.log('Map loaded successfully!');
+            setIsLoading(false);
+            setError('');
+          });
 
-          // Handle click events
-          el.addEventListener('click', () => {
-            if (onVenueSelect) {
-              onVenueSelect(venue);
+          // Add style load handler for more detailed tracking
+          map.current.on('style.load', () => {
+            console.log('Map style loaded');
+          });
+
+          console.log('Adding navigation controls...');
+          // Add navigation controls
+          map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+          console.log('Adding venue markers...');
+          // Add markers for venues
+          venues.forEach((venue, index) => {
+            console.log(`Adding marker ${index + 1} for ${venue.name}:`, venue.coordinates);
+            
+            const el = document.createElement('div');
+            el.className = 'custom-marker';
+            el.style.width = '30px';
+            el.style.height = '30px';
+            el.style.borderRadius = '50%';
+            el.style.cursor = 'pointer';
+            el.style.border = '2px solid white';
+            el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+            
+            // Color code by venue type
+            if (venue.type === 'Pub') {
+              el.style.backgroundColor = '#60a5fa'; // trans-blue
+            } else if (venue.type === 'Restaurant') {
+              el.style.backgroundColor = '#f472b6'; // trans-pink
+            } else {
+              el.style.backgroundColor = '#374151'; // brand-navy
+            }
+
+            try {
+              const marker = new mapboxgl.Marker(el)
+                .setLngLat(venue.coordinates)
+                .addTo(map.current!);
+
+              // Create popup
+              const popup = new mapboxgl.Popup({ offset: 25 })
+                .setHTML(`
+                  <div class="p-3">
+                    <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
+                    <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
+                    <div class="flex justify-between items-center">
+                      <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
+                        ${venue.openNow ? 'Open Now' : 'Closed'}
+                      </span>
+                      <span class="text-xs font-medium">★ ${venue.rating}</span>
+                    </div>
+                  </div>
+                `);
+
+              marker.setPopup(popup);
+
+              // Handle click events
+              el.addEventListener('click', () => {
+                if (onVenueSelect) {
+                  onVenueSelect(venue);
+                }
+              });
+
+              console.log(`Marker ${index + 1} added successfully`);
+            } catch (markerError) {
+              console.error(`Error adding marker ${index + 1}:`, markerError);
             }
           });
-        });
 
-        map.current.on('load', () => {
-          console.log('Map fully loaded');
+          console.log('All markers added, map initialization complete');
+
+        } catch (error) {
+          console.error('Error during map initialization:', error);
+          setError(`Initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
           setIsLoading(false);
-        });
+          setShowMap(false);
+        }
+      };
 
-      } catch (error) {
-        console.error('Error initializing map:', error);
-        setIsLoading(false);
-        setShowMap(false);
-      }
+      // Add a small delay to ensure DOM is ready
+      setTimeout(initMap, 100);
     }
   }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
 
@@ -170,9 +211,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     if (!mapboxToken || !mapboxgl) {
       console.log('Missing token or mapboxgl');
+      setError('Missing Mapbox token or library not loaded');
       return;
     }
 
+    // Validate token format (should start with 'pk.')
+    if (!mapboxToken.startsWith('pk.')) {
+      setError('Invalid Mapbox token format. Token should start with "pk."');
+      return;
+    }
+
+    setError('');
     setIsLoading(true);
     setShowMap(true);
   };
@@ -180,6 +229,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     return () => {
       if (map.current) {
+        console.log('Cleaning up map...');
         map.current.remove();
       }
     };
@@ -205,10 +255,15 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             To display the interactive map, please enter your Mapbox public token. 
             You can get one for free at <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-trans-blue underline">mapbox.com</a>
           </p>
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-300 rounded-md">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          )}
           <div className="space-y-3">
             <Input
               type="text"
-              placeholder="Enter your Mapbox public token..."
+              placeholder="Enter your Mapbox public token (starts with pk.)..."
               value={mapboxToken}
               onChange={(e) => setMapboxToken(e.target.value)}
               className="text-sm"
@@ -232,6 +287,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <div className="text-center max-w-md">
           <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
           <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
+              <p className="text-red-800 text-sm">{error}</p>
+              <Button 
+                onClick={() => {
+                  setShowMap(false);
+                  setIsLoading(false);
+                  setError('');
+                }}
+                className="mt-2 bg-red-600 hover:bg-red-700 text-white"
+                size="sm"
+              >
+                Reset
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );
