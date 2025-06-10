@@ -97,11 +97,22 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       return;
     }
 
-    // Wait for container to be available
+    // Use a more robust container check with proper cleanup
+    let retryCount = 0;
+    const maxRetries = 100; // 5 seconds max
+    let timeoutId: NodeJS.Timeout;
+
     const checkContainer = () => {
       if (!mapContainer.current) {
-        console.log('⏳ Container not ready, retrying in 50ms...');
-        setTimeout(checkContainer, 50);
+        retryCount++;
+        if (retryCount < maxRetries) {
+          console.log(`⏳ Container not ready, retrying in 50ms... (attempt ${retryCount}/${maxRetries})`);
+          timeoutId = setTimeout(checkContainer, 50);
+        } else {
+          console.error('❌ Container never became available after 5 seconds');
+          setError('Map container failed to initialize');
+          setIsLoading(false);
+        }
         return;
       }
 
@@ -223,6 +234,13 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     // Start checking for container
     checkContainer();
+
+    // Cleanup function
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
 
   const handleInitializeMap = () => {
