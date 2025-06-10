@@ -62,14 +62,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const [mapboxToken, setMapboxToken] = useState('');
   const [tokenSet, setTokenSet] = useState(false);
   const [mapboxgl, setMapboxgl] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Dynamically import mapbox-gl to avoid build issues
   useEffect(() => {
     const loadMapbox = async () => {
       try {
         const mapboxModule = await import('mapbox-gl');
-        const mapboxCSS = await import('mapbox-gl/dist/mapbox-gl.css');
+        // Import CSS separately and ensure it's loaded
+        await import('mapbox-gl/dist/mapbox-gl.css');
         setMapboxgl(mapboxModule.default);
+        console.log('Mapbox GL loaded successfully');
       } catch (error) {
         console.error('Failed to load Mapbox GL:', error);
       }
@@ -78,83 +81,101 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   }, []);
 
   const initializeMap = async () => {
-    if (!mapContainer.current || !mapboxToken || !mapboxgl) return;
-
-    mapboxgl.accessToken = mapboxToken;
-    
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [-0.1276, 51.5074], // London center
-      zoom: 12
-    });
-
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    // Add markers for venues
-    venues.forEach((venue) => {
-      const el = document.createElement('div');
-      el.className = 'custom-marker';
-      el.style.width = '30px';
-      el.style.height = '30px';
-      el.style.borderRadius = '50%';
-      el.style.cursor = 'pointer';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-      
-      // Color code by venue type
-      if (venue.type === 'Pub') {
-        el.style.backgroundColor = '#60a5fa'; // trans-blue
-      } else if (venue.type === 'Restaurant') {
-        el.style.backgroundColor = '#f472b6'; // trans-pink
-      } else {
-        el.style.backgroundColor = '#374151'; // brand-navy
-      }
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat(venue.coordinates)
-        .addTo(map.current!);
-
-      // Create popup
-      const popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`
-          <div class="p-3">
-            <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
-            <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
-            <div class="flex justify-between items-center">
-              <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
-                ${venue.openNow ? 'Open Now' : 'Closed'}
-              </span>
-              <span class="text-xs font-medium">★ ${venue.rating}</span>
-            </div>
-          </div>
-        `);
-
-      marker.setPopup(popup);
-
-      // Handle click events
-      el.addEventListener('click', () => {
-        if (onVenueSelect) {
-          onVenueSelect(venue);
-        }
+    if (!mapContainer.current || !mapboxToken || !mapboxgl) {
+      console.log('Missing requirements:', { 
+        container: !!mapContainer.current, 
+        token: !!mapboxToken, 
+        mapboxgl: !!mapboxgl 
       });
-    });
+      return;
+    }
 
-    setTokenSet(true);
+    setIsLoading(true);
+    console.log('Initializing map with token:', mapboxToken);
+
+    try {
+      mapboxgl.accessToken = mapboxToken;
+      
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-0.1276, 51.5074], // London center
+        zoom: 12
+      });
+
+      console.log('Map created, adding controls and markers...');
+
+      // Add navigation controls
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Add markers for venues
+      venues.forEach((venue) => {
+        const el = document.createElement('div');
+        el.className = 'custom-marker';
+        el.style.width = '30px';
+        el.style.height = '30px';
+        el.style.borderRadius = '50%';
+        el.style.cursor = 'pointer';
+        el.style.border = '2px solid white';
+        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        
+        // Color code by venue type
+        if (venue.type === 'Pub') {
+          el.style.backgroundColor = '#60a5fa'; // trans-blue
+        } else if (venue.type === 'Restaurant') {
+          el.style.backgroundColor = '#f472b6'; // trans-pink
+        } else {
+          el.style.backgroundColor = '#374151'; // brand-navy
+        }
+
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat(venue.coordinates)
+          .addTo(map.current!);
+
+        // Create popup
+        const popup = new mapboxgl.Popup({ offset: 25 })
+          .setHTML(`
+            <div class="p-3">
+              <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
+              <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
+              <div class="flex justify-between items-center">
+                <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
+                  ${venue.openNow ? 'Open Now' : 'Closed'}
+                </span>
+                <span class="text-xs font-medium">★ ${venue.rating}</span>
+              </div>
+            </div>
+          `);
+
+        marker.setPopup(popup);
+
+        // Handle click events
+        el.addEventListener('click', () => {
+          if (onVenueSelect) {
+            onVenueSelect(venue);
+          }
+        });
+      });
+
+      map.current.on('load', () => {
+        console.log('Map fully loaded');
+        setTokenSet(true);
+        setIsLoading(false);
+      });
+
+    } catch (error) {
+      console.error('Error initializing map:', error);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (mapboxToken && !tokenSet && mapboxgl) {
-      initializeMap();
-    }
-
     return () => {
       if (map.current) {
         map.current.remove();
       }
     };
-  }, [mapboxToken, tokenSet, mapboxgl]);
+  }, []);
 
   if (!mapboxgl) {
     return (
@@ -162,6 +183,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <div className="text-center max-w-md">
           <h3 className="text-xl font-semibold text-brand-navy mb-4">Loading Map...</h3>
           <p className="text-brand-navy/70 text-sm">Setting up the interactive map components...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
+        <div className="text-center max-w-md">
+          <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
+          <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
         </div>
       </div>
     );
@@ -186,10 +218,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             />
             <Button 
               onClick={initializeMap}
-              disabled={!mapboxToken}
+              disabled={!mapboxToken || isLoading}
               className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
             >
-              Initialize Map
+              {isLoading ? 'Initializing...' : 'Initialize Map'}
             </Button>
           </div>
         </div>
