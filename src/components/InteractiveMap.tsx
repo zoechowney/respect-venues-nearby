@@ -97,150 +97,123 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       return;
     }
 
-    // Use a more robust container check with proper cleanup
-    let retryCount = 0;
-    const maxRetries = 100; // 5 seconds max
-    let timeoutId: NodeJS.Timeout;
-
-    const checkContainer = () => {
+    // Wait for DOM to be ready, then initialize map
+    const initMap = () => {
       if (!mapContainer.current) {
-        retryCount++;
-        if (retryCount < maxRetries) {
-          console.log(`⏳ Container not ready, retrying in 50ms... (attempt ${retryCount}/${maxRetries})`);
-          timeoutId = setTimeout(checkContainer, 50);
-        } else {
-          console.error('❌ Container never became available after 5 seconds');
-          setError('Map container failed to initialize');
-          setIsLoading(false);
-        }
+        console.log('⏳ Container not ready, retrying in next frame...');
+        requestAnimationFrame(initMap);
         return;
       }
 
       console.log('🚀 All conditions met, starting map initialization...');
       
-      const initMap = async () => {
-        try {
-          console.log('🔑 Setting Mapbox access token...');
-          mapboxgl.accessToken = mapboxToken;
-          
-          console.log('🗺️ Creating map instance...');
-          const mapInstance = new mapboxgl.Map({
-            container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/light-v11',
-            center: [-0.1276, 51.5074], // London center
-            zoom: 12
-          });
+      try {
+        console.log('🔑 Setting Mapbox access token...');
+        mapboxgl.accessToken = mapboxToken;
+        
+        console.log('🗺️ Creating map instance...');
+        const mapInstance = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/light-v11',
+          center: [-0.1276, 51.5074], // London center
+          zoom: 12
+        });
 
-          map.current = mapInstance;
-          console.log('✅ Map instance created successfully');
+        map.current = mapInstance;
+        console.log('✅ Map instance created successfully');
 
-          // Add comprehensive error handler for map
-          mapInstance.on('error', (e: any) => {
-            console.error('❌ Mapbox error event:', e);
-            console.error('❌ Error details:', e.error);
-            setError(`Map error: ${e.error?.message || 'Unknown Mapbox error'}`);
-            setIsLoading(false);
-            setShowMap(false);
-          });
-
-          // Add load handler
-          mapInstance.on('load', () => {
-            console.log('🎉 Map loaded successfully!');
-            setIsLoading(false);
-            setError('');
-          });
-
-          // Add style load handler for more detailed tracking
-          mapInstance.on('style.load', () => {
-            console.log('🎨 Map style loaded');
-          });
-
-          console.log('🧭 Adding navigation controls...');
-          // Add navigation controls
-          mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-          console.log('📍 Adding venue markers...');
-          // Add markers for venues
-          venues.forEach((venue, index) => {
-            console.log(`📍 Adding marker ${index + 1} for ${venue.name}:`, venue.coordinates);
-            
-            const el = document.createElement('div');
-            el.className = 'custom-marker';
-            el.style.width = '30px';
-            el.style.height = '30px';
-            el.style.borderRadius = '50%';
-            el.style.cursor = 'pointer';
-            el.style.border = '2px solid white';
-            el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-            
-            // Color code by venue type
-            if (venue.type === 'Pub') {
-              el.style.backgroundColor = '#60a5fa'; // trans-blue
-            } else if (venue.type === 'Restaurant') {
-              el.style.backgroundColor = '#f472b6'; // trans-pink
-            } else {
-              el.style.backgroundColor = '#374151'; // brand-navy
-            }
-
-            try {
-              const marker = new mapboxgl.Marker(el)
-                .setLngLat(venue.coordinates)
-                .addTo(mapInstance);
-
-              // Create popup
-              const popup = new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
-                    <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
-                    <div class="flex justify-between items-center">
-                      <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
-                        ${venue.openNow ? 'Open Now' : 'Closed'}
-                      </span>
-                      <span class="text-xs font-medium">★ ${venue.rating}</span>
-                    </div>
-                  </div>
-                `);
-
-              marker.setPopup(popup);
-
-              // Handle click events
-              el.addEventListener('click', () => {
-                if (onVenueSelect) {
-                  onVenueSelect(venue);
-                }
-              });
-
-              console.log(`✅ Marker ${index + 1} added successfully`);
-            } catch (markerError) {
-              console.error(`❌ Error adding marker ${index + 1}:`, markerError);
-            }
-          });
-
-          console.log('🎯 All markers added, map initialization complete');
-
-        } catch (error) {
-          console.error('❌ Critical error during map initialization:', error);
-          console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-          setError(`Initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        // Add comprehensive error handler for map
+        mapInstance.on('error', (e: any) => {
+          console.error('❌ Mapbox error event:', e);
+          console.error('❌ Error details:', e.error);
+          setError(`Map error: ${e.error?.message || 'Unknown Mapbox error'}`);
           setIsLoading(false);
           setShowMap(false);
-        }
-      };
+        });
 
-      // Start initialization
-      initMap();
-    };
+        // Add load handler
+        mapInstance.on('load', () => {
+          console.log('🎉 Map loaded successfully!');
+          setIsLoading(false);
+          setError('');
+        });
 
-    // Start checking for container
-    checkContainer();
+        console.log('🧭 Adding navigation controls...');
+        // Add navigation controls
+        mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // Cleanup function
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+        console.log('📍 Adding venue markers...');
+        // Add markers for venues
+        venues.forEach((venue, index) => {
+          console.log(`📍 Adding marker ${index + 1} for ${venue.name}:`, venue.coordinates);
+          
+          const el = document.createElement('div');
+          el.className = 'custom-marker';
+          el.style.width = '30px';
+          el.style.height = '30px';
+          el.style.borderRadius = '50%';
+          el.style.cursor = 'pointer';
+          el.style.border = '2px solid white';
+          el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+          
+          // Color code by venue type
+          if (venue.type === 'Pub') {
+            el.style.backgroundColor = '#60a5fa'; // trans-blue
+          } else if (venue.type === 'Restaurant') {
+            el.style.backgroundColor = '#f472b6'; // trans-pink
+          } else {
+            el.style.backgroundColor = '#374151'; // brand-navy
+          }
+
+          try {
+            const marker = new mapboxgl.Marker(el)
+              .setLngLat(venue.coordinates)
+              .addTo(mapInstance);
+
+            // Create popup
+            const popup = new mapboxgl.Popup({ offset: 25 })
+              .setHTML(`
+                <div class="p-3">
+                  <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
+                  <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
+                      ${venue.openNow ? 'Open Now' : 'Closed'}
+                    </span>
+                    <span class="text-xs font-medium">★ ${venue.rating}</span>
+                  </div>
+                </div>
+              `);
+
+            marker.setPopup(popup);
+
+            // Handle click events
+            el.addEventListener('click', () => {
+              if (onVenueSelect) {
+                onVenueSelect(venue);
+              }
+            });
+
+            console.log(`✅ Marker ${index + 1} added successfully`);
+          } catch (markerError) {
+            console.error(`❌ Error adding marker ${index + 1}:`, markerError);
+          }
+        });
+
+        console.log('🎯 All markers added, map initialization complete');
+
+      } catch (error) {
+        console.error('❌ Critical error during map initialization:', error);
+        console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+        setError(`Initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        setIsLoading(false);
+        setShowMap(false);
       }
     };
+
+    // Start initialization using requestAnimationFrame for better DOM readiness
+    requestAnimationFrame(initMap);
+
   }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
 
   const handleInitializeMap = () => {
@@ -324,36 +297,34 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
-        <div className="text-center max-w-md">
-          <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
-          <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
-          {error && (
-            <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
-              <p className="text-red-800 text-sm">{error}</p>
-              <Button 
-                onClick={() => {
-                  setShowMap(false);
-                  setIsLoading(false);
-                  setError('');
-                }}
-                className="mt-2 bg-red-600 hover:bg-red-700 text-white"
-                size="sm"
-              >
-                Reset
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
+  // Show map container with loading overlay if needed
   return (
-    <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden">
+    <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative">
       <div ref={mapContainer} className="w-full h-full" />
+      {isLoading && (
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-light-blue to-trans-pink/30 flex items-center justify-center">
+          <div className="text-center max-w-md">
+            <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
+            <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
+            {error && (
+              <div className="mt-4 p-3 bg-red-100 border border-red-300 rounded-md">
+                <p className="text-red-800 text-sm">{error}</p>
+                <Button 
+                  onClick={() => {
+                    setShowMap(false);
+                    setIsLoading(false);
+                    setError('');
+                  }}
+                  className="mt-2 bg-red-600 hover:bg-red-700 text-white"
+                  size="sm"
+                >
+                  Reset
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
