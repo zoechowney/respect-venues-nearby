@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -112,7 +111,7 @@ const Auth = () => {
             <img 
               src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" 
               alt="Rest with Respect Logo" 
-              className="w-12 h-12"
+              className="h-12 w-auto"
             />
             <span className="text-2xl font-bold text-brand-navy">Rest with Respect</span>
           </Link>

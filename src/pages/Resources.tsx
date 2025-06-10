@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BookOpen, Users, Shield, Heart, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -14,7 +13,7 @@ const Resources = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-3">
-              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-10 h-10" />
+              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-10 w-auto" />
               <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </Link>
             <div className="hidden md:flex space-x-8">
