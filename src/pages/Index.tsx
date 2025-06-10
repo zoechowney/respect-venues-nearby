@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import UserMenu from '@/components/UserMenu';
 
 const Index = () => {
   return (
@@ -26,8 +27,13 @@ const Index = () => {
               <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Join Movement</Link>
               <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
-            <div className="md:hidden">
-              <Button variant="ghost" size="sm" className="text-brand-navy">Menu</Button>
+            <div className="flex items-center space-x-4">
+              <div className="hidden md:block">
+                <UserMenu />
+              </div>
+              <div className="md:hidden">
+                <Button variant="ghost" size="sm" className="text-brand-navy">Menu</Button>
+              </div>
             </div>
           </div>
         </div>
