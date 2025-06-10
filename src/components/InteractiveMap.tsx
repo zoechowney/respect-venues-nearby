@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -82,7 +83,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     loadMapbox();
   }, []);
 
-  // Initialize map when showMap becomes true and container is available
+  // Initialize map when all conditions are met
   useEffect(() => {
     console.log('🔄 useEffect triggered with:', { 
       showMap, 
@@ -91,7 +92,19 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       hasToken: !!mapboxToken 
     });
 
-    if (showMap && mapContainer.current && mapboxgl && mapboxToken) {
+    if (!showMap || !mapboxgl || !mapboxToken) {
+      console.log('⏸️ Not initializing map - basic requirements not met');
+      return;
+    }
+
+    // Wait for container to be available
+    const checkContainer = () => {
+      if (!mapContainer.current) {
+        console.log('⏳ Container not ready, retrying in 50ms...');
+        setTimeout(checkContainer, 50);
+        return;
+      }
+
       console.log('🚀 All conditions met, starting map initialization...');
       
       const initMap = async () => {
@@ -204,12 +217,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         }
       };
 
-      // Add a small delay to ensure DOM is ready
-      console.log('⏳ Starting initialization in 100ms...');
-      setTimeout(initMap, 100);
-    } else {
-      console.log('⏸️ Not initializing map - missing requirements');
-    }
+      // Start initialization
+      initMap();
+    };
+
+    // Start checking for container
+    checkContainer();
   }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
 
   const handleInitializeMap = () => {
