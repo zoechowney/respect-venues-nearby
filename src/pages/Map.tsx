@@ -1,10 +1,12 @@
+
 import React, { useState } from 'react';
-import { MapPin, Search, Filter, Heart } from 'lucide-react';
+import { Search, Filter, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import InteractiveMap from '@/components/InteractiveMap';
 
 // Mock data for venues
 const mockVenues = [
@@ -43,6 +45,7 @@ const mockVenues = [
 const Map = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
+  const [selectedVenue, setSelectedVenue] = useState(null);
 
   const filteredVenues = mockVenues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,6 +53,12 @@ const Map = () => {
     const matchesType = selectedType === 'all' || venue.type.toLowerCase() === selectedType.toLowerCase();
     return matchesSearch && matchesType;
   });
+
+  const handleVenueSelect = (venue: any) => {
+    setSelectedVenue(venue);
+    // Scroll to venue in the list or highlight it
+    console.log('Selected venue:', venue);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -107,16 +116,8 @@ const Map = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Map Placeholder */}
-          <Card className="h-96 border-trans-blue/20">
-            <CardContent className="p-6 h-full flex items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30 rounded-lg">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 text-trans-blue mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-brand-navy mb-2">Interactive Map</h3>
-                <p className="text-brand-navy/70">Map integration coming soon</p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Interactive Map */}
+          <InteractiveMap onVenueSelect={handleVenueSelect} />
 
           {/* Venue List */}
           <div className="space-y-4">
@@ -124,7 +125,12 @@ const Map = () => {
               Nearby Venues ({filteredVenues.length})
             </h2>
             {filteredVenues.map((venue) => (
-              <Card key={venue.id} className="hover:shadow-lg transition-shadow cursor-pointer border-trans-pink/20">
+              <Card 
+                key={venue.id} 
+                className={`hover:shadow-lg transition-shadow cursor-pointer border-trans-pink/20 ${
+                  selectedVenue?.id === venue.id ? 'ring-2 ring-trans-blue' : ''
+                }`}
+              >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <div>
