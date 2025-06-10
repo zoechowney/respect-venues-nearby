@@ -30,6 +30,60 @@ export type Database = {
         }
         Relationships: []
       }
+      venue_applications: {
+        Row: {
+          address: string
+          agree_to_terms: boolean
+          agree_to_training: boolean
+          business_name: string
+          business_type: string
+          contact_name: string
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          phone: string | null
+          sign_style: string | null
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          agree_to_terms?: boolean
+          agree_to_training?: boolean
+          business_name: string
+          business_type: string
+          contact_name: string
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          phone?: string | null
+          sign_style?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          agree_to_terms?: boolean
+          agree_to_training?: boolean
+          business_name?: string
+          business_type?: string
+          contact_name?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          phone?: string | null
+          sign_style?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
