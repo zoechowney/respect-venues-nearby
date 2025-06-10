@@ -1,24 +1,17 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import UserMenu from '@/components/UserMenu';
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
+  return <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
       <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <img 
-                src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" 
-                alt="Rest with Respect Logo" 
-                className="w-10 h-10"
-              />
+              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-10 h-10" />
               <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </div>
             <div className="hidden md:flex space-x-8">
@@ -43,11 +36,7 @@ const Index = () => {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <img 
-              src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" 
-              alt="Rest with Respect Logo" 
-              className="w-24 h-24 mx-auto mb-6"
-            />
+            <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-24 h-24 mx-auto mb-6" />
             <h1 className="text-4xl md:text-6xl font-bold text-brand-navy mb-6">
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
@@ -105,11 +94,7 @@ const Index = () => {
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow border-trans-blue/20">
               <CardContent className="pt-6">
-                <img 
-                  src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" 
-                  alt="Rest with Respect Logo" 
-                  className="w-12 h-12 mx-auto mb-4"
-                />
+                <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-12 h-12 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-3 text-brand-navy">Share Experiences</h3>
                 <p className="text-brand-navy/70">
                   Help others by sharing your experiences and rating venues based on how welcomed and respected you felt.
@@ -137,11 +122,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img 
-                src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" 
-                alt="Rest with Respect Logo" 
-                className="w-8 h-8"
-              />
+              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-8 h-8" />
               <span className="text-lg font-semibold">Rest with Respect</span>
             </div>
             <div className="flex space-x-6">
@@ -151,12 +132,10 @@ const Index = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-brand-navy/20 text-center text-trans-white/70">
-            <p>&copy; 2024 Rest with Respect. Creating inclusive spaces for everyone.</p>
+            <p>© 2025 Rest with Respect. Creating inclusive spaces for everyone.</p>
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
