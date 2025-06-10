@@ -1,0 +1,180 @@
+
+import React, { useState } from 'react';
+import { MapPin, Search, Filter, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+// Mock data for venues
+const mockVenues = [
+  {
+    id: 1,
+    name: "The Rainbow Pub",
+    type: "Pub",
+    address: "123 High Street, London",
+    rating: 4.8,
+    distance: "0.2 miles",
+    openNow: true,
+    features: ["Accessible", "Family Friendly", "Staff Trained"]
+  },
+  {
+    id: 2,
+    name: "Inclusive Café",
+    type: "Restaurant",
+    address: "456 Market Square, London",
+    rating: 4.9,
+    distance: "0.4 miles",
+    openNow: true,
+    features: ["Gender Neutral Facilities", "Quiet Space"]
+  },
+  {
+    id: 3,
+    name: "Unity Fitness",
+    type: "Gym",
+    address: "789 Park Road, London",
+    rating: 4.7,
+    distance: "0.8 miles",
+    openNow: false,
+    features: ["Private Changing Rooms", "All Welcome Policy"]
+  }
+];
+
+const Map = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedType, setSelectedType] = useState('all');
+
+  const filteredVenues = mockVenues.filter(venue => {
+    const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         venue.address.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = selectedType === 'all' || venue.type.toLowerCase() === selectedType.toLowerCase();
+    return matchesSearch && matchesType;
+  });
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Navigation */}
+      <nav className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center space-x-2">
+              <Heart className="w-8 h-8 text-blue-600" />
+              <span className="text-xl font-bold text-gray-900">Rest with Respect</span>
+            </Link>
+            <div className="hidden md:flex space-x-8">
+              <Link to="/map" className="text-blue-600 font-medium">Find Venues</Link>
+              <Link to="/directory" className="text-gray-700 hover:text-blue-600 transition-colors">Directory</Link>
+              <Link to="/join" className="text-gray-700 hover:text-blue-600 transition-colors">Join Movement</Link>
+              <Link to="/resources" className="text-gray-700 hover:text-blue-600 transition-colors">Resources</Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Find Friendly Venues</h1>
+          <p className="text-gray-600">Discover transgender-friendly establishments near you</p>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="mb-8 flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search by name or location..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+          <Select value={selectedType} onValueChange={setSelectedType}>
+            <SelectTrigger className="w-full sm:w-48">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="pub">Pubs</SelectItem>
+              <SelectItem value="restaurant">Restaurants</SelectItem>
+              <SelectItem value="shop">Shops</SelectItem>
+              <SelectItem value="gym">Gyms</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Map Placeholder */}
+          <Card className="h-96">
+            <CardContent className="p-6 h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-green-100 rounded-lg">
+              <div className="text-center">
+                <MapPin className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">Interactive Map</h3>
+                <p className="text-gray-500">Map integration coming soon</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Venue List */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Nearby Venues ({filteredVenues.length})
+            </h2>
+            {filteredVenues.map((venue) => (
+              <Card key={venue.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader className="pb-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">{venue.name}</CardTitle>
+                      <p className="text-sm text-gray-600">{venue.type} • {venue.address}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center space-x-1">
+                        <Heart className="w-4 h-4 text-red-500 fill-current" />
+                        <span className="text-sm font-medium">{venue.rating}</span>
+                      </div>
+                      <p className="text-xs text-gray-500">{venue.distance}</p>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between items-center">
+                    <div className="flex flex-wrap gap-1">
+                      {venue.features.slice(0, 2).map((feature, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                      {venue.features.length > 2 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          +{venue.features.length - 2} more
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-xs px-2 py-1 rounded-full ${venue.openNow ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        {venue.openNow ? 'Open Now' : 'Closed'}
+                      </span>
+                      <Button size="sm" variant="outline">
+                        View Details
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Map;
