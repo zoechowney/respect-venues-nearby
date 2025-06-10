@@ -60,7 +60,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const [mapboxToken, setMapboxToken] = useState('');
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const [mapboxgl, setMapboxgl] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,30 +80,12 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     loadMapbox();
   }, []);
 
-  const initializeMap = () => {
-    console.log('Initialize map clicked', { 
-      token: !!mapboxToken, 
-      container: !!mapContainer.current, 
-      mapboxgl: !!mapboxgl 
-    });
-
-    if (!mapboxToken || !mapboxgl) {
-      console.log('Missing token or mapboxgl');
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Use setTimeout to ensure DOM is ready
-    setTimeout(() => {
-      if (!mapContainer.current) {
-        console.error('Map container not found');
-        setIsLoading(false);
-        return;
-      }
-
+  // Initialize map when showMap becomes true and container is available
+  useEffect(() => {
+    if (showMap && mapContainer.current && mapboxgl && mapboxToken) {
+      console.log('Initializing map with container available');
+      
       try {
-        console.log('Setting up map...');
         mapboxgl.accessToken = mapboxToken;
         
         map.current = new mapboxgl.Map({
@@ -169,15 +151,30 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
         map.current.on('load', () => {
           console.log('Map fully loaded');
-          setMapLoaded(true);
           setIsLoading(false);
         });
 
       } catch (error) {
         console.error('Error initializing map:', error);
         setIsLoading(false);
+        setShowMap(false);
       }
-    }, 100);
+    }
+  }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
+
+  const handleInitializeMap = () => {
+    console.log('Initialize map clicked', { 
+      token: !!mapboxToken, 
+      mapboxgl: !!mapboxgl 
+    });
+
+    if (!mapboxToken || !mapboxgl) {
+      console.log('Missing token or mapboxgl');
+      return;
+    }
+
+    setIsLoading(true);
+    setShowMap(true);
   };
 
   useEffect(() => {
@@ -199,18 +196,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
-        <div className="text-center max-w-md">
-          <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
-          <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!mapLoaded) {
+  if (!showMap) {
     return (
       <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
         <div className="text-center max-w-md">
@@ -228,13 +214,24 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
               className="text-sm"
             />
             <Button 
-              onClick={initializeMap}
+              onClick={handleInitializeMap}
               disabled={!mapboxToken || isLoading}
               className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
             >
               {isLoading ? 'Initializing...' : 'Initialize Map'}
             </Button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
+        <div className="text-center max-w-md">
+          <h3 className="text-xl font-semibold text-brand-navy mb-4">Initializing Map...</h3>
+          <p className="text-brand-navy/70 text-sm">Setting up your Mapbox map with venues...</p>
         </div>
       </div>
     );
