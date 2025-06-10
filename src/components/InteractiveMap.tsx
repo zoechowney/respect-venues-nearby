@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -69,14 +68,14 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     const loadMapbox = async () => {
       try {
-        console.log('Loading Mapbox GL...');
+        console.log('🗺️ Starting Mapbox GL import...');
         const mapboxModule = await import('mapbox-gl');
         // Import CSS separately and ensure it's loaded
         await import('mapbox-gl/dist/mapbox-gl.css');
         setMapboxgl(mapboxModule.default);
-        console.log('Mapbox GL loaded successfully');
+        console.log('✅ Mapbox GL loaded successfully');
       } catch (error) {
-        console.error('Failed to load Mapbox GL:', error);
+        console.error('❌ Failed to load Mapbox GL:', error);
         setError('Failed to load Mapbox GL library');
       }
     };
@@ -85,55 +84,61 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Initialize map when showMap becomes true and container is available
   useEffect(() => {
+    console.log('🔄 useEffect triggered with:', { 
+      showMap, 
+      hasContainer: !!mapContainer.current, 
+      hasMapboxgl: !!mapboxgl, 
+      hasToken: !!mapboxToken 
+    });
+
     if (showMap && mapContainer.current && mapboxgl && mapboxToken) {
-      console.log('Starting map initialization...');
-      console.log('Container available:', !!mapContainer.current);
-      console.log('Mapbox GL available:', !!mapboxgl);
-      console.log('Token provided:', mapboxToken.substring(0, 10) + '...');
+      console.log('🚀 All conditions met, starting map initialization...');
       
       const initMap = async () => {
         try {
-          console.log('Setting Mapbox access token...');
+          console.log('🔑 Setting Mapbox access token...');
           mapboxgl.accessToken = mapboxToken;
           
-          console.log('Creating map instance...');
-          map.current = new mapboxgl.Map({
+          console.log('🗺️ Creating map instance...');
+          const mapInstance = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/light-v11',
             center: [-0.1276, 51.5074], // London center
             zoom: 12
           });
 
-          console.log('Map instance created, adding event listeners...');
+          map.current = mapInstance;
+          console.log('✅ Map instance created successfully');
 
-          // Add error handler for map
-          map.current.on('error', (e: any) => {
-            console.error('Mapbox error:', e);
-            setError(`Map error: ${e.error?.message || 'Unknown error'}`);
+          // Add comprehensive error handler for map
+          mapInstance.on('error', (e: any) => {
+            console.error('❌ Mapbox error event:', e);
+            console.error('❌ Error details:', e.error);
+            setError(`Map error: ${e.error?.message || 'Unknown Mapbox error'}`);
             setIsLoading(false);
             setShowMap(false);
           });
 
           // Add load handler
-          map.current.on('load', () => {
-            console.log('Map loaded successfully!');
+          mapInstance.on('load', () => {
+            console.log('🎉 Map loaded successfully!');
             setIsLoading(false);
             setError('');
           });
 
           // Add style load handler for more detailed tracking
-          map.current.on('style.load', () => {
-            console.log('Map style loaded');
+          mapInstance.on('style.load', () => {
+            console.log('🎨 Map style loaded');
           });
 
-          console.log('Adding navigation controls...');
+          console.log('🧭 Adding navigation controls...');
           // Add navigation controls
-          map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+          mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-          console.log('Adding venue markers...');
+          console.log('📍 Adding venue markers...');
           // Add markers for venues
           venues.forEach((venue, index) => {
-            console.log(`Adding marker ${index + 1} for ${venue.name}:`, venue.coordinates);
+            console.log(`📍 Adding marker ${index + 1} for ${venue.name}:`, venue.coordinates);
             
             const el = document.createElement('div');
             el.className = 'custom-marker';
@@ -156,7 +161,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
             try {
               const marker = new mapboxgl.Marker(el)
                 .setLngLat(venue.coordinates)
-                .addTo(map.current!);
+                .addTo(mapInstance);
 
               // Create popup
               const popup = new mapboxgl.Popup({ offset: 25 })
@@ -182,16 +187,17 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 }
               });
 
-              console.log(`Marker ${index + 1} added successfully`);
+              console.log(`✅ Marker ${index + 1} added successfully`);
             } catch (markerError) {
-              console.error(`Error adding marker ${index + 1}:`, markerError);
+              console.error(`❌ Error adding marker ${index + 1}:`, markerError);
             }
           });
 
-          console.log('All markers added, map initialization complete');
+          console.log('🎯 All markers added, map initialization complete');
 
         } catch (error) {
-          console.error('Error during map initialization:', error);
+          console.error('❌ Critical error during map initialization:', error);
+          console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace');
           setError(`Initialization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
           setIsLoading(false);
           setShowMap(false);
@@ -199,28 +205,34 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       };
 
       // Add a small delay to ensure DOM is ready
+      console.log('⏳ Starting initialization in 100ms...');
       setTimeout(initMap, 100);
+    } else {
+      console.log('⏸️ Not initializing map - missing requirements');
     }
   }, [showMap, mapboxgl, mapboxToken, venues, onVenueSelect]);
 
   const handleInitializeMap = () => {
-    console.log('Initialize map clicked', { 
-      token: !!mapboxToken, 
-      mapboxgl: !!mapboxgl 
+    console.log('🎯 Initialize map button clicked', { 
+      hasToken: !!mapboxToken, 
+      hasMapboxgl: !!mapboxgl,
+      tokenFormat: mapboxToken.startsWith('pk.') ? 'valid format' : 'invalid format'
     });
 
     if (!mapboxToken || !mapboxgl) {
-      console.log('Missing token or mapboxgl');
+      console.log('❌ Missing token or mapboxgl library');
       setError('Missing Mapbox token or library not loaded');
       return;
     }
 
     // Validate token format (should start with 'pk.')
     if (!mapboxToken.startsWith('pk.')) {
+      console.log('❌ Invalid token format');
       setError('Invalid Mapbox token format. Token should start with "pk."');
       return;
     }
 
+    console.log('✅ All validations passed, proceeding with map initialization');
     setError('');
     setIsLoading(true);
     setShowMap(true);
@@ -229,7 +241,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   useEffect(() => {
     return () => {
       if (map.current) {
-        console.log('Cleaning up map...');
+        console.log('🧹 Cleaning up map...');
         map.current.remove();
       }
     };
