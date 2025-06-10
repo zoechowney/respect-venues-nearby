@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Rest with Respect Brand Colors
+				'trans-blue': 'hsl(var(--trans-blue))',
+				'trans-pink': 'hsl(var(--trans-pink))',
+				'trans-white': 'hsl(var(--trans-white))',
+				'brand-navy': 'hsl(var(--brand-navy))',
+				'brand-light-blue': 'hsl(var(--brand-light-blue))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

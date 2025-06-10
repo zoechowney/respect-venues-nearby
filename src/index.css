@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,6 +52,13 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Rest with Respect Brand Colors */
+    --trans-blue: 197 100% 75%;
+    --trans-pink: 340 100% 85%;
+    --trans-white: 0 0% 100%;
+    --brand-navy: 220 30% 25%;
+    --brand-light-blue: 197 100% 90%;
   }
 
   .dark {
