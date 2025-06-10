@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { MapPin, Star, Clock, Phone, Globe, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -37,7 +36,7 @@ const QRLanding = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-8 h-8" />
+              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-8 h-8" />
               <span className="text-lg font-bold text-brand-navy">Rest with Respect</span>
             </div>
             <div className="text-sm text-brand-navy/70">
@@ -51,7 +50,7 @@ const QRLanding = () => {
         {/* Venue Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-gradient-to-br from-trans-blue to-trans-pink rounded-full flex items-center justify-center mx-auto mb-4">
-            <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-10 h-10" />
+            <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-10 h-10" />
           </div>
           <h1 className="text-3xl font-bold text-brand-navy mb-2">{mockVenue.name}</h1>
           <p className="text-trans-blue font-medium text-lg">{mockVenue.type}</p>
@@ -62,14 +61,13 @@ const QRLanding = () => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {/* Welcome Message */}
             <Card className="bg-gradient-to-r from-trans-blue/10 to-trans-pink/10 border-trans-blue/30">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2 text-brand-navy">
-                  <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-5 h-5" />
+                  <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-5 h-5" />
                   <span>Welcome to a Trans-Friendly Space</span>
                 </CardTitle>
               </CardHeader>

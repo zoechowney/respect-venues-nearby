@@ -11,7 +11,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-10 h-10" />
+              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-10 h-10" />
               <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </div>
             <div className="hidden md:flex space-x-8">
@@ -36,7 +36,7 @@ const Index = () => {
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
-            <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-24 h-24 mx-auto mb-6" />
+            <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-24 h-24 mx-auto mb-6" />
             <h1 className="text-4xl md:text-6xl font-bold text-brand-navy mb-6">
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
@@ -122,7 +122,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-8 h-8" />
+              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="w-8 h-8" />
               <span className="text-lg font-semibold">Rest with Respect</span>
             </div>
             <div className="flex space-x-6">

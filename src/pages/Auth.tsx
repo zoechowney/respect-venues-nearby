@@ -110,7 +110,7 @@ const Auth = () => {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-3 mb-6">
             <img 
-              src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" 
+              src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" 
               alt="Rest with Respect Logo" 
               className="w-12 h-12"
             />
