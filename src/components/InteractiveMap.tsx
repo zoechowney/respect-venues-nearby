@@ -1,7 +1,5 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -60,12 +58,27 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   onVenueSelect 
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<any>(null);
   const [mapboxToken, setMapboxToken] = useState('');
   const [tokenSet, setTokenSet] = useState(false);
+  const [mapboxgl, setMapboxgl] = useState<any>(null);
 
-  const initializeMap = () => {
-    if (!mapContainer.current || !mapboxToken) return;
+  // Dynamically import mapbox-gl to avoid build issues
+  useEffect(() => {
+    const loadMapbox = async () => {
+      try {
+        const mapboxModule = await import('mapbox-gl');
+        const mapboxCSS = await import('mapbox-gl/dist/mapbox-gl.css');
+        setMapboxgl(mapboxModule.default);
+      } catch (error) {
+        console.error('Failed to load Mapbox GL:', error);
+      }
+    };
+    loadMapbox();
+  }, []);
+
+  const initializeMap = async () => {
+    if (!mapContainer.current || !mapboxToken || !mapboxgl) return;
 
     mapboxgl.accessToken = mapboxToken;
     
@@ -132,7 +145,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   };
 
   useEffect(() => {
-    if (mapboxToken && !tokenSet) {
+    if (mapboxToken && !tokenSet && mapboxgl) {
       initializeMap();
     }
 
@@ -141,7 +154,18 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
         map.current.remove();
       }
     };
-  }, [mapboxToken, tokenSet]);
+  }, [mapboxToken, tokenSet, mapboxgl]);
+
+  if (!mapboxgl) {
+    return (
+      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
+        <div className="text-center max-w-md">
+          <h3 className="text-xl font-semibold text-brand-navy mb-4">Loading Map...</h3>
+          <p className="text-brand-navy/70 text-sm">Setting up the interactive map components...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!tokenSet) {
     return (
