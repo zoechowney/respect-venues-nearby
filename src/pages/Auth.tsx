@@ -121,7 +121,7 @@ const Auth = () => {
         <Card className="border-trans-blue/20">
           <CardHeader className="text-center">
             <CardTitle className="text-brand-navy">Welcome</CardTitle>
-            <CardDescription>
+            <CardDescription className="text-brand-navy/70">
               Sign in to your account or create a new one to get started
             </CardDescription>
           </CardHeader>
@@ -135,7 +135,7 @@ const Auth = () => {
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email" className="text-brand-navy">Email</Label>
                     <Input
                       id="signin-email"
                       type="email"
@@ -146,7 +146,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <Label htmlFor="signin-password" className="text-brand-navy">Password</Label>
                     <Input
                       id="signin-password"
                       type="password"
@@ -169,7 +169,7 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
+                    <Label htmlFor="signup-name" className="text-brand-navy">Full Name</Label>
                     <Input
                       id="signup-name"
                       type="text"
@@ -180,7 +180,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email" className="text-brand-navy">Email</Label>
                     <Input
                       id="signup-email"
                       type="email"
@@ -191,7 +191,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password" className="text-brand-navy">Password</Label>
                     <Input
                       id="signup-password"
                       type="password"

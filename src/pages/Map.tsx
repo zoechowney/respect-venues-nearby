@@ -53,20 +53,20 @@ const Map = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">Rest with Respect</span>
+            <Link to="/" className="flex items-center space-x-3">
+              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-10 h-10" />
+              <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </Link>
             <div className="hidden md:flex space-x-8">
-              <Link to="/map" className="text-blue-600 font-medium">Find Venues</Link>
-              <Link to="/directory" className="text-gray-700 hover:text-blue-600 transition-colors">Directory</Link>
-              <Link to="/join" className="text-gray-700 hover:text-blue-600 transition-colors">Join Movement</Link>
-              <Link to="/resources" className="text-gray-700 hover:text-blue-600 transition-colors">Resources</Link>
+              <Link to="/map" className="text-trans-blue font-medium">Find Venues</Link>
+              <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
+              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Join Movement</Link>
+              <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
           </div>
         </div>
@@ -74,15 +74,15 @@ const Map = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Find Friendly Venues</h1>
-          <p className="text-gray-600">Discover transgender-friendly establishments near you</p>
+          <h1 className="text-3xl font-bold text-brand-navy mb-4">Find Friendly Venues</h1>
+          <p className="text-brand-navy/70">Discover transgender-friendly establishments near you</p>
         </div>
 
         {/* Search and Filters */}
         <div className="mb-8 flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40 w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search by name or location..."
@@ -109,35 +109,35 @@ const Map = () => {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Map Placeholder */}
-          <Card className="h-96">
-            <CardContent className="p-6 h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-green-100 rounded-lg">
+          <Card className="h-96 border-trans-blue/20">
+            <CardContent className="p-6 h-full flex items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30 rounded-lg">
               <div className="text-center">
-                <MapPin className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-700 mb-2">Interactive Map</h3>
-                <p className="text-gray-500">Map integration coming soon</p>
+                <MapPin className="w-16 h-16 text-trans-blue mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-brand-navy mb-2">Interactive Map</h3>
+                <p className="text-brand-navy/70">Map integration coming soon</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Venue List */}
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-xl font-semibold text-brand-navy">
               Nearby Venues ({filteredVenues.length})
             </h2>
             {filteredVenues.map((venue) => (
-              <Card key={venue.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card key={venue.id} className="hover:shadow-lg transition-shadow cursor-pointer border-trans-pink/20">
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-lg">{venue.name}</CardTitle>
-                      <p className="text-sm text-gray-600">{venue.type} • {venue.address}</p>
+                      <CardTitle className="text-lg text-brand-navy">{venue.name}</CardTitle>
+                      <p className="text-sm text-brand-navy/70">{venue.type} • {venue.address}</p>
                     </div>
                     <div className="text-right">
                       <div className="flex items-center space-x-1">
-                        <Heart className="w-4 h-4 text-red-500 fill-current" />
-                        <span className="text-sm font-medium">{venue.rating}</span>
+                        <Heart className="w-4 h-4 text-trans-pink fill-current" />
+                        <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
                       </div>
-                      <p className="text-xs text-gray-500">{venue.distance}</p>
+                      <p className="text-xs text-brand-navy/60">{venue.distance}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -147,13 +147,13 @@ const Map = () => {
                       {venue.features.slice(0, 2).map((feature, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                          className="px-2 py-1 bg-trans-blue/20 text-trans-blue text-xs rounded-full"
                         >
                           {feature}
                         </span>
                       ))}
                       {venue.features.length > 2 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
                           +{venue.features.length - 2} more
                         </span>
                       )}
@@ -162,7 +162,7 @@ const Map = () => {
                       <span className={`text-xs px-2 py-1 rounded-full ${venue.openNow ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {venue.openNow ? 'Open Now' : 'Closed'}
                       </span>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className="border-trans-blue text-trans-blue hover:bg-trans-blue/10">
                         View Details
                       </Button>
                     </div>

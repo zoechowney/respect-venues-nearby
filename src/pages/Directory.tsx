@@ -61,20 +61,20 @@ const Directory = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">Rest with Respect</span>
+            <Link to="/" className="flex items-center space-x-3">
+              <img src="/lovable-uploads/47c34702-3d2a-438b-ade5-4708bdf5068f.png" alt="Rest with Respect Logo" className="w-10 h-10" />
+              <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </Link>
             <div className="hidden md:flex space-x-8">
-              <Link to="/map" className="text-gray-700 hover:text-blue-600 transition-colors">Find Venues</Link>
-              <Link to="/directory" className="text-blue-600 font-medium">Directory</Link>
-              <Link to="/join" className="text-gray-700 hover:text-blue-600 transition-colors">Join Movement</Link>
-              <Link to="/resources" className="text-gray-700 hover:text-blue-600 transition-colors">Resources</Link>
+              <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
+              <Link to="/directory" className="text-trans-blue font-medium">Directory</Link>
+              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Join Movement</Link>
+              <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
           </div>
         </div>
@@ -82,14 +82,14 @@ const Directory = () => {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Venue Directory</h1>
-          <p className="text-gray-600">Browse all transgender-friendly establishments in our network</p>
+          <h1 className="text-3xl font-bold text-brand-navy mb-4">Venue Directory</h1>
+          <p className="text-brand-navy/70">Browse all transgender-friendly establishments in our network</p>
         </div>
 
         {/* Search */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40 w-5 h-5" />
             <Input
               type="text"
               placeholder="Search venues..."
@@ -114,41 +114,41 @@ const Directory = () => {
         {/* Venue Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVenues.map((venue) => (
-            <Card key={venue.id} className="hover:shadow-lg transition-shadow">
+            <Card key={venue.id} className="hover:shadow-lg transition-shadow border-trans-blue/20">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg">{venue.name}</CardTitle>
-                    <p className="text-sm text-blue-600 font-medium">{venue.type}</p>
+                    <CardTitle className="text-lg text-brand-navy">{venue.name}</CardTitle>
+                    <p className="text-sm text-trans-blue font-medium">{venue.type}</p>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium">{venue.rating}</span>
-                    <span className="text-xs text-gray-500">({venue.reviews})</span>
+                    <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
+                    <span className="text-xs text-brand-navy/60">({venue.reviews})</span>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-sm text-gray-600">{venue.description}</p>
+                <p className="text-sm text-brand-navy/70">{venue.description}</p>
                 
                 <div className="flex items-start space-x-2">
-                  <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-gray-600">{venue.address}</p>
+                  <MapPin className="w-4 h-4 text-brand-navy/40 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-brand-navy/70">{venue.address}</p>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700">Features:</p>
+                  <p className="text-sm font-medium text-brand-navy">Features:</p>
                   <div className="flex flex-wrap gap-1">
                     {venue.features.slice(0, 3).map((feature, index) => (
                       <span
                         key={index}
-                        className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                        className="px-2 py-1 bg-trans-pink/20 text-trans-pink text-xs rounded-full"
                       >
                         {feature}
                       </span>
                     ))}
                     {venue.features.length > 3 && (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                      <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
                         +{venue.features.length - 3} more
                       </span>
                     )}
@@ -156,12 +156,12 @@ const Directory = () => {
                 </div>
 
                 <div className="pt-2 border-t">
-                  <p className="text-xs text-gray-500 mb-3">{venue.hours}</p>
+                  <p className="text-xs text-brand-navy/60 mb-3">{venue.hours}</p>
                   <div className="flex space-x-2">
-                    <Button size="sm" className="flex-1">
+                    <Button size="sm" className="flex-1 bg-trans-blue hover:bg-trans-blue/90 text-brand-navy">
                       View Profile
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" className="border-trans-pink text-trans-pink hover:bg-trans-pink/10">
                       Directions
                     </Button>
                   </div>
@@ -173,7 +173,7 @@ const Directory = () => {
 
         {filteredVenues.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No venues found matching your search.</p>
+            <p className="text-brand-navy/60">No venues found matching your search.</p>
           </div>
         )}
       </div>
