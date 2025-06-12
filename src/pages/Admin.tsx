@@ -7,10 +7,19 @@ import ApplicationsReview from '@/components/admin/ApplicationsReview';
 import VenuesManagement from '@/components/admin/VenuesManagement';
 
 const Admin = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('applications');
 
-  // For now, we'll check if user is logged in. In production, you'd check for admin role
+  // Show loading state while auth is being determined
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10 flex items-center justify-center">
+        <div className="text-brand-navy">Loading...</div>
+      </div>
+    );
+  }
+
+  // Redirect to auth if not logged in
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
