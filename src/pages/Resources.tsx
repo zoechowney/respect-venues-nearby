@@ -7,11 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ContactModal from '@/components/ContactModal';
 import LegalRightsModal from '@/components/LegalRightsModal';
 import SupportNetworksModal from '@/components/SupportNetworksModal';
+import SelfCareModal from '@/components/SelfCareModal';
 
 const Resources = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isLegalRightsModalOpen, setIsLegalRightsModalOpen] = useState(false);
   const [isSupportNetworksModalOpen, setIsSupportNetworksModalOpen] = useState(false);
+  const [isSelfCareModalOpen, setIsSelfCareModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -102,9 +104,14 @@ const Resources = () => {
                   <p className="text-brand-navy/70 mb-4">
                     Tips and resources for maintaining mental health and wellbeing in challenging situations.
                   </p>
-                  <Button variant="outline" size="sm" className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10"
+                    onClick={() => setIsSelfCareModalOpen(true)}
+                  >
                     <ExternalLink className="w-4 h-4 mr-2" />
-                    Explore Resources
+                    Read Advice
                   </Button>
                 </CardContent>
               </Card>
@@ -340,6 +347,11 @@ const Resources = () => {
         <SupportNetworksModal 
           isOpen={isSupportNetworksModalOpen} 
           onClose={() => setIsSupportNetworksModalOpen(false)} 
+        />
+
+        <SelfCareModal 
+          isOpen={isSelfCareModalOpen} 
+          onClose={() => setIsSelfCareModalOpen(false)} 
         />
       </div>
     </div>
