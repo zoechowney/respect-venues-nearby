@@ -50,7 +50,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
         const mapInstance = new mapboxgl.Map({
           container: mapContainer.current,
           style: 'mapbox://styles/mapbox/light-v11',
-          center: [-0.1276, 51.5074], // London center
+          center: [-0.6149, 51.1858], // Godalming, Surrey coordinates
           zoom: 12
         });
 
