@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Filter, Heart, Star, MapPin, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -150,6 +151,12 @@ const Map = () => {
                       >
                         Visit Website
                       </a>
+                    </div>
+                  )}
+
+                  {venue.distance && (
+                    <div className="pt-2">
+                      <span className="text-xs text-brand-navy/60">{venue.distance}</span>
                     </div>
                   )}
                 </CardContent>
