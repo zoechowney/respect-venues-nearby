@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { BookOpen, Users, Shield, Heart, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -101,14 +102,6 @@ const Resources = () => {
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="font-medium text-red-800 mb-3">🇺🇸 United States - 24/7 Crisis Support</p>
-                    <div className="space-y-1 text-red-700">
-                      <p>Trans Lifeline: 877-565-8860</p>
-                      <p>LGBT National Hotline: 1-888-843-4564</p>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                     <p className="font-medium text-red-800 mb-3">🇬🇧 United Kingdom - 24/7 Crisis Support</p>
                     <div className="space-y-1 text-red-700 text-sm">
                       <p>Switchboard LGBT+ Helpline: 0300 330 0630</p>
@@ -118,6 +111,14 @@ const Resources = () => {
                       <p>Shout (Crisis Text): Text LGBTQ to 85258</p>
                       <p>Mermaids (Trans Youth & Families): 0808 801 0400</p>
                       <p>999 – Emergency Services</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="font-medium text-red-800 mb-3">🇺🇸 United States - 24/7 Crisis Support</p>
+                    <div className="space-y-1 text-red-700">
+                      <p>Trans Lifeline: 877-565-8860</p>
+                      <p>LGBT National Hotline: 1-888-843-4564</p>
                     </div>
                   </div>
                 </div>
@@ -294,3 +295,4 @@ const Resources = () => {
 };
 
 export default Resources;
+
