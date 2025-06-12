@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import { useVenueData } from '@/hooks/useVenueData';
@@ -18,10 +18,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const venueData = useVenueData(venues);
   const { mapboxgl, isLoading: mapboxLoading, error: mapboxError } = useMapbox();
   
-  const [mapboxToken, setMapboxToken] = useState('');
-  const [showMap, setShowMap] = useState(false);
+  // Load token from localStorage on component mount
+  const [mapboxToken, setMapboxToken] = useState(() => {
+    return localStorage.getItem('mapbox-token') || '';
+  });
+  const [showMap, setShowMap] = useState(() => {
+    // Show map if we have a saved token
+    return !!localStorage.getItem('mapbox-token');
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+
+  // Save token to localStorage whenever it changes
+  useEffect(() => {
+    if (mapboxToken) {
+      localStorage.setItem('mapbox-token', mapboxToken);
+    }
+  }, [mapboxToken]);
 
   const handleInitializeMap = () => {
     console.log('🎯 Initialize map button clicked', { 
@@ -53,6 +66,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     setShowMap(false);
     setIsLoading(false);
     setError('');
+    localStorage.removeItem('mapbox-token');
+    setMapboxToken('');
   };
 
   if (mapboxLoading) {
