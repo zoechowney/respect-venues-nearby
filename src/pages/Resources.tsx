@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ContactModal from '@/components/ContactModal';
 import LegalRightsModal from '@/components/LegalRightsModal';
+import SupportNetworksModal from '@/components/SupportNetworksModal';
 
 const Resources = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isLegalRightsModalOpen, setIsLegalRightsModalOpen] = useState(false);
+  const [isSupportNetworksModalOpen, setIsSupportNetworksModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -79,7 +81,12 @@ const Resources = () => {
                   <p className="text-brand-navy/70 mb-4">
                     Connect with local and national transgender support organizations and communities.
                   </p>
-                  <Button variant="outline" size="sm" className="w-full border-trans-pink text-trans-pink hover:bg-trans-pink/10">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-trans-pink text-trans-pink hover:bg-trans-pink/10"
+                    onClick={() => setIsSupportNetworksModalOpen(true)}
+                  >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Find Support
                   </Button>
@@ -328,6 +335,11 @@ const Resources = () => {
         <LegalRightsModal 
           isOpen={isLegalRightsModalOpen} 
           onClose={() => setIsLegalRightsModalOpen(false)} 
+        />
+
+        <SupportNetworksModal 
+          isOpen={isSupportNetworksModalOpen} 
+          onClose={() => setIsSupportNetworksModalOpen(false)} 
         />
       </div>
     </div>
