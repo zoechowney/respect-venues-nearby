@@ -53,7 +53,7 @@ const LegalRightsModal = ({ isOpen, onClose }: LegalRightsModalProps) => {
               <p className="mb-2">If you're denied access, harassed, or mistreated:</p>
               <div className="pl-4 space-y-1">
                 <p>• You can raise a complaint directly with the venue.</p>
-                <p>• You can seek support from organisations like Galop, Stonewall, or TransActual.</p>
+                <p>• You can seek support from organisations like <a href="https://galop.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">Galop</a>, <a href="https://stonewall.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">Stonewall</a>, or <a href="https://transactual.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">TransActual</a>.</p>
                 <p>• You may have legal grounds to challenge the behaviour.</p>
               </div>
             </div>

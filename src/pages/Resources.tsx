@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { BookOpen, Users, Shield, Heart, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -204,12 +205,24 @@ const Resources = () => {
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                     <p className="font-medium text-red-800 mb-3">🇬🇧 United Kingdom - 24/7 Crisis Support</p>
                     <div className="space-y-1 text-red-700 text-sm">
-                      <p>Switchboard LGBT+ Helpline: 0300 330 0630</p>
+                      <p>
+                        <a href="https://switchboard.lgbt" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Switchboard LGBT+
+                        </a> Helpline: 0300 330 0630
+                      </p>
                       <p>MindLine Trans+: 0300 330 5468</p>
                       <p>Samaritans (All UK, including LGBTQ+): 116 123</p>
-                      <p>Galop – National LGBT+ Domestic Abuse: 0800 999 5428</p>
+                      <p>
+                        <a href="https://galop.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Galop
+                        </a> – National LGBT+ Domestic Abuse: 0800 999 5428
+                      </p>
                       <p>Shout (Crisis Text): Text LGBTQ to 85258</p>
-                      <p>Mermaids (Trans Youth & Families): 0808 801 0400</p>
+                      <p>
+                        <a href="https://mermaidsuk.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Mermaids
+                        </a> (Trans Youth & Families): 0808 801 0400
+                      </p>
                       <p>999 – Emergency Services</p>
                     </div>
                   </div>
@@ -217,8 +230,16 @@ const Resources = () => {
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
                     <p className="font-medium text-red-800 mb-3">🇺🇸 United States - 24/7 Crisis Support</p>
                     <div className="space-y-1 text-red-700">
-                      <p>Trans Lifeline: 877-565-8860</p>
-                      <p>LGBT National Hotline: 1-888-843-4564</p>
+                      <p>
+                        <a href="https://translifeline.org" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Trans Lifeline
+                        </a>: 877-565-8860
+                      </p>
+                      <p>
+                        <a href="https://lgbthotline.org" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          LGBT National Hotline
+                        </a>: 1-888-843-4564
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -227,12 +248,36 @@ const Resources = () => {
                   <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
                     <p className="font-medium text-trans-blue mb-2">🇬🇧 United Kingdom - Legal Support</p>
                     <div className="text-brand-navy/70 text-sm space-y-1">
-                      <p>Galop – LGBT+ Hate Crime, Domestic Abuse, and Legal Support: 0800 999 5428</p>
-                      <p>LGBT Foundation: 0345 3 30 30 30</p>
-                      <p>Stonewall Information Service: www.stonewall.org.uk/help-and-advice</p>
-                      <p>TransActual UK: www.transactual.org.uk</p>
-                      <p>LawWorks Clinics: www.lawworks.org.uk</p>
-                      <p>Citizens Advice: 0800 144 8848</p>
+                      <p>
+                        <a href="https://galop.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Galop
+                        </a> – LGBT+ Hate Crime, Domestic Abuse, and Legal Support: 0800 999 5428
+                      </p>
+                      <p>
+                        <a href="https://lgbt.foundation" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          LGBT Foundation
+                        </a>: 0345 3 30 30 30
+                      </p>
+                      <p>
+                        <a href="https://stonewall.org.uk/help-and-advice" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Stonewall Information Service
+                        </a>
+                      </p>
+                      <p>
+                        <a href="https://transactual.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          TransActual UK
+                        </a>
+                      </p>
+                      <p>
+                        <a href="https://lawworks.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          LawWorks Clinics
+                        </a>
+                      </p>
+                      <p>
+                        <a href="https://citizensadvice.org.uk" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Citizens Advice
+                        </a>: 0800 144 8848
+                      </p>
                       <p>ACAS (Employment Discrimination): 0300 123 1100</p>
                     </div>
                   </div>
@@ -240,8 +285,16 @@ const Resources = () => {
                   <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
                     <p className="font-medium text-trans-blue mb-2">🇺🇸 United States - Legal Support</p>
                     <div className="text-brand-navy/70 text-sm space-y-1">
-                      <p>Transgender Legal Defense & Education Fund</p>
-                      <p>Lambda Legal: 1-866-542-8336</p>
+                      <p>
+                        <a href="https://transgenderlegal.org" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Transgender Legal Defense & Education Fund
+                        </a>
+                      </p>
+                      <p>
+                        <a href="https://lambdalegal.org" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Lambda Legal
+                        </a>: 1-866-542-8336
+                      </p>
                     </div>
                   </div>
                 </div>

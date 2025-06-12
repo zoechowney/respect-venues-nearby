@@ -25,28 +25,52 @@ const SupportNetworksModal = ({ isOpen, onClose }: SupportNetworksModalProps) =>
               <h3 className="font-medium text-brand-navy text-lg mb-3">Peer Support & Community:</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="font-medium">Mermaids:</p>
-                  <p>Support for trans youth (under 25) and their families: mermaidsuk.org.uk / Helpline: 0808 801 0400.</p>
+                  <p className="font-medium">
+                    <a href="https://mermaidsuk.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      Mermaids
+                    </a>:
+                  </p>
+                  <p>Support for trans youth (under 25) and their families / Helpline: 0808 801 0400.</p>
                 </div>
                 <div>
-                  <p className="font-medium">Gendered Intelligence:</p>
-                  <p>Trans-led charity offering youth support and workshops: genderedintelligence.co.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://genderedintelligence.co.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      Gendered Intelligence
+                    </a>:
+                  </p>
+                  <p>Trans-led charity offering youth support and workshops.</p>
                 </div>
                 <div>
-                  <p className="font-medium">LGBT Foundation:</p>
+                  <p className="font-medium">
+                    <a href="https://lgbt.foundation" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      LGBT Foundation
+                    </a>:
+                  </p>
                   <p>Broad LGBT+ support including a trans programme and helpline: 0345 3 30 30 30.</p>
                 </div>
                 <div>
-                  <p className="font-medium">CliniQ:</p>
-                  <p>Trans-inclusive sexual health & wellbeing clinic: cliniq.org.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://cliniq.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      CliniQ
+                    </a>:
+                  </p>
+                  <p>Trans-inclusive sexual health & wellbeing clinic.</p>
                 </div>
                 <div>
-                  <p className="font-medium">TransBareAll:</p>
-                  <p>Body positivity and mental health workshops & retreats: transbareall.co.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://transbareall.co.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      TransBareAll
+                    </a>:
+                  </p>
+                  <p>Body positivity and mental health workshops & retreats.</p>
                 </div>
                 <div>
-                  <p className="font-medium">Be - Trans Support and Community:</p>
-                  <p>Trans-led peer groups across the UK: be-north.org.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://be-north.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      Be - Trans Support and Community
+                    </a>:
+                  </p>
+                  <p>Trans-led peer groups across the UK.</p>
                 </div>
               </div>
             </div>
@@ -55,16 +79,28 @@ const SupportNetworksModal = ({ isOpen, onClose }: SupportNetworksModalProps) =>
               <h3 className="font-medium text-brand-navy text-lg mb-3">Healthcare Navigation & Advocacy:</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="font-medium">Action for Trans Health:</p>
-                  <p>Campaigning for democratic trans healthcare access: actionfortranshealth.org.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://actionfortranshealth.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      Action for Trans Health
+                    </a>:
+                  </p>
+                  <p>Campaigning for democratic trans healthcare access.</p>
                 </div>
                 <div>
-                  <p className="font-medium">The Kite Trust (Cambridgeshire & East of England):</p>
-                  <p>Youth trans and LGBT+ support: thekitetrust.org.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://thekitetrust.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      The Kite Trust (Cambridgeshire & East of England)
+                    </a>:
+                  </p>
+                  <p>Youth trans and LGBT+ support.</p>
                 </div>
                 <div>
-                  <p className="font-medium">Spectra London:</p>
-                  <p>Trans peer mentoring, counselling, and sexual health support: spectra-london.org.uk.</p>
+                  <p className="font-medium">
+                    <a href="https://spectra-london.org.uk" target="_blank" rel="noopener noreferrer" className="text-trans-blue hover:underline">
+                      Spectra London
+                    </a>:
+                  </p>
+                  <p>Trans peer mentoring, counselling, and sexual health support.</p>
                 </div>
               </div>
             </div>
