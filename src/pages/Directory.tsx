@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin, Star, ExternalLink } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Search, MapPin, Star, ExternalLink, Map } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,7 @@ const Directory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('all');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const navigate = useNavigate();
   
   const { venues, isLoading, error } = useApprovedVenues();
 
@@ -22,6 +23,11 @@ const Directory = () => {
     const matchesTab = selectedTab === 'all' || venue.type.toLowerCase() === selectedTab.toLowerCase();
     return matchesSearch && matchesTab;
   });
+
+  const handleShowOnMap = (venue: any) => {
+    // Navigate to map page - in the future this could include venue-specific parameters
+    navigate('/map');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -129,14 +135,14 @@ const Directory = () => {
                   )}
 
                   <div className="pt-2 border-t">
-                    <div className="flex space-x-2">
-                      <Button size="sm" className="flex-1 bg-trans-blue hover:bg-trans-blue/90 text-brand-navy">
-                        View Profile
-                      </Button>
-                      <Button size="sm" variant="outline" className="border-trans-pink text-trans-pink hover:bg-trans-pink/10">
-                        Directions
-                      </Button>
-                    </div>
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleShowOnMap(venue)}
+                      className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
+                    >
+                      <Map className="w-4 h-4 mr-2" />
+                      Show on Map
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
