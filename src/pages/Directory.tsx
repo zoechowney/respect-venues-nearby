@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, MapPin, Star, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -64,7 +65,7 @@ const Directory = () => {
 
         {/* Category Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-5 max-w-md">
+          <TabsList className="grid w-full grid-cols-5 max-w-2xl">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
             <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
