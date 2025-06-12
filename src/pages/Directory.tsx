@@ -53,7 +53,7 @@ const Directory = () => {
             <div className="hidden md:flex space-x-8">
               <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
               <Link to="/directory" className="text-trans-blue font-medium">Directory</Link>
-              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Join Movement</Link>
+              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
               <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
           </div>

@@ -18,7 +18,7 @@ const JoinMovementNavigation = () => {
             <div className="hidden md:flex space-x-8">
               <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
               <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
-              <Link to="/join" className="text-trans-blue font-medium">Join Movement</Link>
+              <Link to="/join" className="text-trans-blue font-medium">Add a Venue</Link>
               <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
           </div>

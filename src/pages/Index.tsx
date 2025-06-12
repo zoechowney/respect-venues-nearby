@@ -23,7 +23,7 @@ const Index = () => {
             <div className="hidden md:flex space-x-8">
               <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
               <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
-              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Join Movement</Link>
+              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
               <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
             </div>
             <div className="flex items-center space-x-4">
@@ -63,7 +63,7 @@ const Index = () => {
             <Link to="/join">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-trans-pink text-trans-pink hover:bg-trans-pink/10">
                 <Users className="w-5 h-5 mr-2" />
-                Join the Movement
+                Add a Venue
               </Button>
             </Link>
           </div>
@@ -133,7 +133,7 @@ const Index = () => {
             </div>
             <div className="flex space-x-6">
               <Link to="/resources" className="hover:text-trans-blue transition-colors">Resources</Link>
-              <Link to="/join" className="hover:text-trans-pink transition-colors">Join Us</Link>
+              <Link to="/join" className="hover:text-trans-pink transition-colors">Add a Venue</Link>
               <button 
                 onClick={() => setIsContactModalOpen(true)}
                 className="hover:text-trans-blue transition-colors"
