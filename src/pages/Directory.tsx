@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ContactModal from '@/components/ContactModal';
 
 const mockVenues = [
   {
@@ -51,6 +52,7 @@ const mockVenues = [
 const Directory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('all');
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const filteredVenues = mockVenues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -176,6 +178,11 @@ const Directory = () => {
           </div>
         )}
       </div>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };

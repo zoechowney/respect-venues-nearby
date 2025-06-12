@@ -1,12 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import JoinMovementNavigation from '@/components/join-movement/JoinMovementNavigation';
 import JoinMovementHeader from '@/components/join-movement/JoinMovementHeader';
 import BenefitsCard from '@/components/join-movement/BenefitsCard';
 import SignStylesCard from '@/components/join-movement/SignStylesCard';
 import VenueRegistrationForm from '@/components/join-movement/VenueRegistrationForm';
+import ContactModal from '@/components/ContactModal';
 
 const JoinMovement = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       <JoinMovementNavigation />
@@ -27,6 +30,11 @@ const JoinMovement = () => {
           </div>
         </div>
       </div>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };

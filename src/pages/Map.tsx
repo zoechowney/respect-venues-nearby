@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Filter, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import InteractiveMap from '@/components/InteractiveMap';
+import ContactModal from '@/components/ContactModal';
 
 // Mock data for venues
 const mockVenues = [
@@ -46,6 +46,7 @@ const Map = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedVenue, setSelectedVenue] = useState(null);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const filteredVenues = mockVenues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -178,6 +179,11 @@ const Map = () => {
           </div>
         </div>
       </div>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };

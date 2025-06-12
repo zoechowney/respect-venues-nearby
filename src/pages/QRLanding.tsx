@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, Star, Clock, Phone, Globe, Download } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import ContactModal from '@/components/ContactModal';
 
 // This would typically get venue data from URL params or API
 const mockVenue = {
@@ -29,6 +30,8 @@ const mockVenue = {
 };
 
 const QRLanding = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Header */}
@@ -208,6 +211,11 @@ const QRLanding = () => {
           </div>
         </div>
       </div>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };

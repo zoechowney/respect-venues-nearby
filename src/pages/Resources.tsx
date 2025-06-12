@@ -1,13 +1,14 @@
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import { BookOpen, Users, Shield, Heart, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ContactModal from '@/components/ContactModal';
 
 const Resources = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
@@ -301,15 +302,24 @@ const Resources = () => {
             <p className="text-brand-navy/80 mb-6 max-w-2xl mx-auto">
               Can't find what you're looking for? Our team is here to help answer questions and provide additional support.
             </p>
-            <Button variant="secondary" size="lg" className="bg-trans-white hover:bg-trans-white/90 text-brand-navy">
+            <Button 
+              variant="secondary" 
+              size="lg" 
+              className="bg-trans-white hover:bg-trans-white/90 text-brand-navy"
+              onClick={() => setIsContactModalOpen(true)}
+            >
               Contact Our Support Team
             </Button>
           </CardContent>
         </Card>
+
+        <ContactModal 
+          isOpen={isContactModalOpen} 
+          onClose={() => setIsContactModalOpen(false)} 
+        />
       </div>
     </div>
   );
 };
 
 export default Resources;
-

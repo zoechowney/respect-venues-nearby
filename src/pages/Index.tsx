@@ -1,11 +1,15 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import UserMenu from '@/components/UserMenu';
+import ContactModal from '@/components/ContactModal';
 
 const Index = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
@@ -130,7 +134,12 @@ const Index = () => {
             <div className="flex space-x-6">
               <Link to="/resources" className="hover:text-trans-blue transition-colors">Resources</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors">Join Us</Link>
-              <a href="#" className="hover:text-trans-blue transition-colors">Contact</a>
+              <button 
+                onClick={() => setIsContactModalOpen(true)}
+                className="hover:text-trans-blue transition-colors"
+              >
+                Contact
+              </button>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-brand-navy/20 text-center text-trans-white/70">
@@ -138,6 +147,11 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </div>
   );
 };
