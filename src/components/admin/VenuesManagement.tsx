@@ -1,205 +1,204 @@
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { Edit2, Trash2, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ExternalLink, MapPin, Mail, Phone } from 'lucide-react';
-import { format } from 'date-fns';
-
-interface ApprovedVenue {
-  id: string;
-  business_name: string;
-  business_type: string;
-  contact_name: string;
-  email: string;
-  phone: string | null;
-  address: string;
-  website: string | null;
-  description: string | null;
-  sign_style: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import VenueEditModal from './VenueEditModal';
 
 const VenuesManagement = () => {
+  const [venues, setVenues] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedVenue, setSelectedVenue] = useState<any>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { toast } = useToast();
-  const [venues, setVenues] = useState<ApprovedVenue[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchApprovedVenues();
-  }, []);
-
-  const fetchApprovedVenues = async () => {
+  const fetchVenues = async () => {
     try {
       const { data, error } = await supabase
         .from('venue_applications')
         .select('*')
         .eq('status', 'approved')
-        .order('updated_at', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching approved venues:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch approved venues",
-          variant: "destructive",
-        });
-      } else {
-        setVenues(data || []);
+        throw error;
       }
+
+      setVenues(data || []);
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Error fetching venues:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch venues",
+        variant: "destructive",
+      });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const revokeApproval = async (id: string) => {
+  useEffect(() => {
+    fetchVenues();
+  }, []);
+
+  const handleEdit = (venue: any) => {
+    setSelectedVenue(venue);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = async (venueId: string) => {
+    if (!confirm('Are you sure you want to remove this venue? This action cannot be undone.')) {
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('venue_applications')
-        .update({ status: 'pending', updated_at: new Date().toISOString() })
-        .eq('id', id);
+        .delete()
+        .eq('id', venueId);
 
       if (error) {
-        console.error('Error revoking approval:', error);
-        toast({
-          title: "Error",
-          description: "Failed to revoke venue approval",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Venue approval revoked. It's now back in pending status.",
-        });
-        fetchApprovedVenues(); // Refresh the list
+        throw error;
       }
+
+      toast({
+        title: "Success",
+        description: "Venue removed successfully",
+      });
+
+      fetchVenues();
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Error deleting venue:', error);
+      toast({
+        title: "Error",
+        description: "Failed to remove venue",
+        variant: "destructive",
+      });
     }
   };
 
-  if (loading) {
+  const handleVenueUpdated = () => {
+    fetchVenues();
+  };
+
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-brand-navy/70">Loading approved venues...</div>
+      <div className="text-center py-8">
+        <p className="text-brand-navy/60">Loading venues...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-brand-navy">
-          Approved Venues ({venues.length})
-        </h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-brand-navy">Approved Venues ({venues.length})</h2>
       </div>
 
-      {venues.length > 0 ? (
-        <div className="grid gap-4">
+      {venues.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-brand-navy/60">No approved venues found.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6">
           {venues.map((venue) => (
             <Card key={venue.id} className="border-trans-blue/20">
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-brand-navy">{venue.business_name}</CardTitle>
-                  <Badge className="bg-green-100 text-green-800">Active</Badge>
+                  <div>
+                    <CardTitle className="text-xl text-brand-navy">{venue.business_name}</CardTitle>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <Badge variant="secondary" className="bg-trans-blue/20 text-trans-blue">
+                        {venue.business_type}
+                      </Badge>
+                      <Badge variant="outline" className="border-green-500 text-green-700">
+                        Approved
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleEdit(venue)}
+                      className="border-trans-blue text-trans-blue hover:bg-trans-blue/10"
+                    >
+                      <Edit2 className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDelete(venue.id)}
+                      className="border-red-500 text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-sm text-brand-navy/70">
-                  Approved {format(new Date(venue.updated_at), 'MMM d, yyyy')}
-                </p>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="outline">{venue.business_type}</Badge>
-                      {venue.sign_style && (
-                        <Badge variant="outline" className="capitalize">
-                          {venue.sign_style.replace('-', ' ')} Sign
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="flex items-start space-x-2">
-                      <MapPin className="w-4 h-4 text-brand-navy/70 mt-0.5 flex-shrink-0" />
-                      <p className="text-brand-navy text-sm">{venue.address}</p>
-                    </div>
-
-                    {venue.description && (
-                      <div>
-                        <p className="text-sm text-brand-navy/70 mb-1">Description</p>
-                        <p className="text-brand-navy text-sm">{venue.description}</p>
-                      </div>
-                    )}
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-brand-navy/70">Address</p>
+                    <p className="text-brand-navy">{venue.address}</p>
                   </div>
-
-                  <div className="space-y-3">
+                  
+                  {venue.phone && (
                     <div>
-                      <p className="text-sm text-brand-navy/70 mb-2">Contact Information</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <Mail className="w-4 h-4 text-brand-navy/70" />
-                          <span className="text-brand-navy text-sm">{venue.contact_name}</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Mail className="w-4 h-4 text-brand-navy/70" />
-                          <a 
-                            href={`mailto:${venue.email}`}
-                            className="text-trans-blue hover:underline text-sm"
-                          >
-                            {venue.email}
-                          </a>
-                        </div>
-                        {venue.phone && (
-                          <div className="flex items-center space-x-2">
-                            <Phone className="w-4 h-4 text-brand-navy/70" />
-                            <span className="text-brand-navy text-sm">{venue.phone}</span>
-                          </div>
-                        )}
-                        {venue.website && (
-                          <div className="flex items-center space-x-2">
-                            <ExternalLink className="w-4 h-4 text-brand-navy/70" />
-                            <a 
-                              href={venue.website} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-trans-blue hover:underline text-sm"
-                            >
-                              Visit Website
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-sm font-medium text-brand-navy/70">Phone</p>
+                      <p className="text-brand-navy">{venue.phone}</p>
                     </div>
-
-                    <div className="pt-2">
-                      <Button
-                        onClick={() => revokeApproval(venue.id)}
-                        variant="outline"
-                        size="sm"
-                        className="text-red-600 border-red-200 hover:bg-red-50"
+                  )}
+                  
+                  {venue.website && (
+                    <div>
+                      <p className="text-sm font-medium text-brand-navy/70">Website</p>
+                      <a 
+                        href={venue.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-trans-blue hover:underline flex items-center"
                       >
-                        Revoke Approval
-                      </Button>
+                        {venue.website}
+                        <ExternalLink className="w-3 h-3 ml-1" />
+                      </a>
                     </div>
+                  )}
+                  
+                  {venue.description && (
+                    <div>
+                      <p className="text-sm font-medium text-brand-navy/70">Description</p>
+                      <p className="text-brand-navy text-sm">{venue.description}</p>
+                    </div>
+                  )}
+                  
+                  <div className="text-xs text-brand-navy/50">
+                    Applied: {new Date(venue.created_at).toLocaleDateString()}
+                    {venue.updated_at && venue.updated_at !== venue.created_at && (
+                      <span> • Updated: {new Date(venue.updated_at).toLocaleDateString()}</span>
+                    )}
                   </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-brand-navy/70">No approved venues yet</p>
-          <p className="text-brand-navy/50 text-sm mt-2">
-            Venues will appear here once you approve their applications
-          </p>
-        </div>
       )}
+
+      <VenueEditModal
+        venue={selectedVenue}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedVenue(null);
+        }}
+        onVenueUpdated={handleVenueUpdated}
+      />
     </div>
   );
 };

@@ -26,7 +26,6 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
     }
 
     console.log('📍 Adding venue markers...', { venuesCount: venues.length });
-    console.log('📍 Venues data:', venues);
     
     // Clear existing markers first
     const existingMarkers = document.querySelectorAll('.custom-marker');
@@ -35,8 +34,16 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
     venues.forEach((venue, index) => {
       console.log(`📍 Processing marker ${index + 1} for ${venue.name}:`, {
         coordinates: venue.coordinates,
-        type: venue.type
+        type: venue.type,
+        name: venue.name
       });
+      
+      // Ensure coordinates are valid numbers
+      const [lng, lat] = venue.coordinates;
+      if (typeof lng !== 'number' || typeof lat !== 'number' || isNaN(lng) || isNaN(lat)) {
+        console.error(`❌ Invalid coordinates for ${venue.name}:`, venue.coordinates);
+        return;
+      }
       
       const el = document.createElement('div');
       el.className = 'custom-marker';
@@ -47,6 +54,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
       el.style.border = '2px solid white';
       el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
       el.style.zIndex = '1000';
+      el.style.position = 'absolute';
       
       // Color code by venue type
       if (venue.type.toLowerCase() === 'pub') {
@@ -57,21 +65,18 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         el.style.backgroundColor = '#374151'; // brand-navy
       }
 
-      console.log(`📍 Created marker element for ${venue.name}`, {
-        element: el,
-        styles: el.style.cssText
-      });
+      console.log(`📍 Created marker element for ${venue.name}`);
 
       try {
-        console.log(`📍 Creating Mapbox marker for ${venue.name} at coordinates:`, venue.coordinates);
+        console.log(`📍 Creating Mapbox marker for ${venue.name} at [${lng}, ${lat}]`);
         
         const marker = new mapboxgl.Marker(el)
-          .setLngLat(venue.coordinates)
+          .setLngLat([lng, lat])
           .addTo(map);
 
-        console.log(`📍 Marker created and added to map for ${venue.name}:`, marker);
+        console.log(`✅ Marker created and added to map for ${venue.name}`);
 
-        // Create popup
+        // Create popup with clean data
         const popup = new mapboxgl.Popup({ offset: 25 })
           .setHTML(`
             <div class="p-3">
@@ -88,23 +93,28 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
         marker.setPopup(popup);
 
-        // Handle click events
+        // Handle click events with clean venue data
         el.addEventListener('click', () => {
-          console.log('📍 Marker clicked:', venue);
+          console.log('📍 Marker clicked:', venue.name);
           if (onVenueSelect) {
-            onVenueSelect(venue);
+            // Pass clean venue data to avoid serialization issues
+            const cleanVenue = {
+              id: venue.id,
+              name: venue.name,
+              type: venue.type,
+              address: venue.address,
+              rating: venue.rating,
+              openNow: venue.openNow,
+              features: venue.features,
+              coordinates: venue.coordinates
+            };
+            onVenueSelect(cleanVenue);
           }
         });
 
         console.log(`✅ Marker ${index + 1} added successfully for ${venue.name}`);
       } catch (markerError) {
         console.error(`❌ Error adding marker ${index + 1} for ${venue.name}:`, markerError);
-        console.error('❌ Error details:', {
-          venue,
-          coordinates: venue.coordinates,
-          mapboxgl: !!mapboxgl,
-          map: !!map
-        });
       }
     });
 
