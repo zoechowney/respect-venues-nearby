@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Filter, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -7,48 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import InteractiveMap from '@/components/InteractiveMap';
 import ContactModal from '@/components/ContactModal';
-
-// Mock data for venues
-const mockVenues = [
-  {
-    id: 1,
-    name: "The Rainbow Pub",
-    type: "Pub",
-    address: "123 High Street, London",
-    rating: 4.8,
-    distance: "0.2 miles",
-    openNow: true,
-    features: ["Accessible", "Family Friendly", "Staff Trained"]
-  },
-  {
-    id: 2,
-    name: "Inclusive Café",
-    type: "Restaurant",
-    address: "456 Market Square, London",
-    rating: 4.9,
-    distance: "0.4 miles",
-    openNow: true,
-    features: ["Gender Neutral Facilities", "Quiet Space"]
-  },
-  {
-    id: 3,
-    name: "Unity Fitness",
-    type: "Gym",
-    address: "789 Park Road, London",
-    rating: 4.7,
-    distance: "0.8 miles",
-    openNow: false,
-    features: ["Private Changing Rooms", "All Welcome Policy"]
-  }
-];
+import { useApprovedVenues } from '@/hooks/useApprovedVenues';
 
 const Map = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  
+  const { venues, isLoading, error } = useApprovedVenues();
 
-  const filteredVenues = mockVenues.filter(venue => {
+  const filteredVenues = venues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          venue.address.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedType === 'all' || venue.type.toLowerCase() === selectedType.toLowerCase();
@@ -57,7 +27,6 @@ const Map = () => {
 
   const handleVenueSelect = (venue: any) => {
     setSelectedVenue(venue);
-    // Scroll to venue in the list or highlight it
     console.log('Selected venue:', venue);
   };
 
@@ -123,9 +92,25 @@ const Map = () => {
           {/* Venue List */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-brand-navy">
-              Nearby Venues ({filteredVenues.length})
+              Nearby Venues ({isLoading ? '...' : filteredVenues.length})
             </h2>
-            {filteredVenues.map((venue) => (
+            
+            {/* Loading State */}
+            {isLoading && (
+              <div className="text-center py-8">
+                <p className="text-brand-navy/60">Loading venues...</p>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-8">
+                <p className="text-red-600">Error loading venues: {error}</p>
+              </div>
+            )}
+
+            {/* Venues List */}
+            {!isLoading && !error && filteredVenues.map((venue) => (
               <Card 
                 key={venue.id} 
                 className={`hover:shadow-lg transition-shadow cursor-pointer border-trans-pink/20 ${
@@ -176,6 +161,17 @@ const Map = () => {
                 </CardContent>
               </Card>
             ))}
+
+            {!isLoading && !error && filteredVenues.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-brand-navy/60">
+                  {venues.length === 0 
+                    ? "No approved venues found. Venues will appear here once they are approved by administrators."
+                    : "No venues found matching your search."
+                  }
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
