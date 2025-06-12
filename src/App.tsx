@@ -12,6 +12,7 @@ import JoinMovement from "./pages/JoinMovement";
 import Resources from "./pages/Resources";
 import QRLanding from "./pages/QRLanding";
 import Auth from "./pages/Auth";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/directory" element={<Directory />} />
             <Route path="/join" element={<JoinMovement />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/venue/:id" element={<QRLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
