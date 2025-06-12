@@ -10,7 +10,11 @@ const geocodeAddress = (address: string): [number, number] => {
   // Check for some common UK cities/areas
   const lowerAddress = address.toLowerCase();
   
-  if (lowerAddress.includes('london')) {
+  if (lowerAddress.includes('godalming') || lowerAddress.includes('surrey')) {
+    return [-0.6149, 51.1858]; // Godalming, Surrey
+  } else if (lowerAddress.includes('guildford')) {
+    return [-0.5704, 51.2362]; // Guildford, Surrey
+  } else if (lowerAddress.includes('london')) {
     return [-0.1276, 51.5074]; // London center
   } else if (lowerAddress.includes('manchester')) {
     return [-2.2426, 53.4808]; // Manchester
@@ -26,13 +30,11 @@ const geocodeAddress = (address: string): [number, number] => {
     return [-3.1883, 55.9533]; // Edinburgh
   } else if (lowerAddress.includes('bristol')) {
     return [-2.5879, 51.4545]; // Bristol
-  } else if (lowerAddress.includes('godalming') || lowerAddress.includes('surrey')) {
-    return [-0.6149, 51.1858]; // Godalming, Surrey
   } else {
-    // Default to London area with slight randomization
+    // Default to Godalming/Guildford area instead of London
     return [
-      -0.1276 + (Math.random() - 0.5) * 0.1, // Longitude around London
-      51.5074 + (Math.random() - 0.5) * 0.1  // Latitude around London
+      -0.6149 + (Math.random() - 0.5) * 0.02, // Longitude around Godalming
+      51.1858 + (Math.random() - 0.5) * 0.02  // Latitude around Godalming
     ];
   }
 };
