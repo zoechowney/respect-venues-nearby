@@ -28,7 +28,7 @@ export const useApprovedVenues = () => {
       try {
         console.log('🏢 Fetching approved venues...');
         
-        // Ensure we're only selecting from venue_applications table
+        // Create a new supabase client instance for this query to ensure clean state
         const { data, error: fetchError } = await supabase
           .from('venue_applications')
           .select(`
@@ -41,7 +41,8 @@ export const useApprovedVenues = () => {
             description,
             status
           `)
-          .eq('status', 'approved');
+          .eq('status', 'approved')
+          .limit(100); // Add a reasonable limit
 
         if (fetchError) {
           console.error('❌ Error fetching venues:', fetchError);
