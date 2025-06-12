@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Filter, Heart, Star, MapPin, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -154,35 +153,11 @@ const Map = () => {
                     </div>
                   )}
 
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {venue.features.slice(0, 2).map((feature, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-trans-blue/20 text-trans-blue text-xs rounded-full"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                    {venue.features.length > 2 && (
-                      <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
-                        +{venue.features.length - 2} more
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex justify-between items-center pt-2 border-t">
-                    <div className="flex items-center space-x-3">
-                      <span className={`text-xs px-2 py-1 rounded-full ${venue.openNow ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {venue.openNow ? 'Open Now' : 'Closed'}
-                      </span>
-                      {venue.distance && (
-                        <span className="text-xs text-brand-navy/60">{venue.distance}</span>
-                      )}
+                  {venue.distance && (
+                    <div className="pt-2">
+                      <span className="text-xs text-brand-navy/60">{venue.distance}</span>
                     </div>
-                    <Button size="sm" variant="outline" className="border-trans-blue text-trans-blue hover:bg-trans-blue/10">
-                      View Details
-                    </Button>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
