@@ -66,10 +66,10 @@ const Directory = () => {
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-8">
           <TabsList className="grid w-full grid-cols-5 max-w-md">
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="pub">Pubs</TabsTrigger>
-            <TabsTrigger value="restaurant">Cafés</TabsTrigger>
-            <TabsTrigger value="shop">Shops</TabsTrigger>
-            <TabsTrigger value="gym">Gyms</TabsTrigger>
+            <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
+            <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
+            <TabsTrigger value="shop">Shops / retail</TabsTrigger>
+            <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
           </TabsList>
         </Tabs>
 
