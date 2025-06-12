@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import ContactModal from '@/components/ContactModal';
 import LegalRightsModal from '@/components/LegalRightsModal';
 import SupportNetworksModal from '@/components/SupportNetworksModal';
@@ -14,6 +15,84 @@ const Resources = () => {
   const [isLegalRightsModalOpen, setIsLegalRightsModalOpen] = useState(false);
   const [isSupportNetworksModalOpen, setIsSupportNetworksModalOpen] = useState(false);
   const [isSelfCareModalOpen, setIsSelfCareModalOpen] = useState(false);
+
+  const businessSupportOrganizations = [
+    {
+      category: "Inclusive Workplace Training & Policy Guidance",
+      organizations: [
+        {
+          name: "Stonewall",
+          description: "UK's leading LGBT+ equality charity",
+          support: "Trans inclusion training, workplace resources, Diversity Champions programme",
+          website: "stonewall.org.uk"
+        },
+        {
+          name: "Gendered Intelligence",
+          description: "Trans-led charity focused on education and inclusivity",
+          support: "Bespoke training for organisations, schools, and workplaces",
+          website: "genderedintelligence.co.uk"
+        },
+        {
+          name: "TransActual UK",
+          description: "Trans-led organisation campaigning for rights and visibility",
+          support: "Toolkits for employers, inclusion audits, lived experience speakers",
+          website: "transactual.org.uk"
+        },
+        {
+          name: "LGBT Foundation",
+          description: "Manchester-based national LGBT+ health and rights charity",
+          support: "Trans Programme support, business workshops, community engagement",
+          website: "lgbt.foundation"
+        },
+        {
+          name: "Switchboard LGBT+",
+          description: "One of the UK's longest-running LGBT+ support lines",
+          support: "Diversity training for organisations, particularly in frontline/public-facing roles",
+          website: "switchboard.lgbt"
+        }
+      ]
+    },
+    {
+      category: "Specialist Business & Sector-Specific Support",
+      organizations: [
+        {
+          name: "OutBritain",
+          description: "The UK's LGBTQ+ Chamber of Commerce",
+          support: "Business resources, supplier diversity, and inclusion guidance",
+          website: "outbritain.co.uk"
+        },
+        {
+          name: "Pride in Business",
+          description: "UK initiative supporting LGBTQ+ inclusion in SMEs and consumer venues",
+          support: "Community events, business ally network, small business toolkits",
+          website: "prideinbusiness.org"
+        },
+        {
+          name: "Inclusive Employers",
+          description: "UK inclusion consultancy working across all sectors",
+          support: "Trans awareness training, policy reviews, e-learning",
+          website: "inclusiveemployers.co.uk"
+        }
+      ]
+    },
+    {
+      category: "Peer Networks & Visibility Platforms",
+      organizations: [
+        {
+          name: "Trans in the City",
+          description: "A collaboration of companies advocating for trans inclusion at work",
+          support: "Events, panel discussions, corporate guidance",
+          website: "transinthecity.co.uk"
+        },
+        {
+          name: "myGwork",
+          description: "LGBTQ+ recruitment & employer ratings platform",
+          support: "Trans inclusion best practices for HR & recruitment",
+          website: "mygwork.com"
+        }
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -171,86 +250,55 @@ const Resources = () => {
           </TabsContent>
 
           <TabsContent value="businesses" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Inclusivity Training</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Comprehensive training materials for staff on transgender awareness, inclusive language, and creating welcoming environments.
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 mb-4">
-                    <li>• Understanding transgender experiences</li>
-                    <li>• Appropriate language and terminology</li>
-                    <li>• Handling sensitive situations</li>
-                    <li>• Legal compliance and best practices</li>
-                  </ul>
-                  <Button size="sm" className="w-full">
-                    Access Training Materials
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="space-y-8">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-brand-navy mb-4">
+                  Organisations That Support Trans Inclusion in Businesses & Venues
+                </h2>
+                <p className="text-brand-navy/70">
+                  Connect with leading organisations that provide training, resources, and support for creating trans-inclusive workplaces and customer experiences.
+                </p>
+              </div>
 
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Policy Guidelines</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Template policies and procedures for creating transgender-inclusive workplace and customer service policies.
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 mb-4">
-                    <li>• Non-discrimination policies</li>
-                    <li>• Facility access guidelines</li>
-                    <li>• Customer service standards</li>
-                    <li>• Staff behavior expectations</li>
-                  </ul>
-                  <Button size="sm" className="w-full">
-                    Download Templates
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Marketing Materials</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Ready-to-use marketing materials to promote your commitment to inclusivity and attract diverse customers.
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 mb-4">
-                    <li>• Social media graphics</li>
-                    <li>• Website badges and banners</li>
-                    <li>• Print materials and flyers</li>
-                    <li>• Press release templates</li>
-                  </ul>
-                  <Button size="sm" className="w-full">
-                    Access Materials
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Implementation Guide</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Step-by-step guide for implementing transgender-inclusive practices in your business operations.
-                  </p>
-                  <ul className="text-sm text-gray-600 space-y-1 mb-4">
-                    <li>• Assessment checklist</li>
-                    <li>• Implementation timeline</li>
-                    <li>• Staff communication strategies</li>
-                    <li>• Measuring success</li>
-                  </ul>
-                  <Button size="sm" className="w-full">
-                    Download Guide
-                  </Button>
-                </CardContent>
-              </Card>
+              {businessSupportOrganizations.map((category, categoryIndex) => (
+                <Card key={categoryIndex} className="border-trans-blue/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-brand-navy">{category.category}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-1/4">Organisation</TableHead>
+                          <TableHead className="w-1/3">Description</TableHead>
+                          <TableHead className="w-1/3">Support Offered</TableHead>
+                          <TableHead className="w-1/6">Website</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {category.organizations.map((org, orgIndex) => (
+                          <TableRow key={orgIndex}>
+                            <TableCell className="font-medium text-brand-navy">{org.name}</TableCell>
+                            <TableCell className="text-brand-navy/70">{org.description}</TableCell>
+                            <TableCell className="text-brand-navy/70">{org.support}</TableCell>
+                            <TableCell>
+                              <a
+                                href={`https://${org.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-trans-blue hover:text-trans-blue/80 underline flex items-center space-x-1"
+                              >
+                                <span className="text-sm">{org.website}</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
