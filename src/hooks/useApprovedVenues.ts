@@ -27,18 +27,29 @@ export const useApprovedVenues = () => {
     const fetchApprovedVenues = async () => {
       try {
         console.log('🏢 Fetching approved venues...');
-        const { data, error } = await supabase
+        
+        // Ensure we're only selecting from venue_applications table
+        const { data, error: fetchError } = await supabase
           .from('venue_applications')
-          .select('*')
+          .select(`
+            id,
+            business_name,
+            business_type,
+            address,
+            phone,
+            website,
+            description,
+            status
+          `)
           .eq('status', 'approved');
 
-        if (error) {
-          console.error('❌ Error fetching venues:', error);
-          setError(error.message);
+        if (fetchError) {
+          console.error('❌ Error fetching venues:', fetchError);
+          setError(fetchError.message);
           return;
         }
 
-        console.log('✅ Approved venues fetched:', data);
+        console.log('✅ Raw venue data fetched:', data);
 
         // Transform database records to venue format
         const transformedVenues: ApprovedVenue[] = data?.map((application) => ({
@@ -66,7 +77,9 @@ export const useApprovedVenues = () => {
           distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`
         })) || [];
 
+        console.log('✅ Transformed venues:', transformedVenues);
         setVenues(transformedVenues);
+        setError(null);
       } catch (err) {
         console.error('❌ Error in fetchApprovedVenues:', err);
         setError('Failed to fetch venues');
