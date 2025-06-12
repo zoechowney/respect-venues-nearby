@@ -26,34 +26,34 @@ export const useApprovedVenues = () => {
   useEffect(() => {
     const fetchApprovedVenues = async () => {
       try {
-        console.log('🏢 Fetching approved venues...');
+        console.log('🏢 Starting venue fetch...');
         
-        // Create a new supabase client instance for this query to ensure clean state
+        // Create a completely isolated query that only touches venue_applications
         const { data, error: fetchError } = await supabase
           .from('venue_applications')
-          .select(`
-            id,
-            business_name,
-            business_type,
-            address,
-            phone,
-            website,
-            description,
-            status
-          `)
+          .select('id, business_name, business_type, address, phone, website, description, status')
           .eq('status', 'approved')
-          .limit(100); // Add a reasonable limit
+          .limit(100);
+
+        console.log('🔍 Query completed. Data:', data, 'Error:', fetchError);
 
         if (fetchError) {
-          console.error('❌ Error fetching venues:', fetchError);
-          setError(fetchError.message);
+          console.error('❌ Supabase query error:', fetchError);
+          setError(`Database error: ${fetchError.message}`);
           return;
         }
 
-        console.log('✅ Raw venue data fetched:', data);
+        if (!data) {
+          console.log('⚠️ No data returned from query');
+          setVenues([]);
+          setError(null);
+          return;
+        }
+
+        console.log('✅ Raw venue data received:', data.length, 'records');
 
         // Transform database records to venue format
-        const transformedVenues: ApprovedVenue[] = data?.map((application) => ({
+        const transformedVenues: ApprovedVenue[] = data.map((application) => ({
           id: application.id,
           name: application.business_name,
           type: application.business_type,
@@ -61,8 +61,8 @@ export const useApprovedVenues = () => {
           phone: application.phone || undefined,
           website: application.website || undefined,
           description: application.description || `A welcoming ${application.business_type.toLowerCase()} that supports the transgender community.`,
-          rating: 4.8, // Default rating for now
-          reviews: Math.floor(Math.random() * 50) + 10, // Random review count for now
+          rating: 4.8,
+          reviews: Math.floor(Math.random() * 50) + 10,
           features: [
             'Transgender Friendly',
             'Staff Trained',
@@ -74,17 +74,18 @@ export const useApprovedVenues = () => {
             : application.business_type === 'restaurant'
             ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
             : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM',
-          openNow: Math.random() > 0.3, // Random open status for now
+          openNow: Math.random() > 0.3,
           distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`
-        })) || [];
+        }));
 
-        console.log('✅ Transformed venues:', transformedVenues);
+        console.log('✅ Transformed venues ready:', transformedVenues.length);
         setVenues(transformedVenues);
         setError(null);
       } catch (err) {
-        console.error('❌ Error in fetchApprovedVenues:', err);
-        setError('Failed to fetch venues');
+        console.error('❌ Unexpected error in fetchApprovedVenues:', err);
+        setError(`Failed to fetch venues: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
+        console.log('🏁 Setting loading to false');
         setIsLoading(false);
       }
     };
