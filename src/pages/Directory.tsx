@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, MapPin, Star } from 'lucide-react';
+import { Search, MapPin, Star, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -114,27 +113,21 @@ const Directory = () => {
                     <p className="text-sm text-brand-navy/70">{venue.address}</p>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-brand-navy">Features:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {venue.features.slice(0, 3).map((feature, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-trans-pink/20 text-trans-pink text-xs rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                      {venue.features.length > 3 && (
-                        <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
-                          +{venue.features.length - 3} more
-                        </span>
-                      )}
+                  {venue.website && (
+                    <div className="flex items-center space-x-2">
+                      <ExternalLink className="w-4 h-4 text-brand-navy/40 flex-shrink-0" />
+                      <a 
+                        href={venue.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-trans-blue hover:text-trans-blue/80 underline transition-colors"
+                      >
+                        Visit Website
+                      </a>
                     </div>
-                  </div>
+                  )}
 
                   <div className="pt-2 border-t">
-                    <p className="text-xs text-brand-navy/60 mb-3">{venue.hours}</p>
                     <div className="flex space-x-2">
                       <Button size="sm" className="flex-1 bg-trans-blue hover:bg-trans-blue/90 text-brand-navy">
                         View Profile
