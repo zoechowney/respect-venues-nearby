@@ -45,10 +45,9 @@ const Resources = () => {
         </div>
 
         <Tabs defaultValue="individuals" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto">
+          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
             <TabsTrigger value="individuals">For Individuals</TabsTrigger>
             <TabsTrigger value="businesses">For Businesses</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
 
           <TabsContent value="individuals" className="space-y-6">
@@ -249,66 +248,6 @@ const Resources = () => {
                   </ul>
                   <Button size="sm" className="w-full">
                     Download Guide
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="community" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Community Events</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Stay informed about upcoming events, workshops, and community gatherings that promote transgender inclusion.
-                  </p>
-                  <Button size="sm" className="w-full">
-                    View Events Calendar
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Volunteer Opportunities</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Get involved in spreading awareness and supporting the Rest with Respect movement in your community.
-                  </p>
-                  <Button size="sm" className="w-full">
-                    Learn How to Help
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Success Stories</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Read inspiring stories from businesses and individuals who have embraced transgender inclusivity.
-                  </p>
-                  <Button size="sm" className="w-full">
-                    Read Stories
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">Research & Reports</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Access research, statistics, and reports on transgender inclusion and its positive impact on businesses.
-                  </p>
-                  <Button size="sm" className="w-full">
-                    View Research
                   </Button>
                 </CardContent>
               </Card>
