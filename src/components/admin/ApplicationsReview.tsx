@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -34,11 +33,14 @@ const ApplicationsReview = () => {
   }, []);
 
   const fetchApplications = async () => {
+    console.log('Fetching applications...');
     try {
       const { data, error } = await supabase
         .from('venue_applications')
         .select('*')
         .order('created_at', { ascending: false });
+
+      console.log('Applications query result:', { data, error });
 
       if (error) {
         console.error('Error fetching applications:', error);
@@ -48,10 +50,16 @@ const ApplicationsReview = () => {
           variant: "destructive",
         });
       } else {
+        console.log('Successfully fetched applications:', data?.length || 0);
         setApplications(data || []);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
+      toast({
+        title: "Error",
+        description: "Unexpected error occurred",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
