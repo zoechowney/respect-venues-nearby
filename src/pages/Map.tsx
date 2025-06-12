@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, Filter, Heart } from 'lucide-react';
+import { Search, Filter, Heart, Star, MapPin, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,44 +119,69 @@ const Map = () => {
               >
                 <CardHeader className="pb-3">
                   <div className="flex justify-between items-start">
-                    <div>
+                    <div className="flex-1">
                       <CardTitle className="text-lg text-brand-navy">{venue.name}</CardTitle>
-                      <p className="text-sm text-brand-navy/70">{venue.type} • {venue.address}</p>
+                      <p className="text-sm text-trans-blue font-medium">{venue.type}</p>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-1">
-                        <Heart className="w-4 h-4 text-trans-pink fill-current" />
-                        <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
-                      </div>
-                      <p className="text-xs text-brand-navy/60">{venue.distance}</p>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
+                      <span className="text-xs text-brand-navy/60">({venue.reviews})</span>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-wrap gap-1">
-                      {venue.features.slice(0, 2).map((feature, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-trans-blue/20 text-trans-blue text-xs rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                      {venue.features.length > 2 && (
-                        <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
-                          +{venue.features.length - 2} more
-                        </span>
-                      )}
-                    </div>
+                <CardContent className="space-y-4">
+                  {venue.description && (
+                    <p className="text-sm text-brand-navy/70">{venue.description}</p>
+                  )}
+                  
+                  <div className="flex items-start space-x-2">
+                    <MapPin className="w-4 h-4 text-brand-navy/40 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-brand-navy/70">{venue.address}</p>
+                  </div>
+
+                  {venue.website && (
                     <div className="flex items-center space-x-2">
+                      <ExternalLink className="w-4 h-4 text-brand-navy/40 flex-shrink-0" />
+                      <a 
+                        href={venue.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-trans-blue hover:text-trans-blue/80 underline transition-colors"
+                      >
+                        Visit Website
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {venue.features.slice(0, 2).map((feature, index) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 bg-trans-blue/20 text-trans-blue text-xs rounded-full"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                    {venue.features.length > 2 && (
+                      <span className="px-2 py-1 bg-brand-navy/10 text-brand-navy/70 text-xs rounded-full">
+                        +{venue.features.length - 2} more
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2 border-t">
+                    <div className="flex items-center space-x-3">
                       <span className={`text-xs px-2 py-1 rounded-full ${venue.openNow ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {venue.openNow ? 'Open Now' : 'Closed'}
                       </span>
-                      <Button size="sm" variant="outline" className="border-trans-blue text-trans-blue hover:bg-trans-blue/10">
-                        View Details
-                      </Button>
+                      {venue.distance && (
+                        <span className="text-xs text-brand-navy/60">{venue.distance}</span>
+                      )}
                     </div>
+                    <Button size="sm" variant="outline" className="border-trans-blue text-trans-blue hover:bg-trans-blue/10">
+                      View Details
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
