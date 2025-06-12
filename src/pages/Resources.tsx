@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BookOpen, Users, Shield, Heart, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -97,12 +98,30 @@ const Resources = () => {
               <CardHeader>
                 <CardTitle className="text-brand-navy">Emergency Contacts & Crisis Support</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="font-medium text-red-800">24/7 Crisis Support</p>
-                  <p className="text-red-700">Trans Lifeline: 877-565-8860</p>
-                  <p className="text-red-700">LGBT National Hotline: 1-888-843-4564</p>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="font-medium text-red-800 mb-3">🇺🇸 United States - 24/7 Crisis Support</p>
+                    <div className="space-y-1 text-red-700">
+                      <p>Trans Lifeline: 877-565-8860</p>
+                      <p>LGBT National Hotline: 1-888-843-4564</p>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="font-medium text-red-800 mb-3">🇬🇧 United Kingdom - 24/7 Crisis Support</p>
+                    <div className="space-y-1 text-red-700 text-sm">
+                      <p>Switchboard LGBT+ Helpline: 0300 330 0630</p>
+                      <p>MindLine Trans+: 0300 330 5468</p>
+                      <p>Samaritans (All UK, including LGBTQ+): 116 123</p>
+                      <p>Galop – National LGBT+ Domestic Abuse: 0800 999 5428</p>
+                      <p>Shout (Crisis Text): Text LGBTQ to 85258</p>
+                      <p>Mermaids (Trans Youth & Families): 0808 801 0400</p>
+                      <p>999 – Emergency Services</p>
+                    </div>
+                  </div>
                 </div>
+                
                 <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
                   <p className="font-medium text-trans-blue">Legal Support</p>
                   <p className="text-brand-navy/70">Transgender Legal Defense & Education Fund</p>
