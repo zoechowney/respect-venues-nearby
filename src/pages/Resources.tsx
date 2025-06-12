@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ContactModal from '@/components/ContactModal';
+import LegalRightsModal from '@/components/LegalRightsModal';
 
 const Resources = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isLegalRightsModalOpen, setIsLegalRightsModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -56,7 +58,12 @@ const Resources = () => {
                   <p className="text-brand-navy/70 mb-4">
                     Understanding your legal rights regarding access to facilities and protection from discrimination.
                   </p>
-                  <Button variant="outline" size="sm" className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10"
+                    onClick={() => setIsLegalRightsModalOpen(true)}
+                  >
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Learn More
                   </Button>
@@ -316,6 +323,11 @@ const Resources = () => {
         <ContactModal 
           isOpen={isContactModalOpen} 
           onClose={() => setIsContactModalOpen(false)} 
+        />
+
+        <LegalRightsModal 
+          isOpen={isLegalRightsModalOpen} 
+          onClose={() => setIsLegalRightsModalOpen(false)} 
         />
       </div>
     </div>
