@@ -20,7 +20,18 @@ const Directory = () => {
   const filteredVenues = venues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          venue.address.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTab = selectedTab === 'all' || venue.type.toLowerCase() === selectedTab.toLowerCase();
+    
+    let matchesTab = false;
+    if (selectedTab === 'all') {
+      matchesTab = true;
+    } else if (selectedTab === 'other') {
+      // "Other" includes any venue type that doesn't match the standard categories
+      const standardTypes = ['pub', 'restaurant', 'shop', 'gym'];
+      matchesTab = !standardTypes.includes(venue.type.toLowerCase());
+    } else {
+      matchesTab = venue.type.toLowerCase() === selectedTab.toLowerCase();
+    }
+    
     return matchesSearch && matchesTab;
   });
 
@@ -71,12 +82,13 @@ const Directory = () => {
 
         {/* Category Tabs */}
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+          <TabsList className="grid w-full grid-cols-6 max-w-3xl">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
             <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
             <TabsTrigger value="shop">Shops / retail</TabsTrigger>
             <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
+            <TabsTrigger value="other">Other</TabsTrigger>
           </TabsList>
         </Tabs>
 
