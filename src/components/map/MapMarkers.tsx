@@ -16,81 +16,79 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   onVenueSelect
 }) => {
   useEffect(() => {
-    console.log('📍 MapMarkers useEffect triggered with:', { 
+    console.log('🚀 MapMarkers useEffect triggered');
+    console.log('📊 MapMarkers props check:', { 
       hasMap: !!map, 
       hasMapboxgl: !!mapboxgl, 
       venuesCount: venues?.length || 0,
-      venues: venues
+      mapReady: map?.isStyleLoaded?.() || false
     });
 
-    if (!map || !mapboxgl || !venues?.length) {
-      console.log('📍 MapMarkers early return - missing requirements');
+    if (!map || !mapboxgl) {
+      console.log('❌ MapMarkers: Missing map or mapboxgl');
       return;
     }
 
-    console.log('📍 Starting marker creation process...');
+    if (!venues || venues.length === 0) {
+      console.log('❌ MapMarkers: No venues data available');
+      return;
+    }
+
+    console.log('🎯 MapMarkers: Starting marker creation process...');
     
     // Clear existing markers first
     const existingMarkers = document.querySelectorAll('.custom-marker');
-    console.log('📍 Clearing existing markers:', existingMarkers.length);
+    console.log('🧹 Clearing existing markers:', existingMarkers.length);
     existingMarkers.forEach(marker => marker.remove());
     
-    venues.forEach((venue, index) => {
-      console.log(`📍 Processing venue ${index + 1}:`, venue);
+    const createMarkersOnMap = () => {
+      console.log('🎨 Creating markers on loaded map...');
       
-      // Ensure coordinates are valid numbers
-      const [lng, lat] = venue.coordinates;
-      console.log(`📍 Coordinates for ${venue.name}:`, { lng, lat });
-      
-      if (typeof lng !== 'number' || typeof lat !== 'number' || isNaN(lng) || isNaN(lat)) {
-        console.error(`❌ Invalid coordinates for ${venue.name}:`, venue.coordinates);
-        return;
-      }
-      
-      // Create marker element
-      const el = document.createElement('div');
-      el.className = 'custom-marker';
-      el.style.width = '30px';
-      el.style.height = '30px';
-      el.style.borderRadius = '50%';
-      el.style.cursor = 'pointer';
-      el.style.border = '2px solid white';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-      el.style.zIndex = '1000';
-      el.style.position = 'absolute';
-      
-      // Color code by venue type
-      if (venue.type.toLowerCase() === 'pub') {
-        el.style.backgroundColor = '#60a5fa'; // trans-blue
-      } else if (venue.type.toLowerCase() === 'restaurant') {
-        el.style.backgroundColor = '#f472b6'; // trans-pink
-      } else {
-        el.style.backgroundColor = '#374151'; // brand-navy
-      }
-
-      console.log(`📍 Created marker element for ${venue.name} with background:`, el.style.backgroundColor);
-
-      try {
-        console.log(`📍 Creating Mapbox marker for ${venue.name} at [${lng}, ${lat}]`);
+      venues.forEach((venue, index) => {
+        console.log(`📍 Processing venue ${index + 1}/${venues.length}:`, {
+          name: venue.name,
+          coordinates: venue.coordinates
+        });
         
-        // Check if map is ready
-        if (!map.isStyleLoaded()) {
-          console.log('📍 Map style not loaded yet, waiting...');
-          map.on('styledata', () => {
-            console.log('📍 Map style loaded, creating marker...');
-            createMarker();
-          });
+        // Ensure coordinates are valid numbers
+        const [lng, lat] = venue.coordinates;
+        
+        if (typeof lng !== 'number' || typeof lat !== 'number' || isNaN(lng) || isNaN(lat)) {
+          console.error(`❌ Invalid coordinates for ${venue.name}:`, venue.coordinates);
           return;
         }
         
-        createMarker();
+        console.log(`✅ Valid coordinates for ${venue.name}: [${lng}, ${lat}]`);
         
-        function createMarker() {
+        // Create marker element
+        const el = document.createElement('div');
+        el.className = 'custom-marker';
+        el.style.width = '30px';
+        el.style.height = '30px';
+        el.style.borderRadius = '50%';
+        el.style.cursor = 'pointer';
+        el.style.border = '2px solid white';
+        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        el.style.zIndex = '1000';
+        
+        // Color code by venue type
+        if (venue.type.toLowerCase() === 'pub') {
+          el.style.backgroundColor = '#60a5fa'; // trans-blue
+        } else if (venue.type.toLowerCase() === 'restaurant') {
+          el.style.backgroundColor = '#f472b6'; // trans-pink
+        } else {
+          el.style.backgroundColor = '#374151'; // brand-navy
+        }
+
+        console.log(`🎨 Created marker element for ${venue.name}`);
+
+        try {
+          // Create Mapbox marker
           const marker = new mapboxgl.Marker(el)
             .setLngLat([lng, lat])
             .addTo(map);
 
-          console.log(`✅ Marker created and added to map for ${venue.name}`);
+          console.log(`✅ Marker added to map for ${venue.name}`);
 
           // Create popup
           const popup = new mapboxgl.Popup({ offset: 25 })
@@ -111,20 +109,35 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
           // Handle click events
           el.addEventListener('click', () => {
-            console.log('📍 Marker clicked:', venue.name);
+            console.log('🖱️ Marker clicked:', venue.name);
             if (onVenueSelect) {
               onVenueSelect(venue);
             }
           });
+
+          console.log(`🎉 Marker ${index + 1} setup complete for ${venue.name}`);
+        } catch (markerError) {
+          console.error(`❌ Error creating marker for ${venue.name}:`, markerError);
         }
+      });
 
-        console.log(`✅ Marker ${index + 1} processing complete for ${venue.name}`);
-      } catch (markerError) {
-        console.error(`❌ Error creating marker ${index + 1} for ${venue.name}:`, markerError);
-      }
-    });
+      console.log('🏁 All markers creation process complete');
+    };
 
-    console.log('🎯 All markers processing complete');
+    // Check if map style is loaded, if not wait for it
+    if (map.isStyleLoaded && map.isStyleLoaded()) {
+      console.log('🎨 Map style already loaded, creating markers immediately');
+      createMarkersOnMap();
+    } else {
+      console.log('⏳ Map style not loaded yet, waiting for styledata event');
+      const onStyleLoad = () => {
+        console.log('🎨 Map style loaded via event, creating markers');
+        createMarkersOnMap();
+        map.off('styledata', onStyleLoad);
+      };
+      map.on('styledata', onStyleLoad);
+    }
+
   }, [map, mapboxgl, venues, onVenueSelect]);
 
   return null;
