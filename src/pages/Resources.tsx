@@ -123,10 +123,27 @@ const Resources = () => {
                   </div>
                 </div>
                 
-                <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
-                  <p className="font-medium text-trans-blue">Legal Support</p>
-                  <p className="text-brand-navy/70">Transgender Legal Defense & Education Fund</p>
-                  <p className="text-brand-navy/70">Lambda Legal: 1-866-542-8336</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
+                    <p className="font-medium text-trans-blue mb-2">🇬🇧 United Kingdom - Legal Support</p>
+                    <div className="text-brand-navy/70 text-sm space-y-1">
+                      <p>Galop – LGBT+ Hate Crime, Domestic Abuse, and Legal Support: 0800 999 5428</p>
+                      <p>LGBT Foundation: 0345 3 30 30 30</p>
+                      <p>Stonewall Information Service: www.stonewall.org.uk/help-and-advice</p>
+                      <p>TransActual UK: www.transactual.org.uk</p>
+                      <p>LawWorks Clinics: www.lawworks.org.uk</p>
+                      <p>Citizens Advice: 0800 144 8848</p>
+                      <p>ACAS (Employment Discrimination): 0300 123 1100</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-trans-blue/10 border border-trans-blue/30 rounded-lg">
+                    <p className="font-medium text-trans-blue mb-2">🇺🇸 United States - Legal Support</p>
+                    <div className="text-brand-navy/70 text-sm space-y-1">
+                      <p>Transgender Legal Defense & Education Fund</p>
+                      <p>Lambda Legal: 1-866-542-8336</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
