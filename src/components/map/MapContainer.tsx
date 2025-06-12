@@ -29,6 +29,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
     if (!mapboxgl || !mapboxToken || !mapContainer.current) return;
@@ -70,6 +71,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
           console.log('🎉 Map loaded successfully!');
           setIsLoading(false);
           setError('');
+          setMapReady(true); // Set map as ready for markers
         });
 
         console.log('🧭 Adding navigation controls...');
@@ -94,6 +96,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
       if (map.current) {
         console.log('🧹 Cleaning up map...');
         map.current.remove();
+        setMapReady(false);
       }
     };
   }, [mapboxgl, mapboxToken, setIsLoading, setError]);
@@ -101,12 +104,14 @@ const MapContainer: React.FC<MapContainerProps> = ({
   return (
     <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative">
       <div ref={mapContainer} className="w-full h-full" />
-      <MapMarkers 
-        map={map.current} 
-        mapboxgl={mapboxgl} 
-        venues={venues} 
-        onVenueSelect={onVenueSelect} 
-      />
+      {mapReady && (
+        <MapMarkers 
+          map={map.current} 
+          mapboxgl={mapboxgl} 
+          venues={venues} 
+          onVenueSelect={onVenueSelect} 
+        />
+      )}
       {isLoading && (
         <div className="absolute inset-0 bg-gradient-to-br from-brand-light-blue to-trans-pink/30 flex items-center justify-center">
           <div className="text-center max-w-md">
