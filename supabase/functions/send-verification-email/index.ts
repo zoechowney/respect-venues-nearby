@@ -19,9 +19,33 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // For Supabase Auth Hooks, we don't need to verify authorization in the same way
-    // The hook is called internally by Supabase with the proper authentication
-    console.log('Headers:', Object.fromEntries(req.headers.entries()));
+    // Verify the webhook secret from Supabase Auth Hook
+    const authHeader = req.headers.get('authorization');
+    const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
+    
+    console.log('Authorization header present:', !!authHeader);
+    console.log('Hook secret configured:', !!hookSecret);
+    
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response('Missing authorization header', { status: 401 });
+    }
+
+    if (!hookSecret) {
+      console.error('Hook secret not configured');
+      return new Response('Hook secret not configured', { status: 500 });
+    }
+
+    // Extract the token from Bearer authorization
+    const token = authHeader.replace('Bearer ', '');
+    
+    // For Supabase webhooks, compare the token directly with the secret
+    if (token !== hookSecret) {
+      console.error('Invalid webhook secret');
+      return new Response('Invalid webhook secret', { status: 401 });
+    }
+
+    console.log('Webhook authentication successful');
 
     const payload = await req.json();
     console.log('Received webhook payload:', JSON.stringify(payload, null, 2));
