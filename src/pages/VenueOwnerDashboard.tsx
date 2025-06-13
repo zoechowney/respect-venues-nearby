@@ -265,7 +265,7 @@ const VenueOwnerDashboard = () => {
                     </Card>
                   ))}
                 </div>
-              )}
+              </div>
             )}
 
             {applications.length === 0 && venues.length === 0 && (
