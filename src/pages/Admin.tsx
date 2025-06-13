@@ -2,16 +2,18 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
+import { useUserRole } from '@/hooks/useUserRole';
 import AdminNavigation from '@/components/admin/AdminNavigation';
 import ApplicationsReview from '@/components/admin/ApplicationsReview';
 import VenuesManagement from '@/components/admin/VenuesManagement';
 
 const Admin = () => {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isAdmin, loading: roleLoading } = useUserRole();
   const [activeTab, setActiveTab] = useState('applications');
 
-  // Show loading state while auth is being determined
-  if (loading) {
+  // Show loading state while auth and role are being determined
+  if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10 flex items-center justify-center">
         <div className="text-brand-navy">Loading...</div>
@@ -22,6 +24,26 @@ const Admin = () => {
   // Redirect to auth if not logged in
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Show access denied if not admin
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center p-8">
+          <h1 className="text-2xl font-bold text-brand-navy mb-4">Access Denied</h1>
+          <p className="text-brand-navy/70 mb-6">
+            You don't have permission to access the admin dashboard. Please contact an administrator if you believe this is an error.
+          </p>
+          <a 
+            href="/" 
+            className="inline-block bg-trans-blue hover:bg-trans-blue/90 text-brand-navy px-4 py-2 rounded-md transition-colors"
+          >
+            Back to Home
+          </a>
+        </div>
+      </div>
+    );
   }
 
   return (
