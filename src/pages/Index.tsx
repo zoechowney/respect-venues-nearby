@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode, Menu } from 'lucide-react';
@@ -7,21 +6,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import UserMenu from '@/components/UserMenu';
 import ContactModal from '@/components/ContactModal';
-
 const Index = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-
-  const NavigationLinks = () => (
-    <>
+  const NavigationLinks = () => <>
       <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
       <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
       <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
       <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
-    </>
-  );
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
+    </>;
+  return <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
       <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,10 +61,10 @@ const Index = () => {
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
             </h1>
-            <p className="text-xl text-brand-navy/80 mb-8 max-w-3xl mx-auto">
-              Creating safe, inclusive spaces for everyone. Find transgender-friendly venues near you, 
-              or help your business join the movement towards greater inclusivity and mutual respect.
-            </p>
+            <p className="text-xl text-brand-navy/80 mb-8 max-w-3xl mx-auto">Helping transgender and non-binary people feel welcome, one door at a time. 
+Find transgender / non-binary inclusive venues near you, or help your business join the movement towards greater inclusivity and mutual respect.
+
+          </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -153,10 +146,7 @@ const Index = () => {
             <div className="flex space-x-6">
               <Link to="/resources" className="hover:text-trans-blue transition-colors">Resources</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors">Add a Venue</Link>
-              <button 
-                onClick={() => setIsContactModalOpen(true)}
-                className="hover:text-trans-blue transition-colors"
-              >
+              <button onClick={() => setIsContactModalOpen(true)} className="hover:text-trans-blue transition-colors">
                 Contact
               </button>
             </div>
@@ -167,12 +157,7 @@ const Index = () => {
         </div>
       </footer>
 
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
-    </div>
-  );
+      <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+    </div>;
 };
-
 export default Index;
