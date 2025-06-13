@@ -20,24 +20,13 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     console.log('Edge function called - processing auth hook');
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
     
-    // For Supabase Auth Hooks, the JWT token is sent in the authorization header
-    const authHeader = req.headers.get('authorization');
-    console.log('Authorization header present:', !!authHeader);
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.error('Missing or invalid authorization header');
-      return new Response('Unauthorized - missing bearer token', { 
-        status: 401,
-        headers: corsHeaders 
-      });
-    }
-
     // Get the raw payload first
     const payload = await req.json();
     console.log('Received payload:', JSON.stringify(payload, null, 2));
 
-    // Validate basic payload structure
+    // Validate basic payload structure for Supabase Auth Hook
     if (!payload.user || !payload.email_data) {
       console.error('Invalid payload structure - missing user or email_data');
       return new Response('Invalid payload structure', { 
