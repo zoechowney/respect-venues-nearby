@@ -19,52 +19,36 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // For Supabase Auth Hooks, we need to validate the webhook signature
-    const authHeader = req.headers.get('authorization');
-    const webhookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
+    console.log('Edge function called - processing auth hook');
     
-    console.log('Authorization header present:', !!authHeader);
-    console.log('Webhook secret configured:', !!webhookSecret);
-    
-    // Supabase Auth Hooks send a JWT in the authorization header
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.error('Missing or invalid authorization header');
-      return new Response('Unauthorized', { status: 401 });
-    }
-
-    if (!webhookSecret) {
-      console.error('Webhook secret not configured');
-      return new Response('Webhook secret not configured', { status: 500 });
-    }
-
-    // Extract the JWT token
-    const token = authHeader.replace('Bearer ', '');
-    
-    // For Supabase Auth Hooks, we need to verify the JWT signature
-    // The secret should be used to verify the JWT, but for now let's try a simpler approach
-    // and validate that we have the required payload structure
-    console.log('Processing auth hook with token present');
-
+    // Get the raw payload first
     const payload = await req.json();
-    console.log('Received webhook payload:', JSON.stringify(payload, null, 2));
+    console.log('Received payload:', JSON.stringify(payload, null, 2));
 
-    // Validate that this looks like a Supabase auth hook payload
+    // Validate basic payload structure
     if (!payload.user || !payload.email_data) {
-      console.error('Invalid payload structure for auth hook');
+      console.error('Invalid payload structure - missing user or email_data');
       return new Response('Invalid payload structure', { status: 400 });
     }
 
     // Extract user and email data from the webhook payload
     const {
       user,
-      email_data: { token: emailToken, token_hash, redirect_to, email_action_type }
+      email_data: { token_hash, redirect_to, email_action_type }
     } = payload;
 
     console.log('Processing email for user:', user.email);
     console.log('Email action type:', email_action_type);
 
+    if (!user.email) {
+      console.error('No email address in user object');
+      return new Response('No email address provided', { status: 400 });
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const verificationUrl = `${supabaseUrl}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${redirect_to}`;
+
+    console.log('Verification URL:', verificationUrl);
 
     const emailHtml = `
       <!DOCTYPE html>
@@ -132,6 +116,8 @@ const handler = async (req: Request): Promise<Response> => {
         </body>
       </html>
     `;
+
+    console.log('Attempting to send email via Resend...');
 
     const { error } = await resend.emails.send({
       from: 'Rest with Respect <noreply@resend.dev>',
