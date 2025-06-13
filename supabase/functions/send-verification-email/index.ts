@@ -1,10 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 import { Resend } from 'npm:resend@4.0.0';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string);
-const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET') as string;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,22 +19,17 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const payload = await req.text();
-    const headers = Object.fromEntries(req.headers);
-    const wh = new Webhook(hookSecret);
-    
+    const payload = await req.json();
+    console.log('Received webhook payload:', JSON.stringify(payload, null, 2));
+
+    // Extract user and email data from the webhook payload
     const {
       user,
       email_data: { token, token_hash, redirect_to, email_action_type }
-    } = wh.verify(payload, headers) as {
-      user: { email: string };
-      email_data: {
-        token: string;
-        token_hash: string;
-        redirect_to: string;
-        email_action_type: string;
-      };
-    };
+    } = payload;
+
+    console.log('Processing email for user:', user.email);
+    console.log('Email action type:', email_action_type);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const verificationUrl = `${supabaseUrl}/auth/v1/verify?token=${token_hash}&type=${email_action_type}&redirect_to=${redirect_to}`;
