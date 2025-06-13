@@ -61,7 +61,10 @@ const Index = () => {
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
             </h1>
-            <p className="text-xl text-brand-navy/80 mb-8 max-w-3xl mx-auto">Helping transgender and non-binary people feel welcome and accepted.  Find transgender / non-binary inclusive venues near you, or help your business join the movement towards greater inclusivity and mutual respect.</p>
+            <p className="text-xl text-brand-navy/80 mb-8 max-w-3xl mx-auto">Helping transgender and non-binary people feel welcome and accepted.
+Find transgender / non-binary inclusive venues near you, or help your business join the movement towards greater inclusivity and mutual respect.
+
+          </p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
