@@ -26,24 +26,46 @@ export const useVenueReviews = (venueId: string) => {
   const fetchReviews = async () => {
     try {
       setIsLoading(true);
-      const { data, error: fetchError } = await supabase
+      
+      // First, get the reviews
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from('venue_reviews')
-        .select(`
-          *,
-          profiles (
-            full_name
-          )
-        `)
+        .select('*')
         .eq('venue_id', venueId)
         .order('created_at', { ascending: false });
 
-      if (fetchError) {
-        console.error('Error fetching reviews:', fetchError);
-        setError(fetchError.message);
+      if (reviewsError) {
+        console.error('Error fetching reviews:', reviewsError);
+        setError(reviewsError.message);
         return;
       }
 
-      setReviews(data || []);
+      // Then, get the profiles for users who left reviews
+      const userIds = reviewsData
+        ?.filter(review => review.user_id)
+        .map(review => review.user_id) || [];
+
+      let profilesData: any[] = [];
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', userIds);
+
+        if (!profilesError) {
+          profilesData = profiles || [];
+        }
+      }
+
+      // Combine reviews with profile data
+      const reviewsWithProfiles = reviewsData?.map(review => ({
+        ...review,
+        profiles: review.user_id 
+          ? profilesData.find(profile => profile.id === review.user_id) || { full_name: null }
+          : { full_name: null }
+      })) || [];
+
+      setReviews(reviewsWithProfiles);
       setError(null);
     } catch (err) {
       console.error('Unexpected error fetching reviews:', err);
