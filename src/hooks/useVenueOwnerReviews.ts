@@ -1,19 +1,18 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-export interface VenueReview {
+export interface VenueOwnerReview {
   id: string;
   venue_id: string;
   user_id: string | null;
   rating: number;
   review_text: string | null;
   created_at: string;
-  is_approved: boolean;
-  approved_by: string | null;
-  approved_at: string | null;
+  venues: {
+    business_name: string;
+  };
   profiles?: {
     full_name: string | null;
   };
@@ -21,27 +20,31 @@ export interface VenueReview {
     id: string;
     reply_text: string;
     created_at: string;
-    venue_owner_id: string;
   };
 }
 
-export const useVenueReviews = (venueId: string) => {
-  const [reviews, setReviews] = useState<VenueReview[]>([]);
+export const useVenueOwnerReviews = (venueOwnerId: string) => {
+  const [reviews, setReviews] = useState<VenueOwnerReview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const fetchReviews = async () => {
     try {
       setIsLoading(true);
       
-      // First, get the approved reviews
+      // Fetch approved reviews for venues owned by this venue owner
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('venue_reviews')
-        .select('*')
-        .eq('venue_id', venueId)
+        .select(`
+          *,
+          venues!inner (
+            business_name,
+            venue_owner_id
+          )
+        `)
         .eq('is_approved', true)
+        .eq('venues.venue_owner_id', venueOwnerId)
         .order('created_at', { ascending: false });
 
       if (reviewsError) {
@@ -50,7 +53,7 @@ export const useVenueReviews = (venueId: string) => {
         return;
       }
 
-      // Get the profiles for users who left reviews
+      // Get user profiles for reviewers
       const userIds = reviewsData
         ?.filter(review => review.user_id)
         .map(review => review.user_id) || [];
@@ -67,22 +70,23 @@ export const useVenueReviews = (venueId: string) => {
         }
       }
 
-      // Get replies for these reviews
+      // Get existing replies for these reviews
       const reviewIds = reviewsData?.map(review => review.id) || [];
       let repliesData: any[] = [];
       if (reviewIds.length > 0) {
         const { data: replies, error: repliesError } = await supabase
           .from('review_replies')
           .select('*')
-          .in('review_id', reviewIds);
+          .in('review_id', reviewIds)
+          .eq('venue_owner_id', venueOwnerId);
 
         if (!repliesError) {
           repliesData = replies || [];
         }
       }
 
-      // Combine reviews with profile data and replies
-      const reviewsWithProfiles = reviewsData?.map(review => ({
+      // Combine all data
+      const reviewsWithData = reviewsData?.map(review => ({
         ...review,
         profiles: review.user_id 
           ? profilesData.find(profile => profile.id === review.user_id) || { full_name: null }
@@ -90,7 +94,7 @@ export const useVenueReviews = (venueId: string) => {
         review_replies: repliesData.find(reply => reply.review_id === review.id) || null
       })) || [];
 
-      setReviews(reviewsWithProfiles);
+      setReviews(reviewsWithData);
       setError(null);
     } catch (err) {
       console.error('Unexpected error fetching reviews:', err);
@@ -100,50 +104,45 @@ export const useVenueReviews = (venueId: string) => {
     }
   };
 
-  const submitReview = async (rating: number, reviewText: string) => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to submit a review",
-        variant: "destructive",
-      });
-      return false;
-    }
-
+  const submitReply = async (reviewId: string, replyText: string) => {
     try {
+      // Set the venue owner ID in the session context for RLS
+      await supabase.rpc('set_config', {
+        setting_name: 'app.current_venue_owner_id',
+        setting_value: venueOwnerId
+      });
+
       const { error: insertError } = await supabase
-        .from('venue_reviews')
+        .from('review_replies')
         .insert({
-          venue_id: venueId,
-          user_id: user.id,
-          rating,
-          review_text: reviewText.trim() || null,
-          is_approved: false, // Reviews need admin approval
+          review_id: reviewId,
+          venue_owner_id: venueOwnerId,
+          reply_text: replyText.trim(),
         });
 
       if (insertError) {
-        console.error('Error submitting review:', insertError);
+        console.error('Error submitting reply:', insertError);
         toast({
           title: "Error",
-          description: "Failed to submit review. Please try again.",
+          description: "Failed to submit reply. Please try again.",
           variant: "destructive",
         });
         return false;
       }
 
       toast({
-        title: "Review Submitted",
-        description: "Thank you for your feedback! Your review is pending approval.",
+        title: "Reply Submitted",
+        description: "Your reply has been posted successfully.",
       });
 
       // Refresh reviews
       await fetchReviews();
       return true;
     } catch (err) {
-      console.error('Unexpected error submitting review:', err);
+      console.error('Unexpected error submitting reply:', err);
       toast({
         title: "Error",
-        description: "Failed to submit review. Please try again.",
+        description: "Failed to submit reply. Please try again.",
         variant: "destructive",
       });
       return false;
@@ -151,16 +150,16 @@ export const useVenueReviews = (venueId: string) => {
   };
 
   useEffect(() => {
-    if (venueId) {
+    if (venueOwnerId) {
       fetchReviews();
     }
-  }, [venueId]);
+  }, [venueOwnerId]);
 
   return {
     reviews,
     isLoading,
     error,
-    submitReview,
+    submitReply,
     refetch: fetchReviews,
   };
 };

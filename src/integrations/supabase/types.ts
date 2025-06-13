@@ -30,6 +30,48 @@ export type Database = {
         }
         Relationships: []
       }
+      review_replies: {
+        Row: {
+          created_at: string
+          id: string
+          reply_text: string
+          review_id: string
+          updated_at: string
+          venue_owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reply_text: string
+          review_id: string
+          updated_at?: string
+          venue_owner_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reply_text?: string
+          review_id?: string
+          updated_at?: string
+          venue_owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_replies_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "venue_reviews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_replies_venue_owner_id_fkey"
+            columns: ["venue_owner_id"]
+            isOneToOne: false
+            referencedRelation: "venue_owners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
