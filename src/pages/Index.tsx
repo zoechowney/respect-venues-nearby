@@ -1,14 +1,24 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Users, QrCode } from 'lucide-react';
+import { MapPin, Users, QrCode, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import UserMenu from '@/components/UserMenu';
 import ContactModal from '@/components/ContactModal';
 
 const Index = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  const NavigationLinks = () => (
+    <>
+      <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
+      <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
+      <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
+      <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -21,17 +31,28 @@ const Index = () => {
               <span className="text-xl font-bold text-brand-navy">Rest with Respect</span>
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
-              <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
-              <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
-              <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
+              <NavigationLinks />
             </div>
             <div className="flex items-center space-x-4">
               <div className="hidden md:block">
                 <UserMenu />
               </div>
               <div className="md:hidden">
-                <Button variant="ghost" size="sm" className="text-brand-navy">Menu</Button>
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-brand-navy">
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                    <div className="flex flex-col space-y-4 mt-8">
+                      <NavigationLinks />
+                      <div className="pt-4 border-t">
+                        <UserMenu />
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
               </div>
             </div>
           </div>
@@ -111,7 +132,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Mission Statement */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-trans-blue/10 to-trans-pink/10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-brand-navy mb-6">Our Mission</h2>
@@ -123,7 +143,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-brand-navy text-trans-white py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
