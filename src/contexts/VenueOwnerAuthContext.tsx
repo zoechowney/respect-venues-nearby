@@ -49,6 +49,8 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
 
   const signIn = async (email: string, password: string): Promise<{ error?: string }> => {
     try {
+      console.log('🔍 Attempting to sign in venue owner with email:', email);
+      
       const { data: owner, error } = await supabase
         .from('venue_owners')
         .select('id, email, password_hash, business_name, contact_name, is_active')
@@ -56,12 +58,19 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
         .eq('is_active', true)
         .single();
 
+      console.log('🏢 Venue owner query result:', { owner, error });
+
       if (error || !owner) {
+        console.error('❌ Venue owner not found or query error:', error);
         return { error: 'Invalid email or password' };
       }
 
+      console.log('🔐 Comparing password with hash...');
       const passwordMatch = await bcrypt.compare(password, owner.password_hash);
+      console.log('✅ Password match result:', passwordMatch);
+
       if (!passwordMatch) {
+        console.error('❌ Password does not match');
         return { error: 'Invalid email or password' };
       }
 
@@ -73,12 +82,13 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
         is_active: owner.is_active
       };
 
+      console.log('✅ Sign in successful, setting venue owner data:', ownerData);
       setVenueOwner(ownerData);
       localStorage.setItem('venue_owner_session', JSON.stringify(ownerData));
 
       return {};
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('💥 Sign in error:', error);
       return { error: 'An unexpected error occurred' };
     }
   };
