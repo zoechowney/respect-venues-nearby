@@ -158,8 +158,31 @@ const Map = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Interactive Map */}
-          <InteractiveMap onVenueSelect={handleVenueSelect} />
+          {/* Interactive Map - Now receives filtered venues */}
+          <InteractiveMap 
+            venues={filteredVenues.map(venue => ({
+              id: parseInt(venue.id.split('-')[0], 16),
+              name: venue.name,
+              type: venue.type,
+              address: venue.address,
+              rating: venue.rating,
+              openNow: venue.openNow,
+              features: venue.features,
+              coordinates: [
+                venue.address.toLowerCase().includes('godalming') || venue.address.toLowerCase().includes('surrey') 
+                  ? -0.6149 + (Math.random() - 0.5) * 0.02
+                  : venue.address.toLowerCase().includes('guildford')
+                  ? -0.5704 + (Math.random() - 0.5) * 0.02
+                  : -0.6149 + (Math.random() - 0.5) * 0.02,
+                venue.address.toLowerCase().includes('godalming') || venue.address.toLowerCase().includes('surrey')
+                  ? 51.1858 + (Math.random() - 0.5) * 0.02
+                  : venue.address.toLowerCase().includes('guildford')
+                  ? 51.2362 + (Math.random() - 0.5) * 0.02
+                  : 51.1858 + (Math.random() - 0.5) * 0.02
+              ] as [number, number]
+            }))}
+            onVenueSelect={handleVenueSelect} 
+          />
 
           {/* Venue List */}
           <div className="space-y-4">

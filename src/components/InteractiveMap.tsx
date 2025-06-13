@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
-import { useVenueData } from '@/hooks/useVenueData';
 import MapContainer from '@/components/map/MapContainer';
 
 interface InteractiveMapProps {
@@ -11,10 +10,9 @@ interface InteractiveMapProps {
 }
 
 const InteractiveMap: React.FC<InteractiveMapProps> = ({ 
-  venues, 
+  venues = [], 
   onVenueSelect 
 }) => {
-  const venueData = useVenueData(venues);
   const { mapboxgl, isLoading: mapboxLoading, error: mapboxError } = useMapbox();
   
   // Hardcoded Mapbox token
@@ -48,7 +46,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     <MapContainer
       mapboxgl={mapboxgl}
       mapboxToken={mapboxToken}
-      venues={venueData}
+      venues={venues}
       onVenueSelect={onVenueSelect}
       isLoading={isLoading}
       setIsLoading={setIsLoading}
