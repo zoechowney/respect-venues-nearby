@@ -88,8 +88,8 @@ const Directory = () => {
             <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
             <TabsTrigger value="shop">Shops / retail</TabsTrigger>
             <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
-            <TabsTrigger value="office">Office / workplace</TabsTrigger>
             <TabsTrigger value="cinema">Cinema / theatre</TabsTrigger>
+            <TabsTrigger value="office">Office / workplace</TabsTrigger>
             <TabsTrigger value="other">Other</TabsTrigger>
           </TabsList>
         </Tabs>
