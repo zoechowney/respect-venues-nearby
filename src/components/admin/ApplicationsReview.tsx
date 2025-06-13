@@ -4,8 +4,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, ExternalLink, Upload } from 'lucide-react';
 import { format } from 'date-fns';
+import { useVenues } from '@/hooks/useVenues';
 
 interface VenueApplication {
   id: string;
@@ -24,6 +25,7 @@ interface VenueApplication {
 
 const ApplicationsReview = () => {
   const { toast } = useToast();
+  const { publishVenue } = useVenues();
   const [applications, setApplications] = useState<VenueApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -94,10 +96,42 @@ const ApplicationsReview = () => {
     }
   };
 
+  const handlePublishVenue = async (applicationId: string) => {
+    setProcessingId(applicationId);
+    try {
+      const result = await publishVenue(applicationId);
+      
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Venue published successfully and is now live!",
+        });
+        fetchApplications(); // Refresh the list
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to publish venue",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error publishing venue:', error);
+      toast({
+        title: "Error",
+        description: "Failed to publish venue",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
         return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
+      case 'published':
+        return <Badge className="bg-blue-100 text-blue-800">Published</Badge>;
       case 'rejected':
         return <Badge className="bg-red-100 text-red-800">Rejected</Badge>;
       default:
@@ -114,15 +148,18 @@ const ApplicationsReview = () => {
   }
 
   const pendingApplications = applications.filter(app => app.status === 'pending');
-  const processedApplications = applications.filter(app => app.status !== 'pending');
+  const approvedApplications = applications.filter(app => app.status === 'approved');
+  const publishedApplications = applications.filter(app => app.status === 'published');
+  const rejectedApplications = applications.filter(app => app.status === 'rejected');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Pending Applications */}
       {pendingApplications.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold text-brand-navy mb-4 flex items-center">
             <Clock className="w-5 h-5 mr-2" />
-            Pending Applications ({pendingApplications.length})
+            Pending Review ({pendingApplications.length})
           </h2>
           <div className="grid gap-4">
             {pendingApplications.map((application) => (
@@ -202,13 +239,49 @@ const ApplicationsReview = () => {
         </div>
       )}
 
-      {processedApplications.length > 0 && (
+      {/* Approved Applications - Ready to Publish */}
+      {approvedApplications.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold text-brand-navy mb-4">
-            Recent Decisions ({processedApplications.length})
+          <h2 className="text-xl font-semibold text-brand-navy mb-4 flex items-center">
+            <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
+            Ready to Publish ({approvedApplications.length})
           </h2>
           <div className="grid gap-4">
-            {processedApplications.slice(0, 10).map((application) => (
+            {approvedApplications.map((application) => (
+              <Card key={application.id} className="border-green-200 bg-green-50/30">
+                <CardContent className="pt-6">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-brand-navy text-lg">{application.business_name}</h3>
+                      <p className="text-sm text-brand-navy/70">{application.business_type} • {application.address}</p>
+                      <div className="mt-2">
+                        {getStatusBadge(application.status)}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handlePublishVenue(application.id)}
+                      disabled={processingId === application.id}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      Publish Live
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Decisions */}
+      {(publishedApplications.length > 0 || rejectedApplications.length > 0) && (
+        <div>
+          <h2 className="text-xl font-semibold text-brand-navy mb-4">
+            Recent Decisions ({publishedApplications.length + rejectedApplications.length})
+          </h2>
+          <div className="grid gap-4">
+            {[...publishedApplications, ...rejectedApplications].slice(0, 10).map((application) => (
               <Card key={application.id} className="border-trans-blue/20">
                 <CardContent className="pt-4">
                   <div className="flex justify-between items-center">

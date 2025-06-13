@@ -26,14 +26,13 @@ export const useApprovedVenues = () => {
   useEffect(() => {
     const fetchApprovedVenues = async () => {
       try {
-        console.log('🏢 Starting venue fetch...');
+        console.log('🏢 Starting venue fetch from venues table...');
         
-        // Create a completely isolated query that only touches venue_applications
         const { data, error: fetchError } = await supabase
-          .from('venue_applications')
-          .select('id, business_name, business_type, address, phone, website, description, status')
-          .eq('status', 'approved')
-          .limit(100);
+          .from('venues')
+          .select('*')
+          .eq('is_active', true)
+          .order('published_at', { ascending: false });
 
         console.log('🔍 Query completed. Data:', data, 'Error:', fetchError);
 
@@ -52,28 +51,28 @@ export const useApprovedVenues = () => {
 
         console.log('✅ Raw venue data received:', data.length, 'records');
 
-        // Transform database records to venue format
-        const transformedVenues: ApprovedVenue[] = data.map((application) => ({
-          id: application.id,
-          name: application.business_name,
-          type: application.business_type,
-          address: application.address,
-          phone: application.phone || undefined,
-          website: application.website || undefined,
-          description: application.description || `A welcoming ${application.business_type.toLowerCase()} that supports the transgender community.`,
-          rating: 4.8,
-          reviews: Math.floor(Math.random() * 50) + 10,
-          features: [
+        // Transform venues data to match the expected interface
+        const transformedVenues: ApprovedVenue[] = data.map((venue) => ({
+          id: venue.id,
+          name: venue.business_name,
+          type: venue.business_type,
+          address: venue.address,
+          phone: venue.phone || undefined,
+          website: venue.website || undefined,
+          description: venue.description || `A welcoming ${venue.business_type.toLowerCase()} that supports the transgender community.`,
+          rating: venue.rating || 4.8,
+          reviews: venue.reviews_count || Math.floor(Math.random() * 50) + 10,
+          features: venue.features || [
             'Transgender Friendly',
             'Staff Trained',
             'Safe Space',
-            application.business_type === 'restaurant' ? 'All-Gender Facilities' : 'Accessible'
+            venue.business_type === 'restaurant' ? 'All-Gender Facilities' : 'Accessible'
           ],
-          hours: application.business_type === 'pub' 
+          hours: venue.hours || (venue.business_type === 'pub' 
             ? 'Mon-Sun: 12:00 PM - 11:00 PM'
-            : application.business_type === 'restaurant'
+            : venue.business_type === 'restaurant'
             ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
-            : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM',
+            : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'),
           openNow: Math.random() > 0.3,
           distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`
         }));

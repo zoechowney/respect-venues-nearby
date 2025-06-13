@@ -105,6 +105,80 @@ export type Database = {
         }
         Relationships: []
       }
+      venues: {
+        Row: {
+          address: string
+          business_name: string
+          business_type: string
+          contact_name: string
+          created_at: string
+          created_from_application_id: string | null
+          description: string | null
+          email: string
+          features: string[] | null
+          hours: string | null
+          id: string
+          is_active: boolean | null
+          phone: string | null
+          published_at: string
+          rating: number | null
+          reviews_count: number | null
+          sign_style: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          business_name: string
+          business_type: string
+          contact_name: string
+          created_at?: string
+          created_from_application_id?: string | null
+          description?: string | null
+          email: string
+          features?: string[] | null
+          hours?: string | null
+          id?: string
+          is_active?: boolean | null
+          phone?: string | null
+          published_at?: string
+          rating?: number | null
+          reviews_count?: number | null
+          sign_style?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          business_name?: string
+          business_type?: string
+          contact_name?: string
+          created_at?: string
+          created_from_application_id?: string | null
+          description?: string | null
+          email?: string
+          features?: string[] | null
+          hours?: string | null
+          id?: string
+          is_active?: boolean | null
+          phone?: string | null
+          published_at?: string
+          rating?: number | null
+          reviews_count?: number | null
+          sign_style?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venues_created_from_application_id_fkey"
+            columns: ["created_from_application_id"]
+            isOneToOne: false
+            referencedRelation: "venue_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
