@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin, Star, ExternalLink, Map, Menu } from 'lucide-react';
+import { Search, MapPin, Star, ExternalLink, Map, Menu, Eye } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,12 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ContactModal from '@/components/ContactModal';
-import { useApprovedVenues } from '@/hooks/useApprovedVenues';
+import VenueDetailModal from '@/components/VenueDetailModal';
+import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
 
 const Directory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('all');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [selectedVenue, setSelectedVenue] = useState<ApprovedVenue | null>(null);
+  const [isVenueDetailOpen, setIsVenueDetailOpen] = useState(false);
   const navigate = useNavigate();
   
   const { venues, isLoading, error } = useApprovedVenues();
@@ -40,6 +43,11 @@ const Directory = () => {
   const handleShowOnMap = (venue: any) => {
     // Navigate to map page - in the future this could include venue-specific parameters
     navigate('/map');
+  };
+
+  const handleViewDetails = (venue: ApprovedVenue) => {
+    setSelectedVenue(venue);
+    setIsVenueDetailOpen(true);
   };
 
   const categoryOptions = [
@@ -202,11 +210,20 @@ const Directory = () => {
                     </div>
                   )}
 
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t space-y-2">
                     <Button 
                       size="sm" 
+                      onClick={() => handleViewDetails(venue)}
+                      className="w-full bg-trans-pink hover:bg-trans-pink/90 text-brand-navy"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Details & Reviews
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
                       onClick={() => handleShowOnMap(venue)}
-                      className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
+                      className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10"
                     >
                       <Map className="w-4 h-4 mr-2" />
                       Show on Map
@@ -233,6 +250,12 @@ const Directory = () => {
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 
+      />
+
+      <VenueDetailModal
+        venue={selectedVenue}
+        isOpen={isVenueDetailOpen}
+        onClose={() => setIsVenueDetailOpen(false)}
       />
     </div>
   );

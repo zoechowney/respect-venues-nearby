@@ -1,13 +1,17 @@
+
 import React, { useState } from 'react';
 import { MapPin, Star, Clock, Phone, Globe, Download } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ContactModal from '@/components/ContactModal';
+import VenueReviews from '@/components/VenueReviews';
+import ReviewForm from '@/components/ReviewForm';
+import { useVenueReviews } from '@/hooks/useVenueReviews';
 
 // This would typically get venue data from URL params or API
 const mockVenue = {
-  id: 1,
+  id: "mock-venue-1",
   name: "The Rainbow Pub",
   type: "Pub",
   address: "123 High Street, London, SW1A 1AA",
@@ -31,6 +35,8 @@ const mockVenue = {
 
 const QRLanding = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const { businessName } = useParams();
+  const { submitReview } = useVenueReviews(mockVenue.id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
@@ -104,6 +110,12 @@ const QRLanding = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Reviews Section */}
+            <div className="space-y-6">
+              <ReviewForm venueId={mockVenue.id} onSubmitReview={submitReview} />
+              <VenueReviews venueId={mockVenue.id} />
+            </div>
 
             {/* Download App CTA */}
             <Card className="bg-gradient-to-r from-trans-blue to-trans-pink text-brand-navy border-0">

@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, Filter, Heart, Star, MapPin, ExternalLink, Menu } from 'lucide-react';
+import { Search, Filter, Heart, Star, MapPin, ExternalLink, Menu, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,13 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import InteractiveMap from '@/components/InteractiveMap';
 import ContactModal from '@/components/ContactModal';
-import { useApprovedVenues } from '@/hooks/useApprovedVenues';
+import VenueDetailModal from '@/components/VenueDetailModal';
+import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
 
 const Map = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
-  const [selectedVenue, setSelectedVenue] = useState(null);
+  const [selectedVenue, setSelectedVenue] = useState<ApprovedVenue | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isVenueDetailOpen, setIsVenueDetailOpen] = useState(false);
   
   const { venues, isLoading, error } = useApprovedVenues();
 
@@ -29,6 +30,11 @@ const Map = () => {
   const handleVenueSelect = (venue: any) => {
     setSelectedVenue(venue);
     console.log('Selected venue:', venue);
+  };
+
+  const handleViewDetails = (venue: ApprovedVenue) => {
+    setSelectedVenue(venue);
+    setIsVenueDetailOpen(true);
   };
 
   const NavigationLinks = () => (
@@ -175,6 +181,17 @@ const Map = () => {
                     </div>
                   )}
 
+                  <div className="pt-2 border-t">
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleViewDetails(venue)}
+                      className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Details & Reviews
+                    </Button>
+                  </div>
+
                   {venue.distance && (
                     <div className="pt-2">
                       <span className="text-xs text-brand-navy/60">{venue.distance}</span>
@@ -201,6 +218,12 @@ const Map = () => {
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={() => setIsContactModalOpen(false)} 
+      />
+
+      <VenueDetailModal
+        venue={selectedVenue}
+        isOpen={isVenueDetailOpen}
+        onClose={() => setIsVenueDetailOpen(false)}
       />
     </div>
   );
