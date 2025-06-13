@@ -106,12 +106,6 @@ export const useVenueOwnerReviews = (venueOwnerId: string) => {
 
   const submitReply = async (reviewId: string, replyText: string) => {
     try {
-      // Set the venue owner ID in the session context for RLS
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_venue_owner_id',
-        setting_value: venueOwnerId
-      });
-
       const { error: insertError } = await supabase
         .from('review_replies')
         .insert({
