@@ -67,6 +67,7 @@ export type Database = {
           sign_style: string | null
           status: string
           updated_at: string
+          venue_owner_id: string | null
           website: string | null
         }
         Insert: {
@@ -84,6 +85,7 @@ export type Database = {
           sign_style?: string | null
           status?: string
           updated_at?: string
+          venue_owner_id?: string | null
           website?: string | null
         }
         Update: {
@@ -101,9 +103,123 @@ export type Database = {
           sign_style?: string | null
           status?: string
           updated_at?: string
+          venue_owner_id?: string | null
           website?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "venue_applications_venue_owner_id_fkey"
+            columns: ["venue_owner_id"]
+            isOneToOne: false
+            referencedRelation: "venue_owners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      venue_owners: {
+        Row: {
+          business_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean | null
+          password_hash: string
+          updated_at: string
+        }
+        Insert: {
+          business_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean | null
+          password_hash: string
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean | null
+          password_hash?: string
+          updated_at?: string
+        }
         Relationships: []
+      }
+      venue_pending_changes: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          business_type: string | null
+          contact_name: string | null
+          description: string | null
+          email: string | null
+          id: string
+          phone: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sign_style: string | null
+          status: string | null
+          submitted_at: string
+          venue_id: string
+          venue_owner_id: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          contact_name?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sign_style?: string | null
+          status?: string | null
+          submitted_at?: string
+          venue_id: string
+          venue_owner_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          contact_name?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sign_style?: string | null
+          status?: string | null
+          submitted_at?: string
+          venue_id?: string
+          venue_owner_id?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "venue_pending_changes_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "venues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venue_pending_changes_venue_owner_id_fkey"
+            columns: ["venue_owner_id"]
+            isOneToOne: false
+            referencedRelation: "venue_owners"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       venues: {
         Row: {
@@ -125,6 +241,7 @@ export type Database = {
           reviews_count: number | null
           sign_style: string | null
           updated_at: string
+          venue_owner_id: string | null
           website: string | null
         }
         Insert: {
@@ -146,6 +263,7 @@ export type Database = {
           reviews_count?: number | null
           sign_style?: string | null
           updated_at?: string
+          venue_owner_id?: string | null
           website?: string | null
         }
         Update: {
@@ -167,6 +285,7 @@ export type Database = {
           reviews_count?: number | null
           sign_style?: string | null
           updated_at?: string
+          venue_owner_id?: string | null
           website?: string | null
         }
         Relationships: [
@@ -175,6 +294,13 @@ export type Database = {
             columns: ["created_from_application_id"]
             isOneToOne: false
             referencedRelation: "venue_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "venues_venue_owner_id_fkey"
+            columns: ["venue_owner_id"]
+            isOneToOne: false
+            referencedRelation: "venue_owners"
             referencedColumns: ["id"]
           },
         ]

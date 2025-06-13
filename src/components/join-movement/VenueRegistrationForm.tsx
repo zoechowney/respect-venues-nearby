@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Mail } from 'lucide-react';
+import { Mail, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import bcrypt from 'bcryptjs';
 
 interface FormData {
   businessName: string;
@@ -20,6 +21,8 @@ interface FormData {
   website: string;
   description: string;
   signStyle: string;
+  password: string;
+  confirmPassword: string;
   agreeToTerms: boolean;
   agreeToTraining: boolean;
 }
@@ -27,6 +30,8 @@ interface FormData {
 const VenueRegistrationForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     businessName: '',
     businessType: '',
@@ -37,6 +42,8 @@ const VenueRegistrationForm = () => {
     website: '',
     description: '',
     signStyle: '',
+    password: '',
+    confirmPassword: '',
     agreeToTerms: false,
     agreeToTraining: false
   });
@@ -45,8 +52,56 @@ const VenueRegistrationForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate password strength
+    if (formData.password.length < 8) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 8 characters long.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const { error } = await supabase
+      // Create venue owner account first
+      const passwordHash = await bcrypt.hash(formData.password, 10);
+      
+      const { data: venueOwner, error: ownerError } = await supabase
+        .from('venue_owners')
+        .insert({
+          email: formData.email,
+          password_hash: passwordHash,
+          business_name: formData.businessName,
+          contact_name: formData.contactName
+        })
+        .select()
+        .single();
+
+      if (ownerError) {
+        console.error('Error creating venue owner:', ownerError);
+        toast({
+          title: "Error",
+          description: "Failed to create venue owner account. Email may already be in use.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Create venue application with venue owner reference
+      const { error: applicationError } = await supabase
         .from('venue_applications')
         .insert({
           business_name: formData.businessName,
@@ -59,11 +114,12 @@ const VenueRegistrationForm = () => {
           description: formData.description || null,
           sign_style: formData.signStyle || null,
           agree_to_terms: formData.agreeToTerms,
-          agree_to_training: formData.agreeToTraining
+          agree_to_training: formData.agreeToTraining,
+          venue_owner_id: venueOwner.id
         });
 
-      if (error) {
-        console.error('Error submitting application:', error);
+      if (applicationError) {
+        console.error('Error submitting application:', applicationError);
         toast({
           title: "Error",
           description: "Failed to submit your application. Please try again.",
@@ -72,7 +128,7 @@ const VenueRegistrationForm = () => {
       } else {
         toast({
           title: "Application Submitted!",
-          description: "Thank you for joining the movement. We'll review your application and get back to you soon.",
+          description: "Thank you for joining the movement. We'll review your application and get back to you soon. You can use your email and password to check the status.",
         });
         
         // Reset form
@@ -86,6 +142,8 @@ const VenueRegistrationForm = () => {
           website: '',
           description: '',
           signStyle: '',
+          password: '',
+          confirmPassword: '',
           agreeToTerms: false,
           agreeToTraining: false
         });
@@ -106,7 +164,7 @@ const VenueRegistrationForm = () => {
     <Card className="border-trans-blue/20">
       <CardHeader>
         <CardTitle className="text-brand-navy">Business Registration</CardTitle>
-        <p className="text-sm text-brand-navy/70">Fill out the form below to join our network</p>
+        <p className="text-sm text-brand-navy/70">Fill out the form below to join our network and create your venue owner account</p>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -253,6 +311,61 @@ const VenueRegistrationForm = () => {
             </Select>
           </div>
 
+          <div className="border-t pt-6">
+            <h3 className="text-lg font-medium text-brand-navy mb-4">Create Your Venue Owner Account</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-brand-navy mb-1">
+                  Password *
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                    placeholder="Create a password (min 8 characters)"
+                    required
+                    disabled={isSubmitting}
+                    minLength={8}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-brand-navy mb-1">
+                  Confirm Password *
+                </label>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                    placeholder="Confirm your password"
+                    required
+                    disabled={isSubmitting}
+                    minLength={8}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-brand-navy/60 mt-2">
+              You'll use this email and password to log in and manage your venue information after approval.
+            </p>
+          </div>
+
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
               <Checkbox
@@ -282,10 +395,10 @@ const VenueRegistrationForm = () => {
             type="submit" 
             className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy" 
             size="lg"
-            disabled={!formData.agreeToTerms || !formData.agreeToTraining || isSubmitting}
+            disabled={!formData.agreeToTerms || !formData.agreeToTraining || !formData.password || !formData.confirmPassword || isSubmitting}
           >
             <Mail className="w-5 h-5 mr-2" />
-            {isSubmitting ? 'Submitting...' : 'Submit Application'}
+            {isSubmitting ? 'Submitting...' : 'Submit Application & Create Account'}
           </Button>
         </form>
       </CardContent>

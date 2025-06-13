@@ -1,0 +1,286 @@
+
+import React, { useState, useEffect } from 'react';
+import { Navigate, Link } from 'react-router-dom';
+import { LogOut, Edit, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useVenueOwnerAuth } from '@/contexts/VenueOwnerAuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import VenueUpdateForm from '@/components/venue-owner/VenueUpdateForm';
+
+const VenueOwnerDashboard = () => {
+  const { venueOwner, signOut, loading } = useVenueOwnerAuth();
+  const { toast } = useToast();
+  const [venues, setVenues] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [pendingChanges, setPendingChanges] = useState<any[]>([]);
+  const [selectedVenue, setSelectedVenue] = useState<any>(null);
+  const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Redirect if not signed in
+  if (!venueOwner && !loading) {
+    return <Navigate to="/venue-owner/auth" replace />;
+  }
+
+  useEffect(() => {
+    if (venueOwner?.id) {
+      fetchVenueData();
+    }
+  }, [venueOwner?.id]);
+
+  const fetchVenueData = async () => {
+    if (!venueOwner?.id) return;
+
+    try {
+      // Fetch venue applications
+      const { data: appsData, error: appsError } = await supabase
+        .from('venue_applications')
+        .select('*')
+        .eq('venue_owner_id', venueOwner.id)
+        .order('created_at', { ascending: false });
+
+      if (appsError) throw appsError;
+      setApplications(appsData || []);
+
+      // Fetch live venues
+      const { data: venuesData, error: venuesError } = await supabase
+        .from('venues')
+        .select('*')
+        .eq('venue_owner_id', venueOwner.id)
+        .order('published_at', { ascending: false });
+
+      if (venuesError) throw venuesError;
+      setVenues(venuesData || []);
+
+      // Fetch pending changes
+      const { data: changesData, error: changesError } = await supabase
+        .from('venue_pending_changes')
+        .select('*')
+        .eq('venue_owner_id', venueOwner.id)
+        .order('submitted_at', { ascending: false });
+
+      if (changesError) throw changesError;
+      setPendingChanges(changesData || []);
+
+    } catch (error) {
+      console.error('Error fetching venue data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load your venue data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateVenue = (venue: any) => {
+    setSelectedVenue(venue);
+    setIsUpdateFormOpen(true);
+  };
+
+  const handleUpdateSubmitted = () => {
+    setIsUpdateFormOpen(false);
+    setSelectedVenue(null);
+    fetchVenueData();
+    toast({
+      title: "Update Submitted",
+      description: "Your venue update has been submitted for admin approval. Your venue will be temporarily deactivated until approved.",
+    });
+  };
+
+  if (loading || isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10 flex items-center justify-center">
+        <div className="text-brand-navy">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10">
+      {/* Navigation */}
+      <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center space-x-3">
+              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-10 w-auto" />
+              <span className="text-xl font-bold text-brand-navy">Venue Owner Dashboard</span>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-brand-navy">
+                Welcome, {venueOwner?.contact_name}
+              </span>
+              <Button
+                onClick={signOut}
+                variant="outline"
+                size="sm"
+                className="text-brand-navy border-brand-navy/20"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-brand-navy mb-2">Venue Management Dashboard</h1>
+          <p className="text-brand-navy/70">Manage your venue information and track application status</p>
+        </div>
+
+        {/* Applications Status */}
+        {applications.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semib text-brand-navy mb-4">Application Status</h2>
+            <div className="grid gap-4">
+              {applications.map((app) => (
+                <Card key={app.id} className="border-trans-blue/20">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg text-brand-navy">{app.business_name}</CardTitle>
+                        <p className="text-sm text-brand-navy/70">{app.business_type}</p>
+                      </div>
+                      <Badge variant={
+                        app.status === 'published' ? 'default' :
+                        app.status === 'approved' ? 'secondary' :
+                        app.status === 'rejected' ? 'destructive' : 'outline'
+                      }>
+                        {app.status === 'published' ? 'Live' : 
+                         app.status === 'approved' ? 'Approved - Publishing Soon' :
+                         app.status === 'rejected' ? 'Rejected' : 'Under Review'}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-brand-navy/70">
+                      Applied: {new Date(app.created_at).toLocaleDateString()}
+                    </p>
+                    {app.status === 'approved' && (
+                      <p className="text-sm text-trans-blue mt-2">
+                        Your application has been approved! It will be published to the live directory soon.
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Live Venues */}
+        {venues.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-brand-navy mb-4">Your Live Venues</h2>
+            <div className="grid gap-4">
+              {venues.map((venue) => (
+                <Card key={venue.id} className={`border-trans-blue/20 ${!venue.is_active ? 'opacity-60' : ''}`}>
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg text-brand-navy">{venue.business_name}</CardTitle>
+                        <p className="text-sm text-brand-navy/70">{venue.business_type} • {venue.address}</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant={venue.is_active ? "default" : "secondary"}>
+                          {venue.is_active ? 'Active' : 'Inactive'}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          onClick={() => handleUpdateVenue(venue)}
+                          className="bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Update
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm text-brand-navy/70">
+                      <span>Published: {new Date(venue.published_at).toLocaleDateString()}</span>
+                      <span>Rating: {venue.rating}/5 • {venue.reviews_count} reviews</span>
+                    </div>
+                    {!venue.is_active && (
+                      <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                        <div className="flex items-center text-sm text-yellow-800">
+                          <AlertTriangle className="w-4 h-4 mr-2" />
+                          This venue is temporarily inactive pending admin approval of recent changes.
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Pending Changes */}
+        {pendingChanges.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-brand-navy mb-4">Pending Updates</h2>
+            <div className="grid gap-4">
+              {pendingChanges.map((change) => (
+                <Card key={change.id} className="border-orange-200 bg-orange-50/30">
+                  <CardHeader>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-lg text-brand-navy">{change.business_name}</CardTitle>
+                        <p className="text-sm text-brand-navy/70">Update submitted for review</p>
+                      </div>
+                      <Badge variant="outline" className="border-orange-500 text-orange-700">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {change.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-brand-navy/70">
+                      Submitted: {new Date(change.submitted_at).toLocaleDateString()}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {applications.length === 0 && venues.length === 0 && (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-medium text-brand-navy mb-4">No venues found</h3>
+            <p className="text-brand-navy/70 mb-6">
+              You haven't registered any venues yet. Get started by adding your first venue.
+            </p>
+            <Link to="/join">
+              <Button className="bg-trans-blue hover:bg-trans-blue/90 text-brand-navy">
+                Register Your Venue
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Update Form Modal */}
+      {selectedVenue && (
+        <VenueUpdateForm
+          venue={selectedVenue}
+          isOpen={isUpdateFormOpen}
+          onClose={() => {
+            setIsUpdateFormOpen(false);
+            setSelectedVenue(null);
+          }}
+          onSubmit={handleUpdateSubmitted}
+        />
+      )}
+    </div>
+  );
+};
+
+export default VenueOwnerDashboard;

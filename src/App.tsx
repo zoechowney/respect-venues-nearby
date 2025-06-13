@@ -5,41 +5,49 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { VenueOwnerAuthProvider } from "@/contexts/VenueOwnerAuthContext";
 import Index from "./pages/Index";
+import JoinMovement from "./pages/JoinMovement";
 import Map from "./pages/Map";
 import Directory from "./pages/Directory";
-import JoinMovement from "./pages/JoinMovement";
 import Resources from "./pages/Resources";
-import QRLanding from "./pages/QRLanding";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import VenueOwnerAuth from "./pages/VenueOwnerAuth";
+import VenueOwnerDashboard from "./pages/VenueOwnerDashboard";
+import QRLanding from "./pages/QRLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/map" element={<Map />} />
-            <Route path="/directory" element={<Directory />} />
-            <Route path="/join" element={<JoinMovement />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/venue/:id" element={<QRLanding />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <VenueOwnerAuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/join" element={<JoinMovement />} />
+                <Route path="/map" element={<Map />} />
+                <Route path="/directory" element={<Directory />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/venue-owner/auth" element={<VenueOwnerAuth />} />
+                <Route path="/venue-owner/dashboard" element={<VenueOwnerDashboard />} />
+                <Route path="/qr/:businessName" element={<QRLanding />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </VenueOwnerAuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

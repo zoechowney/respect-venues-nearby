@@ -20,6 +20,7 @@ export interface Venue {
   is_active: boolean;
   published_at: string;
   created_from_application_id?: string;
+  venue_owner_id?: string;
   created_at: string;
   updated_at: string;
 }
@@ -88,6 +89,7 @@ export const useVenues = () => {
         description: application.description || `A welcoming ${application.business_type.toLowerCase()} that supports the transgender community.`,
         sign_style: application.sign_style,
         created_from_application_id: application.id,
+        venue_owner_id: application.venue_owner_id,
         // Set default hours based on business type
         hours: application.business_type === 'pub' 
           ? 'Mon-Sun: 12:00 PM - 11:00 PM'
