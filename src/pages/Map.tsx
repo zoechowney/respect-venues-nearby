@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, Filter, Heart, Star, MapPin, ExternalLink, Menu, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import InteractiveMap from '@/components/InteractiveMap';
 import ContactModal from '@/components/ContactModal';
@@ -23,7 +25,18 @@ const Map = () => {
   const filteredVenues = venues.filter(venue => {
     const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          venue.address.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedType === 'all' || venue.type.toLowerCase() === selectedType.toLowerCase();
+    
+    let matchesType = false;
+    if (selectedType === 'all') {
+      matchesType = true;
+    } else if (selectedType === 'other') {
+      // "Other" includes any venue type that doesn't match the standard categories
+      const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
+      matchesType = !standardTypes.includes(venue.type.toLowerCase());
+    } else {
+      matchesType = venue.type.toLowerCase() === selectedType.toLowerCase();
+    }
+    
     return matchesSearch && matchesType;
   });
 
@@ -36,6 +49,17 @@ const Map = () => {
     setSelectedVenue(venue);
     setIsVenueDetailOpen(true);
   };
+
+  const categoryOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'pub', label: 'Pubs / bars' },
+    { value: 'restaurant', label: 'Café / restaurants' },
+    { value: 'shop', label: 'Shops / retail' },
+    { value: 'gym', label: 'Gyms / sports' },
+    { value: 'cinema', label: 'Cinema / theatre' },
+    { value: 'office', label: 'Office / workplace' },
+    { value: 'other', label: 'Other' }
+  ];
 
   const NavigationLinks = () => (
     <>
@@ -83,33 +107,54 @@ const Map = () => {
           <p className="text-brand-navy/70">Discover transgender-friendly establishments near you</p>
         </div>
 
-        {/* Search and Filters */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40 w-5 h-5" />
-              <Input
-                type="text"
-                placeholder="Search by name or location..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40 w-5 h-5" />
+            <Input
+              type="text"
+              placeholder="Search by name or location..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 max-w-md"
+            />
           </div>
-          <Select value={selectedType} onValueChange={setSelectedType}>
-            <SelectTrigger className="w-full sm:w-48">
-              <Filter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="pub">Pubs</SelectItem>
-              <SelectItem value="restaurant">Restaurants</SelectItem>
-              <SelectItem value="shop">Shops</SelectItem>
-              <SelectItem value="gym">Gyms</SelectItem>
-            </SelectContent>
-          </Select>
+        </div>
+
+        {/* Category Filters - Tabs on desktop, Select on mobile */}
+        <div className="mb-8">
+          {/* Mobile Select */}
+          <div className="md:hidden">
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-full">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categoryOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop Tabs */}
+          <div className="hidden md:block">
+            <Tabs value={selectedType} onValueChange={setSelectedType}>
+              <TabsList className="grid w-full grid-cols-8 max-w-5xl">
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
+                <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
+                <TabsTrigger value="shop">Shops / retail</TabsTrigger>
+                <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
+                <TabsTrigger value="cinema">Cinema / theatre</TabsTrigger>
+                <TabsTrigger value="office">Office / workplace</TabsTrigger>
+                <TabsTrigger value="other">Other</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
@@ -206,7 +251,7 @@ const Map = () => {
                 <p className="text-brand-navy/60">
                   {venues.length === 0 
                     ? "No approved venues found. Venues will appear here once they are approved by administrators."
-                    : "No venues found matching your search."
+                    : "No venues found matching your search and filters."
                   }
                 </p>
               </div>
