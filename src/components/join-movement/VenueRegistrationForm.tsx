@@ -137,10 +137,10 @@ const VenueRegistrationForm = () => {
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pub">Pub</SelectItem>
-                  <SelectItem value="restaurant">Restaurant/Café</SelectItem>
-                  <SelectItem value="shop">Shop/Retail</SelectItem>
-                  <SelectItem value="gym">Gym/Fitness</SelectItem>
+                  <SelectItem value="pub">Pub / bar</SelectItem>
+                  <SelectItem value="restaurant">Restaurant / café</SelectItem>
+                  <SelectItem value="shop">Shop / retail</SelectItem>
+                  <SelectItem value="gym">Gym / fitness</SelectItem>
                   <SelectItem value="office">Office / workplace</SelectItem>
                   <SelectItem value="cinema">Cinema / theatre</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
