@@ -21,6 +21,22 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log('Edge function called - processing auth hook');
     
+    // For Supabase Auth Hooks, check for proper authorization
+    const authHeader = req.headers.get('authorization');
+    const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
+    
+    console.log('Authorization header present:', !!authHeader);
+    console.log('Hook secret configured:', !!hookSecret);
+    
+    // Supabase Auth Hooks send JWT token in authorization header
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response('Unauthorized - missing authorization header', { 
+        status: 401,
+        headers: corsHeaders 
+      });
+    }
+
     // Get the raw payload first
     const payload = await req.json();
     console.log('Received payload:', JSON.stringify(payload, null, 2));
@@ -28,7 +44,10 @@ const handler = async (req: Request): Promise<Response> => {
     // Validate basic payload structure
     if (!payload.user || !payload.email_data) {
       console.error('Invalid payload structure - missing user or email_data');
-      return new Response('Invalid payload structure', { status: 400 });
+      return new Response('Invalid payload structure', { 
+        status: 400,
+        headers: corsHeaders 
+      });
     }
 
     // Extract user and email data from the webhook payload
@@ -42,7 +61,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!user.email) {
       console.error('No email address in user object');
-      return new Response('No email address provided', { status: 400 });
+      return new Response('No email address provided', { 
+        status: 400,
+        headers: corsHeaders 
+      });
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
