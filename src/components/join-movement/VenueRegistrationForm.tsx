@@ -141,6 +141,8 @@ const VenueRegistrationForm = () => {
                   <SelectItem value="restaurant">Restaurant/Café</SelectItem>
                   <SelectItem value="shop">Shop/Retail</SelectItem>
                   <SelectItem value="gym">Gym/Fitness</SelectItem>
+                  <SelectItem value="office">Office / workplace</SelectItem>
+                  <SelectItem value="cinema">Cinema / theatre</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
