@@ -90,16 +90,13 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
           console.log(`✅ Marker added to map for ${venue.name}`);
 
-          // Create popup
+          // Create popup without open/closed status
           const popup = new mapboxgl.Popup({ offset: 25 })
             .setHTML(`
               <div class="p-3">
                 <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
                 <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
-                <div class="flex justify-between items-center">
-                  <span class="text-xs ${venue.openNow ? 'text-green-600' : 'text-red-600'}">
-                    ${venue.openNow ? 'Open Now' : 'Closed'}
-                  </span>
+                <div class="flex justify-end">
                   <span class="text-xs font-medium">★ ${venue.rating}</span>
                 </div>
               </div>
