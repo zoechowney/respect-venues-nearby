@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search, MapPin, Star, ExternalLink, Map, Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -5,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ContactModal from '@/components/ContactModal';
 import { useApprovedVenues } from '@/hooks/useApprovedVenues';
@@ -39,6 +41,17 @@ const Directory = () => {
     // Navigate to map page - in the future this could include venue-specific parameters
     navigate('/map');
   };
+
+  const categoryOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'pub', label: 'Pubs / bars' },
+    { value: 'restaurant', label: 'Café / restaurants' },
+    { value: 'shop', label: 'Shops / retail' },
+    { value: 'gym', label: 'Gyms / sports' },
+    { value: 'cinema', label: 'Cinema / theatre' },
+    { value: 'office', label: 'Office / workplace' },
+    { value: 'other', label: 'Other' }
+  ];
 
   const NavigationLinks = () => (
     <>
@@ -100,19 +113,40 @@ const Directory = () => {
           </div>
         </div>
 
-        {/* Category Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-8 max-w-5xl">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
-            <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
-            <TabsTrigger value="shop">Shops / retail</TabsTrigger>
-            <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
-            <TabsTrigger value="cinema">Cinema / theatre</TabsTrigger>
-            <TabsTrigger value="office">Office / workplace</TabsTrigger>
-            <TabsTrigger value="other">Other</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        {/* Category Filters - Tabs on desktop, Select on mobile */}
+        <div className="mb-8">
+          {/* Mobile Select */}
+          <div className="md:hidden">
+            <Select value={selectedTab} onValueChange={setSelectedTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categoryOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop Tabs */}
+          <div className="hidden md:block">
+            <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+              <TabsList className="grid w-full grid-cols-8 max-w-5xl">
+                <TabsTrigger value="all">All</TabsTrigger>
+                <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
+                <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
+                <TabsTrigger value="shop">Shops / retail</TabsTrigger>
+                <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
+                <TabsTrigger value="cinema">Cinema / theatre</TabsTrigger>
+                <TabsTrigger value="office">Office / workplace</TabsTrigger>
+                <TabsTrigger value="other">Other</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
 
         {/* Loading State */}
         {isLoading && (
