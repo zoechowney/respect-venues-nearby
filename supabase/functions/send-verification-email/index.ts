@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from 'npm:resend@4.0.0';
 
@@ -19,13 +18,29 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify the request has the proper authorization
+    const authHeader = req.headers.get('authorization');
+    const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
+    
+    if (!authHeader || !hookSecret) {
+      console.error('Missing authorization header or hook secret');
+      return new Response('Unauthorized', { status: 401 });
+    }
+
+    // Extract the token from Bearer authorization
+    const token = authHeader.replace('Bearer ', '');
+    if (token !== hookSecret) {
+      console.error('Invalid authorization token');
+      return new Response('Unauthorized', { status: 401 });
+    }
+
     const payload = await req.json();
     console.log('Received webhook payload:', JSON.stringify(payload, null, 2));
 
     // Extract user and email data from the webhook payload
     const {
       user,
-      email_data: { token, token_hash, redirect_to, email_action_type }
+      email_data: { token: emailToken, token_hash, redirect_to, email_action_type }
     } = payload;
 
     console.log('Processing email for user:', user.email);
