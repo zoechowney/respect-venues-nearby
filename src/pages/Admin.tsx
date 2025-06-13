@@ -7,11 +7,12 @@ import AdminNavigation from '@/components/admin/AdminNavigation';
 import ApplicationsReview from '@/components/admin/ApplicationsReview';
 import VenuesManagement from '@/components/admin/VenuesManagement';
 import ReviewsManagement from '@/components/admin/ReviewsManagement';
+import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
-  const [activeTab, setActiveTab] = useState('applications');
+  const [activeTab, setActiveTab] = useState('analytics');
 
   // Show loading state while auth and role are being determined
   if (authLoading || roleLoading) {
@@ -60,6 +61,16 @@ const Admin = () => {
         <div className="mb-6">
           <nav className="flex space-x-1 bg-white/50 rounded-lg p-1">
             <button
+              onClick={() => setActiveTab('analytics')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'analytics'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              Analytics
+            </button>
+            <button
               onClick={() => setActiveTab('applications')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'applications'
@@ -92,6 +103,7 @@ const Admin = () => {
           </nav>
         </div>
 
+        {activeTab === 'analytics' && <AnalyticsDashboard />}
         {activeTab === 'applications' && <ApplicationsReview />}
         {activeTab === 'venues' && <VenuesManagement />}
         {activeTab === 'reviews' && <ReviewsManagement />}
