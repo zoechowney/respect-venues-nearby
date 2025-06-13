@@ -21,17 +21,13 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log('Edge function called - processing auth hook');
     
-    // For Supabase Auth Hooks, verify the webhook secret instead of JWT
-    const webhookSecret = req.headers.get('webhook-secret');
-    const expectedSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET');
+    // For Supabase Auth Hooks, the JWT token is sent in the authorization header
+    const authHeader = req.headers.get('authorization');
+    console.log('Authorization header present:', !!authHeader);
     
-    console.log('Webhook secret present:', !!webhookSecret);
-    console.log('Expected secret configured:', !!expectedSecret);
-    
-    // Verify webhook secret if configured
-    if (expectedSecret && webhookSecret !== expectedSecret) {
-      console.error('Invalid webhook secret');
-      return new Response('Unauthorized - invalid webhook secret', { 
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('Missing or invalid authorization header');
+      return new Response('Unauthorized - missing bearer token', { 
         status: 401,
         headers: corsHeaders 
       });
