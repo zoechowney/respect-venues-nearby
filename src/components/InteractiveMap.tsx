@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import { useVenueData } from '@/hooks/useVenueData';
-import MapSetup from '@/components/map/MapSetup';
 import MapContainer from '@/components/map/MapContainer';
 
 interface InteractiveMapProps {
@@ -18,57 +17,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const venueData = useVenueData(venues);
   const { mapboxgl, isLoading: mapboxLoading, error: mapboxError } = useMapbox();
   
-  // Load token from localStorage on component mount
-  const [mapboxToken, setMapboxToken] = useState(() => {
-    return localStorage.getItem('mapbox-token') || '';
-  });
-  const [showMap, setShowMap] = useState(() => {
-    // Show map if we have a saved token
-    return !!localStorage.getItem('mapbox-token');
-  });
+  // Hardcoded Mapbox token
+  const mapboxToken = 'pk.eyJ1IjoiemNob3duZXkiLCJhIjoiY21icXBrMGI5MDFtNjJxczcyeGdvb3J6MCJ9.nHu78L8iJ8HebbfUzQuhkw';
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
-
-  // Save token to localStorage whenever it changes
-  useEffect(() => {
-    if (mapboxToken) {
-      localStorage.setItem('mapbox-token', mapboxToken);
-    }
-  }, [mapboxToken]);
-
-  const handleInitializeMap = () => {
-    console.log('🎯 Initialize map button clicked', { 
-      hasToken: !!mapboxToken, 
-      hasMapboxgl: !!mapboxgl,
-      tokenFormat: mapboxToken.startsWith('pk.') ? 'valid format' : 'invalid format'
-    });
-
-    if (!mapboxToken || !mapboxgl) {
-      console.log('❌ Missing token or mapboxgl library');
-      setError('Missing Mapbox token or library not loaded');
-      return;
-    }
-
-    // Validate token format (should start with 'pk.')
-    if (!mapboxToken.startsWith('pk.')) {
-      console.log('❌ Invalid token format');
-      setError('Invalid Mapbox token format. Token should start with "pk."');
-      return;
-    }
-
-    console.log('✅ All validations passed, proceeding with map initialization');
-    setError('');
-    setIsLoading(true);
-    setShowMap(true);
-  };
-
-  const handleReset = () => {
-    setShowMap(false);
-    setIsLoading(false);
-    setError('');
-    localStorage.removeItem('mapbox-token');
-    setMapboxToken('');
-  };
 
   if (mapboxLoading) {
     return (
@@ -92,18 +44,6 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  if (!showMap) {
-    return (
-      <MapSetup
-        mapboxToken={mapboxToken}
-        setMapboxToken={setMapboxToken}
-        onInitialize={handleInitializeMap}
-        isLoading={isLoading}
-        error={error}
-      />
-    );
-  }
-
   return (
     <MapContainer
       mapboxgl={mapboxgl}
@@ -114,7 +54,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       setIsLoading={setIsLoading}
       error={error}
       setError={setError}
-      onReset={handleReset}
+      onReset={() => {}} // No longer needed since token is hardcoded
     />
   );
 };
