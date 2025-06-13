@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -213,6 +214,14 @@ const Auth = () => {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Venue Owner Login Link */}
+        <div className="text-center mt-6 p-4 bg-trans-white/50 rounded-lg border border-trans-blue/20">
+          <p className="text-sm text-brand-navy/70 mb-2">Are you a venue owner?</p>
+          <Link to="/venue-owner/auth" className="text-trans-blue hover:underline font-medium">
+            Sign in to your venue management account
+          </Link>
+        </div>
 
         <div className="text-center mt-6">
           <Link to="/" className="text-brand-navy hover:text-trans-blue transition-colors">

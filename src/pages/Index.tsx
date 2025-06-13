@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode, Menu } from 'lucide-react';
@@ -86,6 +87,13 @@ const Index = () => {
               </Button>
             </Link>
           </div>
+          
+          {/* Venue Owner Login Link */}
+          <div className="mt-6">
+            <Link to="/venue-owner/auth" className="text-sm text-brand-navy/70 hover:text-trans-blue transition-colors underline">
+              Already a venue owner? Sign in to manage your listing
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -151,6 +159,7 @@ const Index = () => {
             <div className="flex space-x-6">
               <Link to="/resources" className="hover:text-trans-blue transition-colors">Resources</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors">Add a Venue</Link>
+              <Link to="/venue-owner/auth" className="hover:text-trans-blue transition-colors">Venue Owner Login</Link>
               <button onClick={() => setIsContactModalOpen(true)} className="hover:text-trans-blue transition-colors">
                 Contact
               </button>
