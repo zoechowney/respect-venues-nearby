@@ -69,7 +69,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         el.style.cursor = 'pointer';
         el.style.border = '2px solid white';
         el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-        el.style.zIndex = '1000';
+        el.style.zIndex = '10'; // Lower z-index to ensure modals appear above
         
         // Color code by venue type
         if (venue.type.toLowerCase() === 'pub') {
@@ -91,7 +91,10 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
           console.log(`✅ Marker added to map for ${venue.name}`);
 
           // Create popup without open/closed status
-          const popup = new mapboxgl.Popup({ offset: 25 })
+          const popup = new mapboxgl.Popup({ 
+            offset: 25,
+            className: 'marker-popup' // Add class for styling
+          })
             .setHTML(`
               <div class="p-3">
                 <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
@@ -133,6 +136,21 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         map.off('styledata', onStyleLoad);
       };
       map.on('styledata', onStyleLoad);
+    }
+
+    // Add global CSS for popup z-index
+    const style = document.createElement('style');
+    style.textContent = `
+      .mapboxgl-popup {
+        z-index: 20 !important;
+      }
+      .marker-popup .mapboxgl-popup-content {
+        z-index: 21 !important;
+      }
+    `;
+    if (!document.querySelector('style[data-marker-styles]')) {
+      style.setAttribute('data-marker-styles', 'true');
+      document.head.appendChild(style);
     }
 
   }, [map, mapboxgl, venues, onVenueSelect]);
