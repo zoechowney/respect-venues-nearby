@@ -6,6 +6,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import AdminNavigation from '@/components/admin/AdminNavigation';
 import ApplicationsReview from '@/components/admin/ApplicationsReview';
 import VenuesManagement from '@/components/admin/VenuesManagement';
+import ReviewsManagement from '@/components/admin/ReviewsManagement';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -53,7 +54,7 @@ const Admin = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-brand-navy mb-2">Admin Dashboard</h1>
-          <p className="text-brand-navy/70">Manage venue applications and approved venues</p>
+          <p className="text-brand-navy/70">Manage venue applications, approved venues, and reviews</p>
         </div>
 
         <div className="mb-6">
@@ -78,11 +79,22 @@ const Admin = () => {
             >
               Approved Venues
             </button>
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'reviews'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              Review Management
+            </button>
           </nav>
         </div>
 
         {activeTab === 'applications' && <ApplicationsReview />}
         {activeTab === 'venues' && <VenuesManagement />}
+        {activeTab === 'reviews' && <ReviewsManagement />}
       </div>
     </div>
   );

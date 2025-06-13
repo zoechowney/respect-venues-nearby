@@ -223,8 +223,11 @@ export type Database = {
       }
       venue_reviews: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
           id: string
+          is_approved: boolean
           rating: number
           review_text: string | null
           updated_at: string
@@ -232,8 +235,11 @@ export type Database = {
           venue_id: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           id?: string
+          is_approved?: boolean
           rating: number
           review_text?: string | null
           updated_at?: string
@@ -241,8 +247,11 @@ export type Database = {
           venue_id: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           id?: string
+          is_approved?: boolean
           rating?: number
           review_text?: string | null
           updated_at?: string

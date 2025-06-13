@@ -11,6 +11,9 @@ export interface VenueReview {
   rating: number;
   review_text: string | null;
   created_at: string;
+  is_approved: boolean;
+  approved_by: string | null;
+  approved_at: string | null;
   profiles?: {
     full_name: string | null;
   };
@@ -93,6 +96,7 @@ export const useVenueReviews = (venueId: string) => {
           user_id: user.id,
           rating,
           review_text: reviewText.trim() || null,
+          is_approved: false, // Reviews need admin approval
         });
 
       if (insertError) {
@@ -107,7 +111,7 @@ export const useVenueReviews = (venueId: string) => {
 
       toast({
         title: "Review Submitted",
-        description: "Thank you for your feedback!",
+        description: "Thank you for your feedback! Your review is pending approval.",
       });
 
       // Refresh reviews
