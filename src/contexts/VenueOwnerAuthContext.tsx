@@ -75,13 +75,6 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
 
       setVenueOwner(ownerData);
       localStorage.setItem('venue_owner_session', JSON.stringify(ownerData));
-      
-      // Set the current venue owner ID for RLS policies
-      await supabase.rpc('set_config', {
-        setting_name: 'app.current_venue_owner_id',
-        setting_value: owner.id,
-        is_local: true
-      });
 
       return {};
     } catch (error) {
