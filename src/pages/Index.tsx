@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Users, QrCode, Menu } from 'lucide-react';
@@ -8,22 +7,16 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import UserMenu from '@/components/UserMenu';
 import ContactModal from '@/components/ContactModal';
-
 const Index = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const isMobile = useIsMobile();
-
-  const NavigationLinks = () => (
-    <>
+  const NavigationLinks = () => <>
       <Link to="/map" className="text-brand-navy hover:text-trans-blue transition-colors">Find Venues</Link>
       <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
       <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
       <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
-    </>
-  );
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
+    </>;
+  return <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
       <nav className="bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,9 +94,9 @@ const Index = () => {
           
           {/* Venue Owner Login Link */}
           <div className={`mt-${isMobile ? '4' : '6'}`}>
-            <Link to="/venue-owner/auth" className="text-sm text-brand-navy/70 hover:text-trans-blue transition-colors underline">
-              Already a venue owner? Sign in to manage your listing
-            </Link>
+            <Link to="/venue-owner/auth" className="text-sm text-brand-navy/70 hover:text-trans-blue transition-colors underline">Already a venue owner? Sign in to manage your listing
+
+          </Link>
           </div>
         </div>
       </section>
@@ -111,9 +104,7 @@ const Index = () => {
       {/* Features Grid */}
       <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8 bg-trans-white/50`}>
         <div className="max-w-6xl mx-auto">
-          <h2 className={`font-bold text-center text-brand-navy mb-${isMobile ? '8' : '12'} ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
-            How Rest with Respect Works
-          </h2>
+          <h2 className={`font-bold text-center text-brand-navy mb-${isMobile ? '8' : '12'} ${isMobile ? 'text-2xl' : 'text-3xl'}`}>How Rest with Respect Works</h2>
           
           <div className={`grid ${isMobile ? 'gap-6' : 'md:grid-cols-3 gap-8'}`}>
             <Card className={`text-center ${isMobile ? 'p-4' : 'p-6'} hover:shadow-lg transition-shadow border-trans-blue/20`}>
@@ -184,8 +175,6 @@ const Index = () => {
       </footer>
 
       <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
