@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSponsors } from '@/hooks/useSponsors';
+import Navigation from '@/components/Navigation';
 import SponsorApplicationForm from '@/components/SponsorApplicationForm';
 const Sponsors = () => {
   const isMobile = useIsMobile();
@@ -14,18 +15,12 @@ const Sponsors = () => {
     error
   } = useSponsors();
   return <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
+      <Navigation currentPage="sponsors" />
+      
       {/* Header */}
-      <div className={`bg-trans-white/90 backdrop-blur-sm border-b border-gray-200 py-${isMobile ? '4' : '6'} px-4 sm:px-6 lg:px-8`}>
+      <div className={`py-${isMobile ? '8' : '12'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center space-x-4 mb-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="text-brand-navy">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-          </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 mb-8">
             <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-8' : 'h-10'} w-auto`} />
             <div>
               <h1 className={`font-bold text-brand-navy ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
@@ -36,11 +31,8 @@ const Sponsors = () => {
               </p>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className={`py-${isMobile ? '8' : '12'} px-4 sm:px-6 lg:px-8`}>
-        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="space-y-12">
           
           {/* Current Sponsors Section */}
           <section>
@@ -124,6 +116,7 @@ const Sponsors = () => {
 
             <SponsorApplicationForm />
           </section>
+          </div>
         </div>
       </div>
     </div>;
