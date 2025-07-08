@@ -27,11 +27,9 @@ interface UserRole {
 
 interface UserWithRole extends UserProfile {
   user_roles: UserRole[];
-  auth_users?: {
-    email: string;
-    email_confirmed_at: string | null;
-    last_sign_in_at: string | null;
-  };
+  email?: string;
+  email_confirmed_at?: string | null;
+  last_sign_in_at?: string | null;
 }
 
 const UsersManagement = () => {
@@ -58,11 +56,24 @@ const UsersManagement = () => {
 
       if (rolesError) throw rolesError;
 
+      // Get user emails from edge function
+      const { data: emailData, error: emailError } = await supabase.functions.invoke('get-user-emails');
+      
+      if (emailError) throw emailError;
+
+      const authUsers = emailData?.users || [];
+
       // Combine the data
-      const usersWithRoles: UserWithRole[] = profiles.map(profile => ({
-        ...profile,
-        user_roles: userRoles.filter(role => role.user_id === profile.id)
-      }));
+      const usersWithRoles: UserWithRole[] = profiles.map(profile => {
+        const authUser = authUsers.find((u: any) => u.id === profile.id);
+        return {
+          ...profile,
+          user_roles: userRoles.filter(role => role.user_id === profile.id),
+          email: authUser?.email,
+          email_confirmed_at: authUser?.email_confirmed_at,
+          last_sign_in_at: authUser?.last_sign_in_at
+        };
+      });
 
       return usersWithRoles;
     }
@@ -111,7 +122,8 @@ const UsersManagement = () => {
 
   const filteredUsers = users?.filter(user => {
     const matchesSearch = user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         user.id.toLowerCase().includes(searchTerm.toLowerCase());
+                         user.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
     if (roleFilter === 'all') return matchesSearch;
     
@@ -205,7 +217,7 @@ const UsersManagement = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/50 w-4 h-4" />
               <Input
-                placeholder="Search by name or ID..."
+                placeholder="Search by name, email, or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -229,6 +241,7 @@ const UsersManagement = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead>Actions</TableHead>
@@ -248,6 +261,16 @@ const UsersManagement = () => {
                             {user.id}
                           </div>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-brand-navy">
+                          {user.email || 'No email'}
+                        </div>
+                        {user.email_confirmed_at && (
+                          <div className="text-xs text-green-600">
+                            ✓ Verified
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={userRole === 'admin' ? 'default' : 'secondary'}>
