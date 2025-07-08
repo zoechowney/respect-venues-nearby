@@ -82,9 +82,6 @@ const Sponsors = () => {
                         </div>
                       )}
                       <h3 className="font-semibold text-brand-navy mb-2">{sponsor.company_name}</h3>
-                      {sponsor.description && (
-                        <p className="text-brand-navy/70 text-sm mb-4">{sponsor.description}</p>
-                      )}
                       {sponsor.website_url && (
                         <a 
                           href={sponsor.website_url}
