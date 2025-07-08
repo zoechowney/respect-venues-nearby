@@ -155,7 +155,7 @@ const CodeOfConduct = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-trans-pink mr-3 mt-1">•</span>
-                  If I have yet to have surgery to create genitalia that is similar in appearance to the biology of the sex of the facility I wish to use, I will use private cubicles or enclosed areas if I need to undress or use facilities where my genitalia may be visible
+                  If I have not undergone surgery to align my genitalia with the typical anatomy associated with the gendered facility I am using, I will ensure that I only undress or expose my body in private cubicles or enclosed areas where others will not see
                 </li>
                 <li className="flex items-start">
                   <span className="text-trans-pink mr-3 mt-1">•</span>
