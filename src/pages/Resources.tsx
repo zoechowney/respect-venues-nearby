@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ContactModal from '@/components/ContactModal';
+import Footer from '@/components/Footer';
 import LegalRightsModal from '@/components/LegalRightsModal';
 import SupportNetworksModal from '@/components/SupportNetworksModal';
 import SelfCareModal from '@/components/SelfCareModal';
@@ -414,6 +415,8 @@ const Resources = () => {
           onClose={() => setIsSelfCareModalOpen(false)} 
         />
       </div>
+
+      <Footer />
     </div>
   );
 };

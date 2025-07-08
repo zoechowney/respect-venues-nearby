@@ -6,6 +6,7 @@ import BenefitsCard from '@/components/join-movement/BenefitsCard';
 import SignStylesCard from '@/components/join-movement/SignStylesCard';
 import VenueRegistrationForm from '@/components/join-movement/VenueRegistrationForm';
 import ContactModal from '@/components/ContactModal';
+import Footer from '@/components/Footer';
 import { Link } from 'react-router-dom';
 
 const JoinMovement = () => {
@@ -40,10 +41,7 @@ const JoinMovement = () => {
         </div>
       </div>
 
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
+      <Footer />
     </div>
   );
 };

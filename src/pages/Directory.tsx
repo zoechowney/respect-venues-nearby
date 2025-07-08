@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import ContactModal from '@/components/ContactModal';
+import Footer from '@/components/Footer';
 import VenueDetailModal from '@/components/VenueDetailModal';
 import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
 
@@ -247,10 +248,7 @@ const Directory = () => {
         )}
       </div>
 
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={() => setIsContactModalOpen(false)} 
-      />
+      <Footer />
 
       <VenueDetailModal
         venue={selectedVenue}

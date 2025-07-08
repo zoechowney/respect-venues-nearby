@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import UserMenu from '@/components/UserMenu';
 import ContactModal from '@/components/ContactModal';
+import Footer from '@/components/Footer';
 
 const CodeOfConduct = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -180,7 +181,7 @@ const CodeOfConduct = () => {
         </div>
       </div>
 
-      <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+      <Footer />
     </div>
   );
 };
