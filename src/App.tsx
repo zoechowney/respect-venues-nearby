@@ -18,6 +18,7 @@ import VenueOwnerAuth from "./pages/VenueOwnerAuth";
 import VenueOwnerDashboard from "./pages/VenueOwnerDashboard";
 import QRLanding from "./pages/QRLanding";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ScrollToTop />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/join" element={<JoinMovement />} />
