@@ -174,6 +174,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Spacer */}
+      <section className={`py-${isMobile ? '8' : '12'}`}></section>
+
       <footer className={`bg-brand-navy text-trans-white py-${isMobile ? '8' : '12'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-6xl mx-auto">
           <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-col md:flex-row justify-between items-center'}`}>
