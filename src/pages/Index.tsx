@@ -151,6 +151,29 @@ const Index = () => {
         </div>
       </section>
 
+      <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8`}>
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className={`font-bold text-brand-navy mb-6 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>Why This Matters</h2>
+          <div className={`text-brand-navy/80 leading-relaxed space-y-4 ${isMobile ? 'text-base' : 'text-lg'}`}>
+            <p>
+              For many transgender and non-binary people, something as basic as using the toilet can be a source of anxiety, fear, or even danger.
+            </p>
+            <p>
+              Being asked to use a separate "third" space (like a disabled or family toilet) may seem like a compromise. But it's not. It's dehumanising. It sends a message that trans people are a problem to be managed, not equals to be welcomed. It makes people feel inferior, excluded, and publicly "outed" every time they need to use a facility.
+            </p>
+            <p>
+              Rest with Respect exists to change that, by helping businesses visibly show trans and non-binary people that they are safe, seen, and truly welcome.
+            </p>
+            <p>
+              Because everyone deserves to use the loo with dignity.
+            </p>
+            <p>
+              Respect is a two-way process. Trans and non-binary people also pledge to follow a shared <Link to="/code-of-conduct" className="text-trans-blue hover:text-trans-pink transition-colors underline">Code of Conduct</Link>, helping ensure that everyone can use these facilities safely and respectfully.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <footer className={`bg-brand-navy text-trans-white py-${isMobile ? '8' : '12'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-6xl mx-auto">
           <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-col md:flex-row justify-between items-center'}`}>
