@@ -20,6 +20,9 @@ const Footer = () => {
               <Link to="/resources" className="hover:text-trans-blue transition-colors text-sm">Resources</Link>
               <Link to="/code-of-conduct" className="hover:text-trans-pink transition-colors text-sm">Code of Conduct</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors text-sm">Add a Venue</Link>
+              <Link to="/privacy-policy" className="hover:text-trans-blue transition-colors text-sm">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:text-trans-blue transition-colors text-sm">Terms of Service</Link>
+              <Link to="/data-rights" className="hover:text-trans-pink transition-colors text-sm">Your Data Rights</Link>
               <Link to="/venue-owner/auth" className="hover:text-trans-blue transition-colors text-sm">Venue Owner Login</Link>
               <button onClick={() => setIsContactModalOpen(true)} className="hover:text-trans-blue transition-colors text-sm">
                 Contact

@@ -14,6 +14,10 @@ import Resources from "./pages/Resources";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import CodeOfConduct from "./pages/CodeOfConduct";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
+import DataRights from "./pages/DataRights";
 import VenueOwnerAuth from "./pages/VenueOwnerAuth";
 import VenueOwnerDashboard from "./pages/VenueOwnerDashboard";
 import QRLanding from "./pages/QRLanding";
@@ -43,6 +47,10 @@ function App() {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/code-of-conduct" element={<CodeOfConduct />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
+                <Route path="/cookie-policy" element={<CookiePolicy />} />
+                <Route path="/data-rights" element={<DataRights />} />
                 <Route path="/venue-owner/auth" element={<VenueOwnerAuth />} />
                 <Route path="/venue-owner/dashboard" element={<VenueOwnerDashboard />} />
                 <Route path="/qr/:businessName" element={<QRLanding />} />
