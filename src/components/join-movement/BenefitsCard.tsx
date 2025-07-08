@@ -15,19 +15,11 @@ const BenefitsCard = () => {
       <CardContent className="space-y-3">
         <div className="flex items-start space-x-3">
           <CheckCircle className="w-4 h-4 text-trans-blue mt-1 flex-shrink-0" />
-          <p className="text-sm text-brand-navy/70">Free high-quality door signs with QR codes</p>
+          <p className="text-sm text-brand-navy/70">Free high-quality door signs</p>
         </div>
         <div className="flex items-start space-x-3">
           <CheckCircle className="w-4 h-4 text-trans-blue mt-1 flex-shrink-0" />
-          <p className="text-sm text-brand-navy/70">Listing on our website and app</p>
-        </div>
-        <div className="flex items-start space-x-3">
-          <CheckCircle className="w-4 h-4 text-trans-blue mt-1 flex-shrink-0" />
-          <p className="text-sm text-brand-navy/70">Access to training materials</p>
-        </div>
-        <div className="flex items-start space-x-3">
-          <CheckCircle className="w-4 h-4 text-trans-blue mt-1 flex-shrink-0" />
-          <p className="text-sm text-brand-navy/70">Marketing support materials</p>
+          <p className="text-sm text-brand-navy/70">Listing on our platform</p>
         </div>
         <div className="flex items-start space-x-3">
           <CheckCircle className="w-4 h-4 text-trans-blue mt-1 flex-shrink-0" />
