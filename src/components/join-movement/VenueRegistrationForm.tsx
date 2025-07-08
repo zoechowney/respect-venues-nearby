@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -375,7 +376,11 @@ const VenueRegistrationForm = () => {
                 disabled={isSubmitting}
               />
               <label htmlFor="terms" className="text-sm text-brand-navy/70">
-                I agree to the terms and conditions and commit to providing a welcoming environment for all customers
+                I agree to the terms and conditions, our{' '}
+                <Link to="/code-of-conduct" className="text-trans-blue hover:underline" target="_blank" rel="noopener noreferrer">
+                  Code of Conduct
+                </Link>
+                , and commit to providing a welcoming environment for all customers
               </label>
             </div>
             <div className="flex items-start space-x-3">
