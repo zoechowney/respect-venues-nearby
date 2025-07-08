@@ -104,7 +104,7 @@ const Index = () => {
       {/* Features Grid */}
       <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8 bg-trans-white/50`}>
         <div className="max-w-6xl mx-auto">
-          <h2 className={`font-bold text-center text-brand-navy mb-${isMobile ? '8' : '12'} ${isMobile ? 'text-2xl' : 'text-3xl'}`}>How Rest with Respect Works</h2>
+          <h2 className={`font-bold text-center text-brand-navy mb-${isMobile ? '4' : '6'} ${isMobile ? 'text-2xl' : 'text-3xl'}`}>How Rest with Respect Works</h2>
           
           <div className={`grid ${isMobile ? 'gap-6' : 'md:grid-cols-3 gap-8'}`}>
             <Card className={`text-center ${isMobile ? 'p-4' : 'p-6'} hover:shadow-lg transition-shadow border-trans-blue/20`}>
