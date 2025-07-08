@@ -159,10 +159,6 @@ const CodeOfConduct = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-trans-pink mr-3 mt-1">•</span>
-                  Avoid exposing body parts in communal spaces that could cause discomfort to others, especially where facilities are typically designated by gender
-                </li>
-                <li className="flex items-start">
-                  <span className="text-trans-pink mr-3 mt-1">•</span>
                   Understand that inclusion is a shared responsibility, built on courtesy, understanding, and care
                 </li>
               </ul>
