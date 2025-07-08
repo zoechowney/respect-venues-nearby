@@ -17,6 +17,7 @@ import CodeOfConduct from "./pages/CodeOfConduct";
 import VenueOwnerAuth from "./pages/VenueOwnerAuth";
 import VenueOwnerDashboard from "./pages/VenueOwnerDashboard";
 import QRLanding from "./pages/QRLanding";
+import Sponsors from "./pages/Sponsors";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/map" element={<Map />} />
                 <Route path="/directory" element={<Directory />} />
                 <Route path="/resources" element={<Resources />} />
+                <Route path="/sponsors" element={<Sponsors />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/code-of-conduct" element={<CodeOfConduct />} />

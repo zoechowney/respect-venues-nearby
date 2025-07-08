@@ -15,6 +15,7 @@ const Index = () => {
       <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
       <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
       <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
+      <Link to="/sponsors" className="text-brand-navy hover:text-trans-blue transition-colors">Our Sponsors</Link>
     </>;
   return <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/20">
       {/* Navigation */}
@@ -186,6 +187,7 @@ const Index = () => {
             </div>
             <div className={`flex ${isMobile ? 'flex-col space-y-3 text-center' : 'space-x-6'}`}>
               <Link to="/resources" className="hover:text-trans-blue transition-colors text-sm">Resources</Link>
+              <Link to="/sponsors" className="hover:text-trans-pink transition-colors text-sm">Our Sponsors</Link>
               <Link to="/code-of-conduct" className="hover:text-trans-pink transition-colors text-sm">Code of Conduct</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors text-sm">Add a Venue</Link>
               <Link to="/venue-owner/auth" className="hover:text-trans-blue transition-colors text-sm">Venue Owner Login</Link>
