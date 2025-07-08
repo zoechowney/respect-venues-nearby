@@ -7,6 +7,7 @@ import AdminNavigation from '@/components/admin/AdminNavigation';
 import ApplicationsReview from '@/components/admin/ApplicationsReview';
 import VenuesManagement from '@/components/admin/VenuesManagement';
 import ReviewsManagement from '@/components/admin/ReviewsManagement';
+import SponsorApplicationsManagement from '@/components/admin/SponsorApplicationsManagement';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 
 const Admin = () => {
@@ -100,6 +101,16 @@ const Admin = () => {
             >
               Review Management
             </button>
+            <button
+              onClick={() => setActiveTab('sponsors')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'sponsors'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              Sponsor Applications
+            </button>
           </nav>
         </div>
 
@@ -107,6 +118,7 @@ const Admin = () => {
         {activeTab === 'applications' && <ApplicationsReview />}
         {activeTab === 'venues' && <VenuesManagement />}
         {activeTab === 'reviews' && <ReviewsManagement />}
+        {activeTab === 'sponsors' && <SponsorApplicationsManagement />}
       </div>
     </div>
   );
