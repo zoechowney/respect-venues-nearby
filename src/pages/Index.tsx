@@ -109,7 +109,7 @@ const Index = () => {
       </section>
 
       {/* Features Grid */}
-      <section className={`py-${isMobile ? '12' : '16'} px-4 sm:px-6 lg:px-8 bg-trans-white/50`}>
+      <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8 bg-trans-white/50`}>
         <div className="max-w-6xl mx-auto">
           <h2 className={`font-bold text-center text-brand-navy mb-${isMobile ? '8' : '12'} ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
             How Rest with Respect Works
@@ -149,10 +149,10 @@ const Index = () => {
         </div>
       </section>
 
-      <section className={`py-${isMobile ? '12' : '16'} px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-trans-blue/10 to-trans-pink/10`}>
+      <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-trans-blue/10 to-trans-pink/10`}>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className={`font-bold text-brand-navy mb-6 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>Our Mission</h2>
-          <p className={`text-brand-navy/80 leading-relaxed ${isMobile ? 'text-base' : 'text-lg'}`}>
+          <p className={`text-brand-navy/80 leading-relaxed mb-8 ${isMobile ? 'text-base' : 'text-lg'}`}>
             We believe everyone deserves to feel safe and respected when using public facilities. 
             Rest with Respect connects transgender individuals with businesses that welcome them with open arms, 
             while helping establishments demonstrate their commitment to inclusivity and mutual respect.
