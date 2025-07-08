@@ -101,6 +101,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Spacer */}
+      <section className={`py-${isMobile ? '4' : '6'}`}></section>
+
       {/* Features Grid */}
       <section className={`py-${isMobile ? '16' : '20'} px-4 sm:px-6 lg:px-8 bg-trans-white/50`}>
         <div className="max-w-6xl mx-auto">
