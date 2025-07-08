@@ -21,16 +21,13 @@ const Sponsors = () => {
       {/* Header */}
       <div className={`py-${isMobile ? '8' : '12'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center space-x-3 mb-8">
-            <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-8' : 'h-10'} w-auto`} />
-            <div>
-              <h1 className={`font-bold text-brand-navy ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
-                Our Sponsors
-              </h1>
-              <p className="text-brand-navy/70 text-sm mt-1">
-                Supporting inclusive spaces for everyone
-              </p>
-            </div>
+          <div className="mb-8">
+            <h1 className={`font-bold text-brand-navy ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+              Our Sponsors
+            </h1>
+            <p className="text-brand-navy/70 text-sm mt-1">
+              Supporting inclusive spaces for everyone
+            </p>
           </div>
 
           <div className="space-y-12">
