@@ -84,6 +84,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          logo_url: string | null
           message: string | null
           phone: string | null
           status: string
@@ -96,6 +97,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          logo_url?: string | null
           message?: string | null
           phone?: string | null
           status?: string
@@ -108,6 +110,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          logo_url?: string | null
           message?: string | null
           phone?: string | null
           status?: string
@@ -125,6 +128,7 @@ export type Database = {
           id: string
           is_active: boolean
           logo_url: string | null
+          payment_status: string | null
           updated_at: string
           website_url: string | null
         }
@@ -136,6 +140,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          payment_status?: string | null
           updated_at?: string
           website_url?: string | null
         }
@@ -147,6 +152,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          payment_status?: string | null
           updated_at?: string
           website_url?: string | null
         }
