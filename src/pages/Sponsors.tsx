@@ -55,7 +55,7 @@ const Sponsors = () => {
                 <p className="text-brand-navy/70">Loading sponsors...</p>
               </div> : error ? <div className="text-center py-8">
                 <p className="text-brand-navy/70">Unable to load sponsors at this time.</p>
-              </div> : sponsors && sponsors.length > 0 ? <div className={`grid ${isMobile ? 'grid-cols-1 gap-6' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'}`}>
+              </div> : sponsors && sponsors.length > 0 ? <div className={`grid ${isMobile ? 'grid-cols-1 gap-6' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'} justify-items-center`}>
                 {sponsors.map(sponsor => <Card key={sponsor.id} className="hover:shadow-lg transition-shadow border-trans-blue/20">
                     <CardContent className={`${isMobile ? 'p-4' : 'p-6'} text-center`}>
                       {sponsor.logo_url ? <img src={sponsor.logo_url} alt={`${sponsor.company_name} logo`} className="h-16 mx-auto mb-4 object-contain" /> : <div className="h-16 flex items-center justify-center mb-4">
