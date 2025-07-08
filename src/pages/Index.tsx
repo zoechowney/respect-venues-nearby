@@ -169,6 +169,7 @@ const Index = () => {
             </div>
             <div className={`flex ${isMobile ? 'flex-col space-y-3 text-center' : 'space-x-6'}`}>
               <Link to="/resources" className="hover:text-trans-blue transition-colors text-sm">Resources</Link>
+              <Link to="/code-of-conduct" className="hover:text-trans-pink transition-colors text-sm">Code of Conduct</Link>
               <Link to="/join" className="hover:text-trans-pink transition-colors text-sm">Add a Venue</Link>
               <Link to="/venue-owner/auth" className="hover:text-trans-blue transition-colors text-sm">Venue Owner Login</Link>
               <button onClick={() => setIsContactModalOpen(true)} className="hover:text-trans-blue transition-colors text-sm">

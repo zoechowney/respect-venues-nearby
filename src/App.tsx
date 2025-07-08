@@ -13,6 +13,7 @@ import Directory from "./pages/Directory";
 import Resources from "./pages/Resources";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import CodeOfConduct from "./pages/CodeOfConduct";
 import VenueOwnerAuth from "./pages/VenueOwnerAuth";
 import VenueOwnerDashboard from "./pages/VenueOwnerDashboard";
 import QRLanding from "./pages/QRLanding";
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/code-of-conduct" element={<CodeOfConduct />} />
                 <Route path="/venue-owner/auth" element={<VenueOwnerAuth />} />
                 <Route path="/venue-owner/dashboard" element={<VenueOwnerDashboard />} />
                 <Route path="/qr/:businessName" element={<QRLanding />} />
