@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 
 const sponsorApplicationSchema = z.object({
   company_name: z.string().min(1, 'Company name is required'),
@@ -24,6 +24,8 @@ type SponsorApplicationForm = z.infer<typeof sponsorApplicationSchema>;
 
 const SponsorApplicationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<SponsorApplicationForm>({
@@ -38,10 +40,68 @@ const SponsorApplicationForm = () => {
     },
   });
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: 'File too large',
+          description: 'Please select a logo file smaller than 5MB.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    // Reset the input
+    const input = document.getElementById('logo-upload') as HTMLInputElement;
+    if (input) input.value = '';
+  };
+
+  const uploadLogo = async (): Promise<string | null> => {
+    if (!logoFile) return null;
+
+    const fileExt = logoFile.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `logos/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('sponsor-logos')
+      .upload(filePath, logoFile);
+
+    if (error) {
+      console.error('Error uploading logo:', error);
+      throw new Error('Failed to upload logo');
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('sponsor-logos')
+      .getPublicUrl(data.path);
+
+    return publicUrl;
+  };
+
   const onSubmit = async (data: SponsorApplicationForm) => {
     setIsSubmitting(true);
     
     try {
+      let logoUrl = null;
+      
+      if (logoFile) {
+        logoUrl = await uploadLogo();
+      }
+
       const { error } = await supabase
         .from('sponsor_applications')
         .insert([{
@@ -51,6 +111,7 @@ const SponsorApplicationForm = () => {
           phone: data.phone || null,
           website: data.website || null,
           message: data.message || null,
+          logo_url: logoUrl,
         }]);
 
       if (error) {
@@ -63,6 +124,7 @@ const SponsorApplicationForm = () => {
       });
 
       form.reset();
+      removeLogo();
     } catch (error) {
       console.error('Error submitting sponsor application:', error);
       toast({
@@ -178,6 +240,49 @@ const SponsorApplicationForm = () => {
                 </FormItem>
               )}
             />
+
+            <div className="space-y-2">
+              <label htmlFor="logo-upload" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Company Logo (Optional)
+              </label>
+              <div className="space-y-4">
+                {logoPreview ? (
+                  <div className="relative inline-block">
+                    <img 
+                      src={logoPreview} 
+                      alt="Logo preview" 
+                      className="h-20 w-auto max-w-[200px] object-contain border border-gray-200 rounded-md p-2"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                      onClick={removeLogo}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                    <div className="text-sm text-gray-600 mb-2">
+                      Upload your company logo
+                    </div>
+                    <Input
+                      id="logo-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoChange}
+                      className="w-full"
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-gray-500">
+                  Optional: Upload your company logo (max 5MB). You can also provide this later if your application is approved.
+                </p>
+              </div>
+            </div>
 
             <Button 
               type="submit" 
