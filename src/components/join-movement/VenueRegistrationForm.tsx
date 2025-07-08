@@ -376,7 +376,11 @@ const VenueRegistrationForm = () => {
                 disabled={isSubmitting}
               />
               <label htmlFor="terms" className="text-sm text-brand-navy/70">
-                I agree to the terms and conditions, the{' '}
+                I agree to the{' '}
+                <Link to="/terms-of-service" className="text-trans-blue hover:underline" target="_blank" rel="noopener noreferrer">
+                  Terms of Service
+                </Link>
+                , the{' '}
                 <Link to="/code-of-conduct" className="text-trans-blue hover:underline" target="_blank" rel="noopener noreferrer">
                   Code of Conduct
                 </Link>
