@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSponsors } from '@/hooks/useSponsors';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import SponsorApplicationForm from '@/components/SponsorApplicationForm';
 const Sponsors = () => {
   const isMobile = useIsMobile();
@@ -119,6 +120,8 @@ const Sponsors = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>;
 };
 export default Sponsors;
