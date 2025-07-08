@@ -10,6 +10,7 @@ import ReviewsManagement from '@/components/admin/ReviewsManagement';
 import SponsorApplicationsManagement from '@/components/admin/SponsorApplicationsManagement';
 import SponsorsManagement from '@/components/admin/SponsorsManagement';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
+import UsersManagement from '@/components/admin/UsersManagement';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -122,6 +123,16 @@ const Admin = () => {
             >
               Manage Sponsors
             </button>
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'users'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              User Management
+            </button>
           </nav>
         </div>
 
@@ -131,6 +142,7 @@ const Admin = () => {
         {activeTab === 'reviews' && <ReviewsManagement />}
         {activeTab === 'sponsors' && <SponsorApplicationsManagement />}
         {activeTab === 'sponsors-management' && <SponsorsManagement />}
+        {activeTab === 'users' && <UsersManagement />}
       </div>
     </div>
   );
