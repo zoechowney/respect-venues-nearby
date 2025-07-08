@@ -8,8 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Search, Shield, ShieldOff, User, Users } from 'lucide-react';
+import { Search, Shield, ShieldOff, User, Users, UserMinus, UserCheck, UserX, Edit3, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 interface UserProfile {
   id: string;
@@ -30,11 +33,14 @@ interface UserWithRole extends UserProfile {
   email?: string;
   email_confirmed_at?: string | null;
   last_sign_in_at?: string | null;
+  is_active?: boolean;
 }
 
 const UsersManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'user'>('all');
+  const [editingUser, setEditingUser] = useState<UserWithRole | null>(null);
+  const [editForm, setEditForm] = useState({ full_name: '', email: '' });
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -120,6 +126,77 @@ const UsersManagement = () => {
     }
   });
 
+  const updateUserStatusMutation = useMutation({
+    mutationFn: async ({ userId, isActive }: { userId: string; isActive: boolean }) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_active: isActive })
+        .eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: (_, { isActive }) => {
+      toast({
+        title: isActive ? "User reactivated" : "User suspended",
+        description: `User has been successfully ${isActive ? 'reactivated' : 'suspended'}.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update user status. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: async ({ userId, updates }: { userId: string; updates: { full_name?: string } }) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "User updated",
+        description: "User information has been successfully updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      setEditingUser(null);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update user. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      // Delete from auth.users (this will cascade to profiles due to foreign key)
+      const { error } = await supabase.auth.admin.deleteUser(userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({
+        title: "User deleted",
+        description: "User has been permanently deleted.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete user. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   const filteredUsers = users?.filter(user => {
     const matchesSearch = user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          user.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -137,6 +214,31 @@ const UsersManagement = () => {
 
   const handleRoleChange = (userId: string, newRole: 'admin' | 'user') => {
     updateRoleMutation.mutate({ userId, newRole });
+  };
+
+  const handleEditUser = (user: UserWithRole) => {
+    setEditingUser(user);
+    setEditForm({ 
+      full_name: user.full_name || '', 
+      email: user.email || '' 
+    });
+  };
+
+  const handleUpdateUser = () => {
+    if (editingUser) {
+      updateUserMutation.mutate({ 
+        userId: editingUser.id, 
+        updates: { full_name: editForm.full_name }
+      });
+    }
+  };
+
+  const handleStatusChange = (userId: string, isActive: boolean) => {
+    updateUserStatusMutation.mutate({ userId, isActive });
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    deleteUserMutation.mutate(userId);
   };
 
   if (isLoading) {
@@ -254,8 +356,15 @@ const UsersManagement = () => {
                     <TableRow key={user.id}>
                       <TableCell>
                         <div>
-                          <div className="font-medium text-brand-navy">
-                            {user.full_name || 'No name'}
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium text-brand-navy">
+                              {user.full_name || 'No name'}
+                            </span>
+                            {user.is_active === false && (
+                              <Badge variant="destructive" className="text-xs">
+                                Suspended
+                              </Badge>
+                            )}
                           </div>
                           <div className="text-sm text-brand-navy/70">
                             {user.id}
@@ -287,7 +396,8 @@ const UsersManagement = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex space-x-2">
+                        <div className="flex flex-wrap gap-2">
+                          {/* Role Management */}
                           {userRole === 'admin' ? (
                             <Button
                               size="sm"
@@ -309,6 +419,109 @@ const UsersManagement = () => {
                               Make Admin
                             </Button>
                           )}
+
+                          {/* Edit User */}
+                          <Dialog open={editingUser?.id === user.id} onOpenChange={(open) => !open && setEditingUser(null)}>
+                            <DialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEditUser(user)}
+                              >
+                                <Edit3 className="w-4 h-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Edit User</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <Label htmlFor="full_name">Full Name</Label>
+                                  <Input
+                                    id="full_name"
+                                    value={editForm.full_name}
+                                    onChange={(e) => setEditForm(prev => ({ ...prev, full_name: e.target.value }))}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="email">Email (Read-only)</Label>
+                                  <Input
+                                    id="email"
+                                    value={editForm.email}
+                                    disabled
+                                    className="bg-muted"
+                                  />
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                  <Button variant="outline" onClick={() => setEditingUser(null)}>
+                                    Cancel
+                                  </Button>
+                                  <Button onClick={handleUpdateUser} disabled={updateUserMutation.isPending}>
+                                    Save Changes
+                                  </Button>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+
+                          {/* Suspend/Reactivate */}
+                          {user.is_active !== false ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleStatusChange(user.id, false)}
+                              disabled={updateUserStatusMutation.isPending}
+                              className="text-orange-600 hover:text-orange-700"
+                            >
+                              <UserMinus className="w-4 h-4 mr-1" />
+                              Suspend
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleStatusChange(user.id, true)}
+                              disabled={updateUserStatusMutation.isPending}
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <UserCheck className="w-4 h-4 mr-1" />
+                              Reactivate
+                            </Button>
+                          )}
+
+                          {/* Delete User */}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete User</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to permanently delete this user? This action cannot be undone and will remove all associated data.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  disabled={deleteUserMutation.isPending}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Delete User
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
