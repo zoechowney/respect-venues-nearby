@@ -69,19 +69,8 @@ const CodeOfConduct = () => {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link to="/" className="inline-flex items-center text-brand-navy hover:text-trans-blue transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Link>
-        </div>
-
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="mb-6">
-            <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-16 w-auto mx-auto mb-4" />
-          </div>
           <h1 className="text-4xl font-bold text-brand-navy mb-4">Code of Conduct</h1>
           <p className="text-xl text-brand-navy/80 mb-2">Creating safer, respectful spaces — together</p>
           <p className="text-brand-navy/70 max-w-3xl mx-auto">
