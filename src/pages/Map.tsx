@@ -89,7 +89,7 @@ const Map = () => {
         {/* Category Filters - Tabs on desktop, Select on mobile */}
         <div className="mb-8">
           {/* Mobile Select */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Select value={selectedType} onValueChange={setSelectedType}>
               <SelectTrigger className="w-full">
                 <Filter className="w-4 h-4 mr-2" />
@@ -106,7 +106,7 @@ const Map = () => {
           </div>
 
           {/* Desktop Tabs */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <Tabs value={selectedType} onValueChange={setSelectedType}>
               <TabsList className="grid w-full grid-cols-8 max-w-5xl">
                 <TabsTrigger value="all">All</TabsTrigger>

@@ -90,7 +90,7 @@ const Directory = () => {
         {/* Category Filters - Tabs on desktop, Select on mobile */}
         <div className="mb-8">
           {/* Mobile Select */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Select value={selectedTab} onValueChange={setSelectedTab}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select category" />
@@ -106,7 +106,7 @@ const Directory = () => {
           </div>
 
           {/* Desktop Tabs */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <Tabs value={selectedTab} onValueChange={setSelectedTab}>
               <TabsList className="grid w-full grid-cols-8 max-w-5xl">
                 <TabsTrigger value="all">All</TabsTrigger>

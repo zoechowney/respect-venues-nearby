@@ -34,14 +34,14 @@ const CodeOfConduct = () => {
                 {isMobile ? 'Rest w/ Respect' : 'Rest with Respect'}
               </span>
             </Link>
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden lg:flex space-x-8">
               <NavigationLinks />
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 <UserMenu />
               </div>
-              <div className="md:hidden">
+              <div className="lg:hidden">
                 <Sheet>
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="sm" className="text-brand-navy">
