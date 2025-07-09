@@ -120,7 +120,7 @@ const Index = () => {
               Rest with Respect exists to change that, by helping businesses visibly show trans and non-binary people that they are safe, seen, and truly welcome.
             </p>
             <p>
-              Respect is a two-way process. Trans and non-binary people also pledge to follow a shared <Link to="/code-of-conduct" className="text-trans-blue hover:text-trans-pink transition-colors underline">Code of Conduct</Link>, helping ensure that everyone can use these facilities safely and respectfully.
+              Respect is a two-way process. We ask trans and non-binary people to also pledge to follow a shared <Link to="/code-of-conduct" className="text-trans-blue hover:text-trans-pink transition-colors underline">Code of Conduct</Link>, helping ensure that everyone can use these facilities safely and respectfully.
             </p>
           </div>
         </div>
