@@ -13,6 +13,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToastNotifications } from '@/hooks/useToastNotifications';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import bcrypt from 'bcryptjs';
+import { useRateLimit, RATE_LIMITS } from '@/lib/rateLimiter';
+import { detectSpam, sanitizeText } from '@/lib/security';
 
 interface FormData {
   businessName: string;
@@ -35,6 +37,7 @@ const VenueRegistrationForm = () => {
   const { toast } = useToast();
   const { showVenueApplicationSubmitted, showServerError } = useToastNotifications();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { checkLimit } = useRateLimit('venue_application', RATE_LIMITS.VENUE_APPLICATION);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -63,6 +66,19 @@ const VenueRegistrationForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Check rate limiting
+    const rateLimitResult = checkLimit();
+    if (!rateLimitResult.allowed) {
+      const resetTime = new Date(rateLimitResult.resetTime);
+      toast({
+        title: "Too Many Applications",
+        description: `You've submitted too many applications recently. Please try again after ${resetTime.toLocaleTimeString()}.`,
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       toast({
@@ -83,6 +99,20 @@ const VenueRegistrationForm = () => {
       });
       setIsSubmitting(false);
       return;
+    }
+
+    // Detect spam in description
+    if (formData.description) {
+      const spamResult = detectSpam(formData.description);
+      if (spamResult.isSpam) {
+        toast({
+          title: "Content Rejected",
+          description: "Your description contains inappropriate content. Please revise and try again.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     try {
@@ -111,18 +141,18 @@ const VenueRegistrationForm = () => {
         return;
       }
 
-      // Create venue application with venue owner reference
+      // Create venue application with venue owner reference (sanitize text inputs)
       const { error: applicationError } = await supabase
         .from('venue_applications')
         .insert({
-          business_name: formData.businessName,
+          business_name: sanitizeText(formData.businessName),
           business_type: formData.businessType,
-          contact_name: formData.contactName,
+          contact_name: sanitizeText(formData.contactName),
           email: formData.email,
           phone: formData.phone || null,
-          address: formData.address,
+          address: sanitizeText(formData.address),
           website: formData.website || null,
-          description: formData.description || null,
+          description: formData.description ? sanitizeText(formData.description) : null,
           sign_style: formData.signStyle || null,
           features: formData.features.length > 0 ? formData.features : null,
           agree_to_terms: formData.agreeToTerms,

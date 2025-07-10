@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { useRateLimit, RATE_LIMITS } from '@/lib/rateLimiter';
+import { detectSpam, sanitizeText } from '@/lib/security';
+import { useToast } from '@/hooks/use-toast';
 
 interface ReviewFormProps {
   venueId: string;
@@ -18,6 +21,8 @@ const ReviewForm = ({ venueId, onSubmitReview }: ReviewFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoveredRating, setHoveredRating] = useState(0);
   const { user } = useAuth();
+  const { toast } = useToast();
+  const { checkLimit } = useRateLimit('review_submission', RATE_LIMITS.REVIEW_SUBMISSION);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +31,34 @@ const ReviewForm = ({ venueId, onSubmitReview }: ReviewFormProps) => {
       return;
     }
 
+    // Check rate limiting
+    const rateLimitResult = checkLimit();
+    if (!rateLimitResult.allowed) {
+      const resetTime = new Date(rateLimitResult.resetTime);
+      toast({
+        title: "Too Many Reviews",
+        description: `You've submitted too many reviews recently. Please try again after ${resetTime.toLocaleTimeString()}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Detect spam in review text
+    if (reviewText.trim()) {
+      const spamResult = detectSpam(reviewText);
+      if (spamResult.isSpam) {
+        toast({
+          title: "Review Rejected",
+          description: "Your review contains inappropriate content. Please revise and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setIsSubmitting(true);
-    const success = await onSubmitReview(rating, reviewText);
+    const sanitizedReviewText = reviewText.trim() ? sanitizeText(reviewText) : '';
+    const success = await onSubmitReview(rating, sanitizedReviewText);
     if (success) {
       setRating(0);
       setReviewText('');
