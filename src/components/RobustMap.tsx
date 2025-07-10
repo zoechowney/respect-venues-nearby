@@ -71,7 +71,33 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
       // Explicitly set the map container's z-index to be lower than modals
       const mapContainer = mapInstance.current.getContainer();
       if (mapContainer) {
-        mapContainer.style.zIndex = '10';
+        mapContainer.style.zIndex = '1';
+        // Also target all Leaflet panes to ensure they stay below modals
+        const panes = mapContainer.querySelectorAll('.leaflet-pane');
+        panes.forEach(pane => {
+          (pane as HTMLElement).style.zIndex = '1';
+        });
+      }
+
+      // Add global CSS to force Leaflet elements below modals
+      if (!document.querySelector('style[data-leaflet-modal-fix]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-leaflet-modal-fix', 'true');
+        style.textContent = `
+          .leaflet-container,
+          .leaflet-pane,
+          .leaflet-map-pane,
+          .leaflet-tile-pane,
+          .leaflet-overlay-pane,
+          .leaflet-shadow-pane,
+          .leaflet-marker-pane,
+          .leaflet-tooltip-pane,
+          .leaflet-popup-pane,
+          .leaflet-control-container {
+            z-index: 1 !important;
+          }
+        `;
+        document.head.appendChild(style);
       }
       
       // Create tile layer with basic error handling (no provider switching)
