@@ -24,6 +24,8 @@ import QRLanding from "./pages/QRLanding";
 import Sponsors from "./pages/Sponsors";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { NetworkStatus } from "./components/ErrorMessage";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +37,11 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Sonner />
+            <NetworkStatus />
             <BrowserRouter>
               <ScrollToTop />
-              <Routes>
+              <ErrorBoundary>
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/join" element={<JoinMovement />} />
                 <Route path="/map" element={<Map />} />
@@ -55,7 +59,8 @@ function App() {
                 <Route path="/venue-owner/dashboard" element={<VenueOwnerDashboard />} />
                 <Route path="/qr/:businessName" element={<QRLanding />} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
+                </Routes>
+              </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
         </VenueOwnerAuthProvider>

@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Mail } from 'lucide-react';
+import { useToastNotifications } from '@/hooks/useToastNotifications';
+import LoadingSpinner from './LoadingSpinner';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -20,6 +22,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     message: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { showContactFormSubmitted, showServerError } = useToastNotifications();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +34,7 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
     
     window.location.href = mailtoLink;
     
+    showContactFormSubmitted();
     setIsLoading(false);
     onClose();
     
@@ -125,8 +129,17 @@ const ContactModal = ({ isOpen, onClose }: ContactModalProps) => {
               disabled={isLoading}
               className="flex-1 bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
             >
-              <Mail className="w-4 h-4 mr-2" />
-              Send Email
+              {isLoading ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Send Email
+                </>
+              )}
             </Button>
           </div>
         </form>

@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useToastNotifications } from '@/hooks/useToastNotifications';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import bcrypt from 'bcryptjs';
 
 interface FormData {
@@ -30,6 +32,7 @@ interface FormData {
 
 const VenueRegistrationForm = () => {
   const { toast } = useToast();
+  const { showVenueApplicationSubmitted, showServerError } = useToastNotifications();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -127,10 +130,7 @@ const VenueRegistrationForm = () => {
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Application Submitted!",
-          description: "Thank you for joining the movement. We'll review your application and get back to you soon. You can use your email and password to check the status.",
-        });
+        showVenueApplicationSubmitted();
         
         // Reset form
         setFormData({
@@ -407,7 +407,14 @@ const VenueRegistrationForm = () => {
             disabled={!formData.agreeToTerms || !formData.agreeToTraining || !formData.password || !formData.confirmPassword || isSubmitting}
           >
             <Mail className="w-5 h-5 mr-2" />
-            {isSubmitting ? 'Submitting...' : 'Submit Application & Create Account'}
+            {isSubmitting ? (
+              <>
+                <LoadingSpinner size="sm" className="mr-2" />
+                Submitting...
+              </>
+            ) : (
+              'Submit Application & Create Account'
+            )}
           </Button>
         </form>
       </CardContent>
