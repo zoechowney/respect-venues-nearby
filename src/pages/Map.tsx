@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +11,11 @@ import Navigation from '@/components/Navigation';
 import ContactModal from '@/components/ContactModal';
 import Footer from '@/components/Footer';
 import VenueDetailModal from '@/components/VenueDetailModal';
+import AdvancedSearchModal from '@/components/AdvancedSearchModal';
 import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
+import { useSavedSearches } from '@/hooks/useSavedSearches';
+import { getCurrentLocation, filterVenuesByDistance, Coordinates } from '@/lib/geolocation';
+import { useToast } from '@/hooks/use-toast';
 
 const Map = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,26 +23,101 @@ const Map = () => {
   const [selectedVenue, setSelectedVenue] = useState<ApprovedVenue | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isVenueDetailOpen, setIsVenueDetailOpen] = useState(false);
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
+  const [filteredVenues, setFilteredVenues] = useState<ApprovedVenue[]>([]);
   
   const { venues, isLoading, error } = useApprovedVenues();
+  const { toast } = useToast();
 
-  const filteredVenues = venues.filter(venue => {
-    const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         venue.address.toLowerCase().includes(searchTerm.toLowerCase());
+  // Get user's current location
+  const getUserLocation = async () => {
+    try {
+      const location = await getCurrentLocation();
+      setUserLocation(location);
+      toast({
+        title: "Location Found",
+        description: "Now showing distances to venues from your location.",
+      });
+    } catch (error) {
+      toast({
+        title: "Location Error", 
+        description: "Could not get your location. You can still search venues.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle advanced search
+  const handleAdvancedSearch = (filters: any) => {
+    let results = [...venues];
     
-    let matchesType = false;
-    if (selectedType === 'all') {
-      matchesType = true;
-    } else if (selectedType === 'other') {
-      // "Other" includes any venue type that doesn't match the standard categories
-      const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
-      matchesType = !standardTypes.includes(venue.type.toLowerCase());
-    } else {
-      matchesType = venue.type.toLowerCase() === selectedType.toLowerCase();
+    // Basic search filter
+    if (filters.searchTerm) {
+      results = results.filter(venue => 
+        venue.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        venue.address.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      );
     }
     
-    return matchesSearch && matchesType;
-  });
+    // Type filter
+    if (filters.type && filters.type !== 'all') {
+      if (filters.type === 'other') {
+        const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
+        results = results.filter(venue => !standardTypes.includes(venue.type.toLowerCase()));
+      } else {
+        results = results.filter(venue => venue.type.toLowerCase() === filters.type.toLowerCase());
+      }
+    }
+    
+    // Location and distance filtering
+    if (filters.location && userLocation && filters.maxDistance) {
+      const venuesWithCoords = results.map(venue => ({
+        ...venue,
+        coordinates: {
+          latitude: venue.address.toLowerCase().includes('godalming') || venue.address.toLowerCase().includes('surrey')
+            ? 51.1858 + (Math.random() - 0.5) * 0.02
+            : venue.address.toLowerCase().includes('guildford')
+            ? 51.2362 + (Math.random() - 0.5) * 0.02
+            : 51.1858 + (Math.random() - 0.5) * 0.02,
+          longitude: venue.address.toLowerCase().includes('godalming') || venue.address.toLowerCase().includes('surrey') 
+            ? -0.6149 + (Math.random() - 0.5) * 0.02
+            : venue.address.toLowerCase().includes('guildford')
+            ? -0.5704 + (Math.random() - 0.5) * 0.02
+            : -0.6149 + (Math.random() - 0.5) * 0.02
+        }
+      }));
+      
+      results = filterVenuesByDistance(venuesWithCoords, userLocation, filters.maxDistance);
+    }
+    
+    setFilteredVenues(results);
+    setShowAdvancedSearch(false);
+  };
+
+  // Apply basic filters
+  useEffect(() => {
+    if (!showAdvancedSearch) {
+      let results = venues.filter(venue => {
+        const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             venue.address.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        let matchesType = false;
+        if (selectedType === 'all') {
+          matchesType = true;
+        } else if (selectedType === 'other') {
+          const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
+          matchesType = !standardTypes.includes(venue.type.toLowerCase());
+        } else {
+          matchesType = venue.type.toLowerCase() === selectedType.toLowerCase();
+        }
+        
+        return matchesSearch && matchesType;
+      });
+      
+      setFilteredVenues(results);
+    }
+  }, [venues, searchTerm, selectedType, showAdvancedSearch]);
 
   const handleVenueSelect = (venue: any) => {
     setSelectedVenue(venue);
@@ -72,17 +151,35 @@ const Map = () => {
           <p className="text-brand-navy/70">Discover transgender-friendly establishments near you</p>
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative">
+        {/* Search Controls */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-brand-navy/40 w-5 h-5" />
             <Input
               type="text"
               placeholder="Search by name or location..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 max-w-md"
+              className="pl-10"
             />
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowAdvancedSearch(true)}
+              className="border-trans-blue text-trans-blue hover:bg-trans-blue hover:text-white"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Advanced Search
+            </Button>
+            <Button
+              variant="outline"
+              onClick={getUserLocation}
+              className="border-trans-blue text-trans-blue hover:bg-trans-blue hover:text-white"
+            >
+              <NavigationIcon className="w-4 h-4 mr-2" />
+              Use My Location
+            </Button>
           </div>
         </div>
 
@@ -254,6 +351,13 @@ const Map = () => {
         venue={selectedVenue}
         isOpen={isVenueDetailOpen}
         onClose={() => setIsVenueDetailOpen(false)}
+      />
+
+      <AdvancedSearchModal
+        isOpen={showAdvancedSearch}
+        onClose={() => setShowAdvancedSearch(false)}
+        onSearch={handleAdvancedSearch}
+        userLocation={userLocation}
       />
     </div>
   );

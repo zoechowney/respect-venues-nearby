@@ -30,7 +30,12 @@ export const useSavedSearches = () => {
 
       if (error) throw error;
 
-      setSavedSearches(data || []);
+      if (data) {
+        setSavedSearches(data.map(item => ({
+          ...item,
+          filters: JSON.parse(item.filters as string) as SearchFilters
+        })));
+      }
     } catch (error) {
       console.error('Error loading saved searches:', error);
     } finally {

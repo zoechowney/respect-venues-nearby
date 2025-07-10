@@ -96,19 +96,13 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           );
           setLocationSuggestions(cities);
         } else {
-          // Use Mapbox geocoding for longer queries
-          const mapboxToken = process.env.VITE_MAPBOX_TOKEN || '';
-          if (mapboxToken) {
-            const results = await geocodeAddress(locationSearch, mapboxToken);
-            setLocationSuggestions(results.slice(0, 5));
-          } else {
-            // Fallback to popular cities
-            const cities = getPopularCities().filter(city =>
-              city.name.toLowerCase().includes(locationSearch.toLowerCase()) ||
-              city.address.toLowerCase().includes(locationSearch.toLowerCase())
-            );
-            setLocationSuggestions(cities);
-          }
+          // Fallback to popular cities for now
+          // TODO: Implement Mapbox geocoding with Edge Function
+          const cities = getPopularCities().filter(city =>
+            city.name.toLowerCase().includes(locationSearch.toLowerCase()) ||
+            city.address.toLowerCase().includes(locationSearch.toLowerCase())
+          );
+          setLocationSuggestions(cities);
         }
       } catch (error) {
         showError('Search Error', 'Failed to search locations. Please try again.');
