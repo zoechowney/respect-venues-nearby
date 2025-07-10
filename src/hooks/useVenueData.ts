@@ -22,8 +22,8 @@ export const useVenueData = (venues?: Venue[]) => {
     openNow: venue.openNow,
     features: venue.features,
     // Use stored coordinates if available, otherwise use default
-    coordinates: (venue as any).latitude && (venue as any).longitude 
-      ? [(venue as any).longitude, (venue as any).latitude] 
+    coordinates: (venue.latitude && venue.longitude) 
+      ? [venue.longitude, venue.latitude] 
       : DEFAULT_COORDINATES
   }));
 

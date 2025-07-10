@@ -16,6 +16,8 @@ export interface ApprovedVenue {
   hours: string;
   openNow: boolean;
   distance?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export const useApprovedVenues = () => {
@@ -74,7 +76,9 @@ export const useApprovedVenues = () => {
             ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
             : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'),
           openNow: Math.random() > 0.3,
-          distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`
+          distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`,
+          latitude: venue.latitude,
+          longitude: venue.longitude
         }));
 
         console.log('✅ Transformed venues ready:', transformedVenues.length);
