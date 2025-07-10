@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import MapContainer from '@/components/map/MapContainer';
+import SimpleMap from '@/components/SimpleMap';
 
 interface InteractiveMapProps {
   venues?: Venue[];
@@ -19,6 +20,23 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const mapboxToken = 'pk.eyJ1IjoiemNob3duZXkiLCJhIjoiY21icXBrMGI5MDFtNjJxczcyeGdvb3J6MCJ9.nHu78L8iJ8HebbfUzQuhkw';
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [useSimpleMap, setUseSimpleMap] = useState(false);
+
+  // If Mapbox fails to load or encounters SecurityError, fall back to simple map
+  useEffect(() => {
+    if (mapboxError) {
+      console.log('🗺️ Mapbox failed, using simple map fallback');
+      setUseSimpleMap(true);
+    }
+  }, [mapboxError]);
+
+  // Handle map initialization errors by falling back to simple map
+  useEffect(() => {
+    if (error && error.includes('SecurityError')) {
+      console.log('🗺️ SecurityError detected, switching to simple map');
+      setUseSimpleMap(true);
+    }
+  }, [error]);
 
   if (mapboxLoading) {
     return (
@@ -31,15 +49,9 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  if (mapboxError) {
-    return (
-      <div className="h-96 border-trans-blue/20 border rounded-lg p-6 flex flex-col items-center justify-center bg-gradient-to-br from-brand-light-blue to-trans-pink/30">
-        <div className="text-center max-w-md">
-          <h3 className="text-xl font-semibold text-brand-navy mb-4">Map Error</h3>
-          <p className="text-red-800 text-sm">{mapboxError}</p>
-        </div>
-      </div>
-    );
+  // Use simple map if Mapbox failed or we detected SecurityError
+  if (useSimpleMap || mapboxError) {
+    return <SimpleMap venues={venues} onVenueSelect={onVenueSelect} />;
   }
 
   return (
@@ -52,7 +64,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       setIsLoading={setIsLoading}
       error={error}
       setError={setError}
-      onReset={() => {}} // No longer needed since token is hardcoded
+      onReset={() => setUseSimpleMap(true)} // Switch to simple map on reset
     />
   );
 };
