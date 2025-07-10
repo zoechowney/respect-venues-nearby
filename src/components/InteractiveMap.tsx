@@ -34,8 +34,8 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
   // Handle map initialization errors by falling back to simple map
   useEffect(() => {
     console.log('🗺️ InteractiveMap: error =', error);
-    if (error && error.includes('SecurityError')) {
-      console.log('🗺️ SecurityError detected, switching to simple map');
+    if (error && (error.includes('SecurityError') || error.includes('insecure') || error.includes('Initialization failed'))) {
+      console.log('🗺️ Map error detected, switching to simple map');
       setUseSimpleMap(true);
     }
   }, [error]);
