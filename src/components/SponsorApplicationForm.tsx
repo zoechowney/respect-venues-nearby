@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { optimizeAndUploadImage, validateImageFile, formatFileSize } from '@/lib/imageOptimization';
 import { Loader2, Upload, X } from 'lucide-react';
 
 const sponsorApplicationSchema = z.object({
@@ -26,6 +27,7 @@ const SponsorApplicationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [isOptimizing, setIsOptimizing] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<SponsorApplicationForm>({
@@ -43,10 +45,12 @@ const SponsorApplicationForm = () => {
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      // Validate file
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
         toast({
-          title: 'File too large',
-          description: 'Please select a logo file smaller than 5MB.',
+          title: 'Invalid file',
+          description: validation.error,
           variant: 'destructive',
         });
         return;
@@ -71,25 +75,26 @@ const SponsorApplicationForm = () => {
 
   const uploadLogo = async (): Promise<string | null> => {
     if (!logoFile) return null;
-
-    const fileExt = logoFile.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `logos/${fileName}`;
-
-    const { data, error } = await supabase.storage
-      .from('sponsor-logos')
-      .upload(filePath, logoFile);
-
-    if (error) {
+    
+    try {
+      setIsOptimizing(true);
+      const fileName = `${Date.now()}-${logoFile.name}`;
+      const result = await optimizeAndUploadImage(logoFile, 'sponsor-logos', fileName);
+      
+      if (result.compressed) {
+        toast({
+          title: 'Logo optimized',
+          description: `Image compressed by ${result.compressionRatio}, saved ${result.savings}`,
+        });
+      }
+      
+      return result.url;
+    } catch (error) {
       console.error('Error uploading logo:', error);
-      throw new Error('Failed to upload logo');
+      throw error;
+    } finally {
+      setIsOptimizing(false);
     }
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('sponsor-logos')
-      .getPublicUrl(data.path);
-
-    return publicUrl;
   };
 
   const onSubmit = async (data: SponsorApplicationForm) => {
@@ -278,19 +283,18 @@ const SponsorApplicationForm = () => {
                     />
                   </div>
                 )}
-                <p className="text-xs text-gray-500">
-                  Optional: Upload your company logo (max 5MB). You can also provide this later if your application is approved.
+                <p className="text-xs text-brand-navy/60 mt-2">
+                  Upload your company logo (max 10MB). Supports JPEG, PNG, and WebP formats. Images will be automatically optimized.
                 </p>
               </div>
             </div>
 
             <Button 
               type="submit" 
-              disabled={isSubmitting}
-              className="w-full bg-trans-blue hover:bg-trans-blue/90 text-brand-navy"
+              className="w-full bg-trans-pink hover:bg-trans-pink/90 text-brand-navy font-medium"
+              disabled={isSubmitting || isOptimizing}
             >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit
+              {isSubmitting ? 'Submitting...' : isOptimizing ? 'Optimizing image...' : 'Submit Application'}
             </Button>
           </form>
         </Form>

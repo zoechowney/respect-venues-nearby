@@ -28,8 +28,9 @@ import {
   useDeleteSponsor, 
   useUploadSponsorLogo,
   SponsorManagement 
-} from '@/hooks/useSponsorsManagement';
+ } from '@/hooks/useSponsorsManagement';
 import { useToast } from '@/hooks/use-toast';
+import { optimizeAndUploadImage, validateImageFile, formatFileSize } from '@/lib/imageOptimization';
 
 const SponsorsManagement = () => {
   const { data: sponsors, isLoading, error } = useSponsorsManagement();
@@ -44,6 +45,7 @@ const SponsorsManagement = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
   const [formData, setFormData] = useState({
     company_name: '',
@@ -85,10 +87,12 @@ const SponsorsManagement = () => {
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      // Validate file
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
         toast({
-          title: 'File too large',
-          description: 'Please select a logo file smaller than 5MB.',
+          title: 'Invalid file',
+          description: validation.error,
           variant: 'destructive',
         });
         return;
@@ -115,8 +119,19 @@ const SponsorsManagement = () => {
       let logoUrl = logoPreview;
       
       if (logoFile) {
+        setIsOptimizing(true);
         const sponsorId = editingSponsor?.id || 'temp';
-        logoUrl = await uploadLogo.mutateAsync({ file: logoFile, sponsorId });
+        const fileName = `${sponsorId}-${Date.now()}-${logoFile.name}`;
+        const result = await optimizeAndUploadImage(logoFile, 'sponsor-logos', fileName);
+        logoUrl = result.url;
+        
+        if (result.compressed) {
+          toast({
+            title: 'Logo optimized',
+            description: `Image compressed by ${result.compressionRatio}, saved ${result.savings}`,
+          });
+        }
+        setIsOptimizing(false);
       }
 
       const sponsorData = {
@@ -151,6 +166,8 @@ const SponsorsManagement = () => {
         description: 'Failed to save sponsor. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsOptimizing(false);
     }
   };
 
@@ -282,7 +299,7 @@ const SponsorsManagement = () => {
           </div>
         )}
         <p className="text-xs text-gray-500">
-          Upload company logo (max 5MB). Supports JPG, PNG, and other image formats.
+          Upload company logo (max 10MB). Supports JPEG, PNG, and WebP formats. Images will be automatically optimized for best performance.
         </p>
       </div>
     </div>
@@ -392,8 +409,8 @@ const SponsorsManagement = () => {
                 <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" disabled={createSponsor.isPending}>
-                  {createSponsor.isPending ? 'Creating...' : 'Create Sponsor'}
+                <Button type="submit" disabled={createSponsor.isPending || isOptimizing}>
+                  {isOptimizing ? 'Optimizing image...' : createSponsor.isPending ? 'Creating...' : 'Create Sponsor'}
                 </Button>
               </div>
             </form>
