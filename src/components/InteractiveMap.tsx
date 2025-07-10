@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import MapContainer from '@/components/map/MapContainer';
-import SimpleMap from '@/components/SimpleMap';
+import LeafletMap from '@/components/LeafletMap';
 
 interface InteractiveMapProps {
   venues?: Venue[];
@@ -51,10 +51,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  // Use simple map if Mapbox failed or we detected SecurityError
+  // Use Leaflet map if Mapbox failed or we detected SecurityError
   if (useSimpleMap || mapboxError) {
-    console.log('🗺️ Rendering SimpleMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
-    return <SimpleMap venues={venues} onVenueSelect={onVenueSelect} />;
+    console.log('🗺️ Rendering LeafletMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
+    return <LeafletMap venues={venues} onVenueSelect={onVenueSelect} />;
   }
 
   console.log('🗺️ Rendering MapContainer');
@@ -69,7 +69,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
       setIsLoading={setIsLoading}
       error={error}
       setError={setError}
-      onReset={() => setUseSimpleMap(true)} // Switch to simple map on reset
+      onReset={() => setUseSimpleMap(true)} // Switch to Leaflet map on reset
     />
   );
 };
