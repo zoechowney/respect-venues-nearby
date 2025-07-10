@@ -143,6 +143,7 @@ const Map = () => {
 
   const handleVenueSelect = (venue: any) => {
     setSelectedVenue(venue);
+    setIsVenueDetailOpen(true);
     console.log('Selected venue:', venue);
   };
 
