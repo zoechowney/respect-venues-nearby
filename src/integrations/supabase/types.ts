@@ -80,6 +80,33 @@ export type Database = {
           },
         ]
       }
+      saved_searches: {
+        Row: {
+          created_at: string
+          filters: Json
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          filters: Json
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          filters?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       sponsor_applications: {
         Row: {
           company_name: string
@@ -413,6 +440,8 @@ export type Database = {
           hours: string | null
           id: string
           is_active: boolean | null
+          latitude: number | null
+          longitude: number | null
           phone: string | null
           published_at: string
           rating: number | null
@@ -435,6 +464,8 @@ export type Database = {
           hours?: string | null
           id?: string
           is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           phone?: string | null
           published_at?: string
           rating?: number | null
@@ -457,6 +488,8 @@ export type Database = {
           hours?: string | null
           id?: string
           is_active?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
           phone?: string | null
           published_at?: string
           rating?: number | null
