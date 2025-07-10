@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +19,7 @@ import { getCurrentLocation, filterVenuesByDistance, Coordinates } from '@/lib/g
 import { useToast } from '@/hooks/use-toast';
 
 const Map = () => {
+  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedVenue, setSelectedVenue] = useState<ApprovedVenue | null>(null);
@@ -29,6 +31,14 @@ const Map = () => {
   
   const { venues, isLoading, error } = useApprovedVenues();
   const { toast } = useToast();
+  
+  // Get venue center coordinates from URL params
+  const centerLat = searchParams.get('lat');
+  const centerLng = searchParams.get('lng');
+  const centerZoom = searchParams.get('zoom');
+  const mapCenter = (centerLat && centerLng) 
+    ? { lat: parseFloat(centerLat), lng: parseFloat(centerLng), zoom: centerZoom ? parseInt(centerZoom) : 16 }
+    : null;
 
   // Get user's current location
   const getUserLocation = async () => {
@@ -264,7 +274,8 @@ const Map = () => {
               if (originalVenue) {
                 handleVenueSelect(originalVenue);
               }
-            }} 
+            }}
+            center={mapCenter}
           />
 
           {/* Venue List */}

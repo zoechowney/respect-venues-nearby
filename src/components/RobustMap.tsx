@@ -15,9 +15,10 @@ L.Icon.Default.mergeOptions({
 interface RobustMapProps {
   venues?: Venue[];
   onVenueSelect?: (venue: Venue) => void;
+  center?: { lat: number; lng: number; zoom?: number };
 }
 
-const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => {
+const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, center }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
@@ -53,8 +54,8 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
 
       // Initialize map with comprehensive options
       mapInstance.current = L.map(mapRef.current, {
-        center: [51.1858, -0.6149], // Godalming, Surrey
-        zoom: 12,
+        center: center ? [center.lat, center.lng] : [51.1858, -0.6149], // Use provided center or default to Godalming, Surrey
+        zoom: center?.zoom || 12,
         zoomControl: true,
         scrollWheelZoom: true,
         doubleClickZoom: true,
@@ -257,8 +258,8 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
       markersRef.current.push(marker);
     });
 
-    // Fit bounds to show all venues
-    if (venues.length > 0) {
+    // Fit bounds to show all venues, unless a specific center is provided
+    if (venues.length > 0 && !center) {
       const group = L.featureGroup(markersRef.current);
       const bounds = group.getBounds();
       if (bounds.isValid()) {

@@ -41,9 +41,15 @@ const Directory = () => {
     return matchesSearch && matchesTab;
   });
 
-  const handleShowOnMap = (venue: any) => {
-    // Navigate to map page - in the future this could include venue-specific parameters
-    navigate('/map');
+  const handleShowOnMap = (venue: ApprovedVenue) => {
+    // Navigate to map page with venue coordinates for centering
+    const params = new URLSearchParams();
+    if (venue.latitude && venue.longitude) {
+      params.set('lat', venue.latitude.toString());
+      params.set('lng', venue.longitude.toString());
+      params.set('zoom', '16'); // Zoom in closer to the venue
+    }
+    navigate(`/map?${params.toString()}`);
   };
 
   const handleViewDetails = (venue: ApprovedVenue) => {
