@@ -33,10 +33,47 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ venues = [], onVenueSelect }) =
       zoomControl: true,
     });
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mapInstance.current);
+    // Try multiple tile providers in case some are blocked
+    const tileProviders = [
+      {
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      },
+      {
+        url: 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png',
+        attribution: '© <a href="https://stadiamaps.com/">Stadia Maps</a>, © <a href="https://openmaptiles.org/">OpenMapTiles</a> © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+      }
+    ];
+
+    // Try the first provider, with error handling
+    const tileLayer = L.tileLayer(tileProviders[0].url, {
+      attribution: tileProviders[0].attribution,
+      errorTileUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==' // Transparent 1x1 pixel
+    });
+
+    tileLayer.on('tileerror', (e) => {
+      console.log('🗺️ Tile loading error, using fallback');
+      // Add a colored background when tiles fail to load
+      const map = e.target._map;
+      if (map && !map._backgroundAdded) {
+        map._backgroundAdded = true;
+        map.getPane('tilePane').style.backgroundColor = '#f0f4f8';
+        
+        // Add a subtle grid pattern
+        const gridStyle = document.createElement('style');
+        gridStyle.textContent = `
+          .leaflet-tile-pane {
+            background-image: 
+              linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+          }
+        `;
+        document.head.appendChild(gridStyle);
+      }
+    });
+
+    tileLayer.addTo(mapInstance.current);
 
     console.log('✅ LeafletMap: Map initialized successfully');
 

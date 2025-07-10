@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import MapContainer from '@/components/map/MapContainer';
-import LeafletMap from '@/components/LeafletMap';
+import GeographicMap from '@/components/GeographicMap';
 
 interface InteractiveMapProps {
   venues?: Venue[];
@@ -51,10 +51,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  // Use Leaflet map if Mapbox failed or we detected SecurityError
+  // Use GeographicMap if Mapbox failed or we detected SecurityError
   if (useSimpleMap || mapboxError) {
-    console.log('🗺️ Rendering LeafletMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
-    return <LeafletMap venues={venues} onVenueSelect={onVenueSelect} />;
+    console.log('🗺️ Rendering GeographicMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
+    return <GeographicMap venues={venues} onVenueSelect={onVenueSelect} />;
   }
 
   console.log('🗺️ Rendering MapContainer');
