@@ -79,7 +79,7 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         });
       }
 
-      // Add global CSS to force Leaflet elements below modals
+      // Add global CSS to force Leaflet elements below modals and style tooltips
       if (!document.querySelector('style[data-leaflet-modal-fix]')) {
         const style = document.createElement('style');
         style.setAttribute('data-leaflet-modal-fix', 'true');
@@ -95,6 +95,19 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
           .leaflet-popup-pane,
           .leaflet-control-container {
             z-index: 1 !important;
+          }
+          .venue-tooltip {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 4px !important;
+            padding: 4px 8px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+          }
+          .venue-tooltip:before {
+            border-top-color: rgba(0, 0, 0, 0.8) !important;
           }
         `;
         document.head.appendChild(style);
@@ -212,7 +225,15 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         icon: createCustomIcon(venue.type)
       }).addTo(mapInstance.current!);
 
-      // Add popup
+      // Add hover tooltip with venue name
+      marker.bindTooltip(venue.name, {
+        permanent: false,
+        direction: 'top',
+        offset: [0, -10],
+        className: 'venue-tooltip'
+      });
+
+      // Add popup for click
       marker.bindPopup(`
         <div style="min-width: 200px;">
           <h3 style="margin: 0 0 8px 0; font-weight: 600; color: #1e293b;">${venue.name}</h3>
@@ -225,7 +246,7 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         </div>
       `);
 
-      // Handle click events
+      // Handle click events for modal
       marker.on('click', () => {
         console.log('🖱️ RobustMap: Venue marker clicked:', venue.name);
         if (onVenueSelect) {
