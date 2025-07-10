@@ -52,7 +52,13 @@ const MapContainer: React.FC<MapContainerProps> = ({
           container: mapContainer.current,
           style: 'mapbox://styles/mapbox/light-v11',
           center: [-0.6149, 51.1858], // Godalming, Surrey coordinates
-          zoom: 12
+          zoom: 12,
+          // Disable workers to avoid SecurityError in iframe environments
+          workerClass: null,
+          transformRequest: (url, resourceType) => {
+            // Return the URL as-is, no transformations needed
+            return { url };
+          }
         });
 
         map.current = mapInstance;
