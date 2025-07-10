@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VenueOwnerAuthProvider } from "@/contexts/VenueOwnerAuthContext";
 import Index from "./pages/Index";
@@ -31,9 +32,10 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <VenueOwnerAuthProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <VenueOwnerAuthProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -66,6 +68,7 @@ function App() {
         </VenueOwnerAuthProvider>
       </AuthProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
