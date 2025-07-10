@@ -23,11 +23,8 @@ const VenueDetailModal = ({ venue, isOpen, onClose }: VenueDetailModalProps) => 
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto z-[100] bg-white shadow-2xl border-0">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-brand-navy flex items-center justify-between">
+          <DialogTitle className="text-2xl text-brand-navy">
             {venue.name}
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
           </DialogTitle>
         </DialogHeader>
 
