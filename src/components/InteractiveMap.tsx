@@ -24,6 +24,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // If Mapbox fails to load or encounters SecurityError, fall back to simple map
   useEffect(() => {
+    console.log('🗺️ InteractiveMap: mapboxError =', mapboxError);
     if (mapboxError) {
       console.log('🗺️ Mapbox failed, using simple map fallback');
       setUseSimpleMap(true);
@@ -32,6 +33,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Handle map initialization errors by falling back to simple map
   useEffect(() => {
+    console.log('🗺️ InteractiveMap: error =', error);
     if (error && error.includes('SecurityError')) {
       console.log('🗺️ SecurityError detected, switching to simple map');
       setUseSimpleMap(true);
@@ -51,8 +53,11 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   // Use simple map if Mapbox failed or we detected SecurityError
   if (useSimpleMap || mapboxError) {
+    console.log('🗺️ Rendering SimpleMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
     return <SimpleMap venues={venues} onVenueSelect={onVenueSelect} />;
   }
+
+  console.log('🗺️ Rendering MapContainer');
 
   return (
     <MapContainer

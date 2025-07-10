@@ -8,6 +8,7 @@ interface SimpleMapProps {
 }
 
 const SimpleMap: React.FC<SimpleMapProps> = ({ venues = [], onVenueSelect }) => {
+  console.log('🗺️ SimpleMap rendering with venues:', venues.length);
   const handleVenueClick = (venue: Venue) => {
     if (onVenueSelect) {
       onVenueSelect(venue);
