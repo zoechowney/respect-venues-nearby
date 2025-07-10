@@ -70,8 +70,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
   const venueFeatures = [
     'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
-    'Safe Space Policy', 'LGBTQ+ Events', 'Trans Support Groups',
-    'Free WiFi', 'Parking Available', 'Public Transport', 'Family Friendly'
+    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
   ];
 
   // Update parent when filters change

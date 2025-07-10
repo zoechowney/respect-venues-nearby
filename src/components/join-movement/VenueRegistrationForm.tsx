@@ -24,6 +24,7 @@ interface FormData {
   website: string;
   description: string;
   signStyle: string;
+  features: string[];
   password: string;
   confirmPassword: string;
   agreeToTerms: boolean;
@@ -46,11 +47,17 @@ const VenueRegistrationForm = () => {
     website: '',
     description: '',
     signStyle: '',
+    features: [],
     password: '',
     confirmPassword: '',
     agreeToTerms: false,
     agreeToTraining: false
   });
+
+  const availableFeatures = [
+    'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
+    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,6 +124,7 @@ const VenueRegistrationForm = () => {
           website: formData.website || null,
           description: formData.description || null,
           sign_style: formData.signStyle || null,
+          features: formData.features.length > 0 ? formData.features : null,
           agree_to_terms: formData.agreeToTerms,
           agree_to_training: formData.agreeToTraining,
           venue_owner_id: venueOwner.id
@@ -143,6 +151,7 @@ const VenueRegistrationForm = () => {
           website: '',
           description: '',
           signStyle: '',
+          features: [],
           password: '',
           confirmPassword: '',
           agreeToTerms: false,
@@ -159,6 +168,15 @@ const VenueRegistrationForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleFeatureToggle = (feature: string) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter(f => f !== feature)
+        : [...prev.features, feature]
+    }));
   };
 
   return (
@@ -310,6 +328,28 @@ const VenueRegistrationForm = () => {
                 <SelectItem value="custom">Custom Design</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-navy mb-3">
+              Features & Accessibility
+            </label>
+            <p className="text-xs text-brand-navy/60 mb-3">
+              Select all features and accessibility options your venue offers
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {availableFeatures.map(feature => (
+                <div key={feature} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={feature}
+                    checked={formData.features.includes(feature)}
+                    onCheckedChange={() => handleFeatureToggle(feature)}
+                    disabled={isSubmitting}
+                  />
+                  <label htmlFor={feature} className="text-sm text-brand-navy/80">{feature}</label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="border-t pt-6">
