@@ -63,9 +63,8 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   const { showError, showSuccess } = useToastNotifications();
 
   const businessTypes = [
-    'Restaurant', 'Café', 'Pub', 'Bar', 'Shop', 'Retail', 
-    'Gym', 'Fitness', 'Hotel', 'Accommodation', 'Cinema', 
-    'Theatre', 'Office', 'Workplace', 'Other'
+    'Pub / bar', 'Restaurant / café', 'Shop / retail', 
+    'Gym / fitness', 'Office / workplace', 'Cinema / theatre', 'Other'
   ];
 
   const venueFeatures = [
