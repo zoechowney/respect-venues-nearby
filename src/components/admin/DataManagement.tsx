@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { Search, Download, Trash2, AlertTriangle, FileText, Database } from 'lucide-react';
+import GeocodeVenues from './GeocodeVenues';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 const DataManagement = () => {
@@ -219,6 +220,16 @@ const DataManagement = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Geocoding Tool */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-brand-navy">Venue Location Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <GeocodeVenues />
+        </CardContent>
+      </Card>
 
       {/* User Data Table */}
       <Card>
