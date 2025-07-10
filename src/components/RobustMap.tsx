@@ -67,6 +67,12 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         maxZoom: 18,
         minZoom: 2
       });
+
+      // Explicitly set the map container's z-index to be lower than modals
+      const mapContainer = mapInstance.current.getContainer();
+      if (mapContainer) {
+        mapContainer.style.zIndex = '10';
+      }
       
       // Create tile layer with basic error handling (no provider switching)
       const tileLayer = L.tileLayer(tileProvider.url, {
@@ -236,8 +242,8 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
   }
 
   return (
-    <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative">
-      <div ref={mapRef} className="w-full h-full" />
+    <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative z-10">
+      <div ref={mapRef} className="w-full h-full z-10" />
       
       {mapStatus === 'loading' && (
         <div className="absolute inset-0 bg-gradient-to-br from-brand-light-blue to-trans-pink/30 flex items-center justify-center">
