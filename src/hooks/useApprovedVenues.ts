@@ -30,7 +30,7 @@ export const useApprovedVenues = () => {
         
         const { data, error: fetchError } = await supabase
           .from('venues')
-          .select('*')
+          .select('*, latitude, longitude')
           .eq('is_active', true)
           .order('published_at', { ascending: false });
 
