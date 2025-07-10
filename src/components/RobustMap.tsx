@@ -27,42 +27,22 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
 
   console.log('🗺️ RobustMap: Initializing with venues:', venues.length);
 
-  const tileProviders = [
-    {
-      name: 'OpenStreetMap',
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19
-    },
-    {
-      name: 'CartoDB Positron',
-      url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-      maxZoom: 20
-    },
-    {
-      name: 'CartoDB Dark Matter',
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-      maxZoom: 20
-    },
-    {
-      name: 'Stamen Terrain',
-      url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
-      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> — Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 18
-    }
-  ];
+  // Use only OpenStreetMap as it's most reliable in iframe environments
+  const tileProvider = {
+    name: 'OpenStreetMap',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  };
 
-  const initializeMap = (providerIndex = 0) => {
-    if (!mapRef.current || providerIndex >= tileProviders.length) {
+  const initializeMap = () => {
+    if (!mapRef.current) {
       setMapStatus('error');
       setErrorMessage('Unable to load map tiles. Map functionality is limited in this environment.');
       return;
     }
 
-    console.log(`🗺️ RobustMap: Trying provider ${providerIndex + 1}/${tileProviders.length}: ${tileProviders[providerIndex].name}`);
-    setCurrentProvider(providerIndex);
+    console.log(`🗺️ RobustMap: Initializing with ${tileProvider.name}`);
 
     try {
       // Clean up existing map
@@ -87,20 +67,16 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         maxZoom: 18,
         minZoom: 2
       });
-
-      const provider = tileProviders[providerIndex];
       
-      // Create tile layer with robust error handling
-      const tileLayer = L.tileLayer(provider.url, {
-        attribution: provider.attribution,
-        maxZoom: provider.maxZoom,
+      // Create tile layer with basic error handling (no provider switching)
+      const tileLayer = L.tileLayer(tileProvider.url, {
+        attribution: tileProvider.attribution,
+        maxZoom: tileProvider.maxZoom,
         crossOrigin: true,
         errorTileUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjU2IiBoZWlnaHQ9IjI1NiIgZmlsbD0iI2Y4ZmFmYyIvPjx0ZXh0IHg9IjEyOCIgeT0iMTI4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2Yjc0ODYiPk5vIERhdGE8L3RleHQ+PC9zdmc+'
       });
 
       let tilesLoaded = 0;
-      let tilesErrored = 0;
-      let loadCheckTimeout: NodeJS.Timeout;
 
       tileLayer.on('tileload', () => {
         tilesLoaded++;
@@ -114,40 +90,26 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
         }
       });
 
-      tileLayer.on('tileerror', () => {
-        tilesErrored++;
-        console.log(`🗺️ RobustMap: Tile errors: ${tilesErrored}`);
-        
-        // If too many tiles fail, try next provider
-        if (tilesErrored >= 5) {
-          console.log(`❌ RobustMap: Too many tile errors for ${provider.name}, trying next provider`);
-          clearTimeout(loadCheckTimeout);
-          setTimeout(() => initializeMap(providerIndex + 1), 500);
-        }
+      // Simple error logging without provider switching
+      tileLayer.on('tileerror', (e) => {
+        console.log(`🗺️ RobustMap: Tile load error (normal during pan/zoom):`, e);
       });
-
-      // Set a timeout to check if map is working
-      loadCheckTimeout = setTimeout(() => {
-        if (tilesLoaded === 0) {
-          console.log(`⏰ RobustMap: Timeout for ${provider.name}, trying next provider`);
-          initializeMap(providerIndex + 1);
-        }
-      }, 5000);
 
       tileLayer.addTo(mapInstance.current);
       
-      console.log(`🗺️ RobustMap: Map initialized with ${provider.name}`);
+      console.log(`🗺️ RobustMap: Map initialized with ${tileProvider.name}`);
 
     } catch (error) {
-      console.error(`❌ RobustMap: Error initializing map with provider ${providerIndex}:`, error);
-      setTimeout(() => initializeMap(providerIndex + 1), 100);
+      console.error(`❌ RobustMap: Error initializing map:`, error);
+      setMapStatus('error');
+      setErrorMessage('Failed to initialize map');
     }
   };
 
   const retryMap = () => {
     setMapStatus('loading');
     setErrorMessage('');
-    initializeMap(0);
+    initializeMap();
   };
 
   useEffect(() => {
@@ -283,7 +245,7 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect }) => 
             <div className="animate-spin w-8 h-8 border-4 border-trans-blue border-t-transparent rounded-full mx-auto mb-4"></div>
             <h3 className="text-lg font-semibold text-brand-navy mb-2">Loading Map</h3>
             <p className="text-brand-navy/70 text-sm">
-              Trying provider: {tileProviders[currentProvider]?.name || 'Unknown'}
+              Loading OpenStreetMap tiles...
             </p>
           </div>
         </div>
