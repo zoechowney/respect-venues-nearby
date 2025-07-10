@@ -13,19 +13,27 @@ export const useVenueData = (venues?: Venue[]) => {
   }
 
   // Transform approved venues to include coordinates for map display
-  const venuesWithCoordinates: Venue[] = approvedVenues.map((venue) => ({
-    id: parseInt(venue.id.split('-')[0], 16), // Convert UUID to number for compatibility
-    name: venue.name,
-    type: venue.type,
-    address: venue.address,
-    rating: venue.rating,
-    openNow: venue.openNow,
-    features: venue.features,
-    // Use stored coordinates if available, otherwise use default
-    coordinates: (venue.latitude && venue.longitude) 
+  const venuesWithCoordinates: Venue[] = approvedVenues.map((venue) => {
+    console.log(`🗺️ Processing venue: ${venue.name}`);
+    console.log(`📍 Raw coordinates from DB: lat=${venue.latitude}, lng=${venue.longitude}`);
+    
+    const coordinates: [number, number] = (venue.latitude && venue.longitude) 
       ? [venue.longitude, venue.latitude] 
-      : DEFAULT_COORDINATES
-  }));
+      : DEFAULT_COORDINATES;
+    
+    console.log(`📌 Final coordinates: [${coordinates[0]}, ${coordinates[1]}]`);
+    
+    return {
+      id: parseInt(venue.id.split('-')[0], 16), // Convert UUID to number for compatibility
+      name: venue.name,
+      type: venue.type,
+      address: venue.address,
+      rating: venue.rating,
+      openNow: venue.openNow,
+      features: venue.features,
+      coordinates
+    };
+  });
 
   console.log('🏢 Transformed venues with coordinates:', venuesWithCoordinates);
 
