@@ -14,6 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
+      content_pages: {
+        Row: {
+          author_id: string | null
+          category: Database["public"]["Enums"]["content_category"]
+          content: string
+          created_at: string
+          excerpt: string | null
+          featured_image_url: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          published_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["content_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          category?: Database["public"]["Enums"]["content_category"]
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["content_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          category?: Database["public"]["Enums"]["content_category"]
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          featured_image_url?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          published_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      content_revisions: {
+        Row: {
+          content: string
+          content_page_id: string
+          created_at: string
+          created_by: string | null
+          excerpt: string | null
+          id: string
+          revision_number: number
+          title: string
+        }
+        Insert: {
+          content: string
+          content_page_id: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          revision_number: number
+          title: string
+        }
+        Update: {
+          content?: string
+          content_page_id?: string
+          created_at?: string
+          created_by?: string | null
+          excerpt?: string | null
+          id?: string
+          revision_number?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_revisions_content_page_id_fkey"
+            columns: ["content_page_id"]
+            isOneToOne: false
+            referencedRelation: "content_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -104,6 +196,36 @@ export type Database = {
           name?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
         }
         Relationships: []
       }
@@ -535,6 +657,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      content_category:
+        | "page"
+        | "policy"
+        | "resource"
+        | "announcement"
+        | "footer"
+        | "homepage"
+      content_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -663,6 +793,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      content_category: [
+        "page",
+        "policy",
+        "resource",
+        "announcement",
+        "footer",
+        "homepage",
+      ],
+      content_status: ["draft", "published", "archived"],
     },
   },
 } as const

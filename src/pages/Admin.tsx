@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -9,6 +8,7 @@ import VenuesManagement from '@/components/admin/VenuesManagement';
 import ReviewsManagement from '@/components/admin/ReviewsManagement';
 import SponsorApplicationsManagement from '@/components/admin/SponsorApplicationsManagement';
 import SponsorsManagement from '@/components/admin/SponsorsManagement';
+import ContentManagement from '@/components/admin/ContentManagement';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 import UsersManagement from '@/components/admin/UsersManagement';
 import DataManagement from '@/components/admin/DataManagement';
@@ -144,6 +144,16 @@ const Admin = () => {
             >
               Data Management
             </button>
+            <button
+              onClick={() => setActiveTab('content')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'content'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              Content Management
+            </button>
           </nav>
         </div>
 
@@ -155,6 +165,7 @@ const Admin = () => {
         {activeTab === 'sponsors-management' && <SponsorsManagement />}
         {activeTab === 'users' && <UsersManagement />}
         {activeTab === 'data-management' && <DataManagement />}
+        {activeTab === 'content' && <ContentManagement />}
       </div>
     </div>
   );
