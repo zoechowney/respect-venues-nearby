@@ -21,7 +21,7 @@ const VenueDetailModal = ({ venue, isOpen, onClose }: VenueDetailModalProps) => 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto z-[100] bg-white shadow-2xl border-0">
         <DialogHeader>
           <DialogTitle className="text-2xl text-brand-navy flex items-center justify-between">
             {venue.name}
