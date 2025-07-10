@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,9 +30,15 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
     address: '',
     phone: '',
     website: '',
-    description: ''
+    description: '',
+    features: [] as string[]
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  const availableFeatures = [
+    'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
+    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
+  ];
 
   useEffect(() => {
     if (venue) {
@@ -41,7 +48,8 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
         address: venue.address || '',
         phone: venue.phone || '',
         website: venue.website || '',
-        description: venue.description || ''
+        description: venue.description || '',
+        features: venue.features || []
       });
     }
   }, [venue]);
@@ -83,6 +91,15 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const handleFeatureToggle = (feature: string) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter(f => f !== feature)
+        : [...prev.features, feature]
     }));
   };
 
@@ -164,6 +181,22 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
               onChange={(e) => handleInputChange('description', e.target.value)}
               rows={3}
             />
+          </div>
+
+          <div className="space-y-3">
+            <Label>Features & Accessibility</Label>
+            <div className="grid grid-cols-2 gap-3">
+              {availableFeatures.map(feature => (
+                <div key={feature} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`feature-${feature}`}
+                    checked={formData.features.includes(feature)}
+                    onCheckedChange={() => handleFeatureToggle(feature)}
+                  />
+                  <label htmlFor={`feature-${feature}`} className="text-sm">{feature}</label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

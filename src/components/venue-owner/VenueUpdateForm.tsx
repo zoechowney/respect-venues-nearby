@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useVenueOwnerAuth } from '@/contexts/VenueOwnerAuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,8 +36,14 @@ const VenueUpdateForm: React.FC<VenueUpdateFormProps> = ({
     address: '',
     website: '',
     description: '',
-    sign_style: ''
+    sign_style: '',
+    features: [] as string[]
   });
+
+  const availableFeatures = [
+    'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
+    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
+  ];
 
   useEffect(() => {
     if (venue) {
@@ -49,7 +56,8 @@ const VenueUpdateForm: React.FC<VenueUpdateFormProps> = ({
         address: venue.address || '',
         website: venue.website || '',
         description: venue.description || '',
-        sign_style: venue.sign_style || ''
+        sign_style: venue.sign_style || '',
+        features: venue.features || []
       });
     }
   }, [venue]);
@@ -98,6 +106,15 @@ const VenueUpdateForm: React.FC<VenueUpdateFormProps> = ({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleFeatureToggle = (feature: string) => {
+    setFormData(prev => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter(f => f !== feature)
+        : [...prev.features, feature]
+    }));
   };
 
   return (
@@ -238,6 +255,25 @@ const VenueUpdateForm: React.FC<VenueUpdateFormProps> = ({
                 <SelectItem value="custom">Custom Design</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-brand-navy mb-3">
+              Features & Accessibility
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {availableFeatures.map(feature => (
+                <div key={feature} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`feature-${feature}`}
+                    checked={formData.features.includes(feature)}
+                    onCheckedChange={() => handleFeatureToggle(feature)}
+                    disabled={isSubmitting}
+                  />
+                  <label htmlFor={`feature-${feature}`} className="text-sm text-brand-navy/80">{feature}</label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
