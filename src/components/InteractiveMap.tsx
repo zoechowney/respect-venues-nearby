@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import MapContainer from '@/components/map/MapContainer';
-import CustomSurreyMap from '@/components/CustomSurreyMap';
+import RobustMap from '@/components/RobustMap';
 
 interface InteractiveMapProps {
   venues?: Venue[];
@@ -51,10 +51,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  // Use CustomSurreyMap if Mapbox failed or we detected SecurityError
+  // Use RobustMap if Mapbox failed or we detected SecurityError
   if (useSimpleMap || mapboxError) {
-    console.log('🗺️ Rendering CustomSurreyMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
-    return <CustomSurreyMap venues={venues} onVenueSelect={onVenueSelect} />;
+    console.log('🗺️ Rendering RobustMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
+    return <RobustMap venues={venues} onVenueSelect={onVenueSelect} />;
   }
 
   console.log('🗺️ Rendering MapContainer');
