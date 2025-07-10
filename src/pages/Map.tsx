@@ -255,9 +255,16 @@ const Map = () => {
               features: venue.features,
               coordinates: (venue.latitude && venue.longitude) 
                 ? [venue.longitude, venue.latitude] as [number, number]
-                : [-0.6149, 51.1858] as [number, number] // Default Godalming coordinates
+                : [-0.6149, 51.1858] as [number, number], // Default Godalming coordinates
+              originalId: venue.id // Preserve original UUID for reviews
             }))}
-            onVenueSelect={handleVenueSelect} 
+            onVenueSelect={(venue) => {
+              // Find the original venue data using the map venue
+              const originalVenue = filteredVenues.find(v => v.name === venue.name && v.address === venue.address);
+              if (originalVenue) {
+                handleVenueSelect(originalVenue);
+              }
+            }} 
           />
 
           {/* Venue List */}

@@ -8,4 +8,5 @@ export interface Venue {
   openNow: boolean;
   features: string[];
   coordinates: [number, number]; // [longitude, latitude]
+  originalId?: string; // Preserve original UUID for database operations
 }
