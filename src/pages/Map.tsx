@@ -48,30 +48,43 @@ const Map = () => {
     }
   };
 
-  // Handle advanced search
+  // Handle advanced search - only called when user clicks "Apply Filters"
   const handleAdvancedSearch = (filters: any) => {
     let results = [...venues];
     
     // Basic search filter
-    if (filters.searchTerm) {
+    if (filters.query) {
       results = results.filter(venue => 
-        venue.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        venue.address.toLowerCase().includes(filters.searchTerm.toLowerCase())
+        venue.name.toLowerCase().includes(filters.query.toLowerCase()) ||
+        venue.address.toLowerCase().includes(filters.query.toLowerCase())
       );
     }
     
-    // Type filter
-    if (filters.type && filters.type !== 'all') {
-      if (filters.type === 'other') {
-        const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
-        results = results.filter(venue => !standardTypes.includes(venue.type.toLowerCase()));
-      } else {
-        results = results.filter(venue => venue.type.toLowerCase() === filters.type.toLowerCase());
-      }
+    // Business type filter  
+    if (filters.businessTypes && filters.businessTypes.length > 0) {
+      results = results.filter(venue => 
+        filters.businessTypes.some((type: string) => 
+          venue.type.toLowerCase().includes(type.toLowerCase())
+        )
+      );
+    }
+    
+    // Features filter
+    if (filters.features && filters.features.length > 0) {
+      results = results.filter(venue => 
+        venue.features && filters.features.some((feature: string) => 
+          venue.features.includes(feature)
+        )
+      );
+    }
+    
+    // Rating filter
+    if (filters.rating && filters.rating > 0) {
+      results = results.filter(venue => venue.rating >= filters.rating);
     }
     
     // Location and distance filtering
-    if (filters.location && userLocation && filters.maxDistance) {
+    if (filters.location && userLocation && filters.distance) {
       const venuesWithCoords = results.map(venue => ({
         ...venue,
         coordinates: {
@@ -88,11 +101,20 @@ const Map = () => {
         }
       }));
       
-      results = filterVenuesByDistance(venuesWithCoords, userLocation, filters.maxDistance);
+      results = filterVenuesByDistance(venuesWithCoords, userLocation, filters.distance);
+    }
+    
+    // Sort results
+    if (filters.sortBy === 'name') {
+      results.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (filters.sortBy === 'rating') {
+      results.sort((a, b) => b.rating - a.rating);
+    } else if (filters.sortBy === 'distance' && userLocation) {
+      // Distance sorting would be handled by filterVenuesByDistance
     }
     
     setFilteredVenues(results);
-    setShowAdvancedSearch(false);
+    // Don't close the modal here - it's handled in the modal component
   };
 
   // Apply basic filters
