@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { NetworkStatus } from "./components/ErrorMessage";
+import SecurityHeaders from "./components/SecurityHeaders";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +41,7 @@ function App() {
             <Sonner />
             <NetworkStatus />
             <BrowserRouter>
+              <SecurityHeaders />
               <ScrollToTop />
               <ErrorBoundary>
                 <Routes>

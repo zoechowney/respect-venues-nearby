@@ -41,21 +41,51 @@ export const sanitizeUrl = (url: string): string | null => {
 };
 
 /**
- * Generate Content Security Policy
+ * Generate Content Security Policy for production
  */
-export const generateCSP = (): string => {
-  return [
+export const generateCSP = (isDevelopment: boolean = false): string => {
+  const basePolicy = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://api.mapbox.com https://*.supabase.co",
+    `script-src 'self' ${isDevelopment ? "'unsafe-eval' " : ""}https://api.mapbox.com https://*.supabase.co https://api.tinify.com`,
     "style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com",
-    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com",
+    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://tinypng.com https://api.tinify.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co https://api.mapbox.com",
+    "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://api.tinify.com wss://*.supabase.co",
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
-  ].join('; ');
+    "upgrade-insecure-requests",
+  ];
+
+  return basePolicy.join('; ');
+};
+
+/**
+ * Generate all security headers for production
+ */
+export const generateSecurityHeaders = (): Record<string, string> => {
+  return {
+    'Content-Security-Policy': generateCSP(false),
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': [
+      'camera=()',
+      'microphone=()',
+      'geolocation=(self)',
+      'payment=()',
+      'usb=()',
+      'magnetometer=()',
+      'accelerometer=()',
+      'gyroscope=()',
+    ].join(', '),
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Cross-Origin-Embedder-Policy': 'credentialless',
+    'Cross-Origin-Opener-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+  };
 };
 
 /**
