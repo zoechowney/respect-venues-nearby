@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Venue } from '@/types/venue';
 import { useMapbox } from '@/hooks/useMapbox';
 import MapContainer from '@/components/map/MapContainer';
-import RobustMap from '@/components/RobustMap';
+import ProductionMapPlaceholder from '@/components/ProductionMapPlaceholder';
 
 interface InteractiveMapProps {
   venues?: Venue[];
@@ -51,10 +51,10 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({
     );
   }
 
-  // Use RobustMap if Mapbox failed or we detected SecurityError
+  // Use ProductionMapPlaceholder if Mapbox failed or we detected SecurityError
   if (useSimpleMap || mapboxError) {
-    console.log('🗺️ Rendering RobustMap, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
-    return <RobustMap venues={venues} onVenueSelect={onVenueSelect} />;
+    console.log('🗺️ Rendering ProductionMapPlaceholder, useSimpleMap:', useSimpleMap, 'mapboxError:', mapboxError);
+    return <ProductionMapPlaceholder venues={venues} onVenueSelect={onVenueSelect} />;
   }
 
   console.log('🗺️ Rendering MapContainer');
