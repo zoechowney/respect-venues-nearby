@@ -35,6 +35,28 @@ const DataRightsManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  const populateEmailsMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('populate-profile-emails');
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Profile Emails Updated",
+        description: `Successfully updated ${data.profiles_updated} profiles with emails.`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Update Failed",
+        description: "Failed to update profile emails. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Populate emails error:', error);
+    }
+  });
+
   const { data: requests, isLoading } = useQuery({
     queryKey: ['data-rights-requests'],
     queryFn: async () => {
@@ -84,21 +106,29 @@ const DataRightsManagement = () => {
 
   const exportUserDataMutation = useMutation({
     mutationFn: async (email: string) => {
-      // Get all user data from various tables by email
+      // Get user-specific data filtered by email
       const [profiles, reviews, venues] = await Promise.all([
-        supabase.from('profiles').select('*'),
-        supabase.from('venue_reviews').select('*'),
-        supabase.from('venue_applications').select('*')
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', email),
+        supabase
+          .from('venue_reviews')
+          .select('*, profiles!inner(email)')
+          .eq('profiles.email', email),
+        supabase
+          .from('venue_applications')
+          .select('*')
+          .eq('email', email)
       ]);
 
-      // Filter by email where possible or get all and filter client-side
       const userData = {
         email,
         profiles: profiles.data || [],
         reviews: reviews.data || [],
         venue_applications: venues.data || [],
         exported_at: new Date().toISOString(),
-        export_type: 'GDPR_DATA_ACCESS_REQUEST'
+        export_type: 'GDPR_DATA_EXPORT_REQUEST'
       };
 
       return userData;
@@ -186,17 +216,16 @@ const DataRightsManagement = () => {
 
   const generateAccessReportMutation = useMutation({
     mutationFn: async (email: string) => {
-      // Get user-specific data by filtering on email/user_id appropriately
+      // Get user-specific data by filtering on email
       const [profiles, reviews, venues] = await Promise.all([
-        // For profiles, we need to find the user by email from auth system
-        // Since we can't query auth.users directly, we'll use the profiles table if it has email
-        // or get all profiles and filter client-side (not ideal but safer for now)
         supabase
           .from('profiles')
-          .select('*'),
+          .select('*')
+          .eq('email', email),
         supabase
           .from('venue_reviews')
-          .select('*'),
+          .select('*, profiles!inner(email)')
+          .eq('profiles.email', email),
         supabase
           .from('venue_applications')
           .select('*')
@@ -204,18 +233,8 @@ const DataRightsManagement = () => {
       ]);
 
       // Filter the data to only include records for this user
-      // Note: This is a simplified approach - in a real system you'd want better user matching
-      const userProfiles = profiles.data?.filter(p => {
-        // We don't have email in profiles table, so this will return empty for now
-        // In a real system, you'd need to match email to user ID
-        return false; // Temporarily return 0 profiles until proper user matching is implemented
-      }) || [];
-
-      const userReviews = reviews.data?.filter(r => {
-        // We don't have direct email matching for reviews, need user_id
-        // This is a limitation that needs proper user ID lookup
-        return false; // Temporarily return 0 reviews until proper user matching is implemented  
-      }) || [];
+      const userProfiles = profiles.data || [];
+      const userReviews = reviews.data || [];
 
       const accessReport = {
         email,
@@ -384,6 +403,13 @@ For a complete data export, please submit a "Download Data" request.
                 className="pl-10"
               />
             </div>
+            <Button
+              onClick={() => populateEmailsMutation.mutate()}
+              disabled={populateEmailsMutation.isPending}
+              variant="outline"
+            >
+              Sync Profile Emails
+            </Button>
           </div>
 
           <div className="border rounded-lg">
