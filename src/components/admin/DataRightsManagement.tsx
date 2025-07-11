@@ -296,6 +296,30 @@ For a complete data export, please submit a "Download Data" request.
         status: 'completed',
         notes: 'Complete data export generated and provided to user'
       });
+    } else if (action === 'object' && request.request_type === 'object') {
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'in_progress',
+        notes: 'GDPR Objection: Review processing activities and stop unless compelling legitimate grounds apply. Contact user with decision.'
+      });
+    } else if (action === 'restrict' && request.request_type === 'restrict') {
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'in_progress',
+        notes: 'GDPR Restriction: Limit data processing activities. Mark data as restricted and notify user.'
+      });
+    } else if (action === 'correct' && request.request_type === 'correct') {
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'in_progress',
+        notes: 'GDPR Rectification: Review data accuracy and make necessary corrections. Notify user of changes.'
+      });
+    } else if (action === 'delete' && request.request_type === 'delete') {
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'in_progress',
+        notes: 'GDPR Erasure: Review deletion request. Delete data unless legal obligations require retention. Confirm deletion to user.'
+      });
     } else {
       // Auto-update status for other quick actions
       updateRequestMutation.mutate({
@@ -480,17 +504,65 @@ For a complete data export, please submit a "Download Data" request.
                            </Button>
                          )}
                          
-                         {request.request_type === 'download' && request.status === 'pending' && (
-                           <Button
-                             size="sm"
-                             variant="outline"
-                             onClick={() => handleQuickAction(request, 'download')}
-                             disabled={exportUserDataMutation.isPending}
-                           >
-                             <Download className="w-4 h-4 mr-1" />
-                             Export Data
-                           </Button>
-                         )}
+                          {request.request_type === 'download' && request.status === 'pending' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleQuickAction(request, 'download')}
+                              disabled={exportUserDataMutation.isPending}
+                            >
+                              <Download className="w-4 h-4 mr-1" />
+                              Export Data
+                            </Button>
+                          )}
+
+                          {request.request_type === 'object' && request.status === 'pending' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleQuickAction(request, 'object')}
+                              disabled={updateRequestMutation.isPending}
+                            >
+                              <Shield className="w-4 h-4 mr-1" />
+                              Process Objection
+                            </Button>
+                          )}
+
+                          {request.request_type === 'restrict' && request.status === 'pending' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleQuickAction(request, 'restrict')}
+                              disabled={updateRequestMutation.isPending}
+                            >
+                              <Shield className="w-4 h-4 mr-1" />
+                              Restrict Processing
+                            </Button>
+                          )}
+
+                          {request.request_type === 'correct' && request.status === 'pending' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleQuickAction(request, 'correct')}
+                              disabled={updateRequestMutation.isPending}
+                            >
+                              <Edit className="w-4 h-4 mr-1" />
+                              Correct Data
+                            </Button>
+                          )}
+
+                          {request.request_type === 'delete' && request.status === 'pending' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleQuickAction(request, 'delete')}
+                              disabled={updateRequestMutation.isPending}
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Process Deletion
+                            </Button>
+                          )}
                         
                         <Dialog>
                           <DialogTrigger asChild>
