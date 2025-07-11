@@ -17,6 +17,7 @@ import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { getCurrentLocation, filterVenuesByDistance, Coordinates } from '@/lib/geolocation';
 import { useToast } from '@/hooks/use-toast';
+import { getBusinessTypeColor } from '@/lib/utils';
 
 const Map = () => {
   const [searchParams] = useSearchParams();
@@ -310,7 +311,7 @@ const Map = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <CardTitle className="text-lg text-brand-navy">{venue.name}</CardTitle>
-                      <p className="text-sm text-trans-blue font-medium">{venue.type}</p>
+                      <p className={`text-sm ${getBusinessTypeColor(venue.type)} font-medium`}>{venue.type}</p>
                     </div>
                     <div className="flex items-center space-x-1">
                       {venue.rating > 0 ? (
