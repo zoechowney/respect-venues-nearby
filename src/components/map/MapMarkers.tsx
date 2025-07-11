@@ -72,8 +72,10 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
         el.style.zIndex = '10'; // Lower z-index to ensure modals appear above
         
-        // Color code by venue type
-        el.style.backgroundColor = getBusinessTypeHexColor(venue.type);
+        // Color code by venue type - force refresh with new colors
+        const bgColor = getBusinessTypeHexColor(venue.type);
+        el.style.backgroundColor = bgColor;
+        console.log(`🎨 Setting marker color for ${venue.name} (${venue.type}): ${bgColor}`);
 
         console.log(`🎨 Created marker element for ${venue.name}`);
 
