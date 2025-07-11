@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { LogOut, Edit, Clock, CheckCircle, AlertTriangle, MessageSquare, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ import AdditionalVenueForm from '@/components/venue-owner/AdditionalVenueForm';
 const VenueOwnerDashboard = () => {
   const { venueOwner, signOut, loading } = useVenueOwnerAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [venues, setVenues] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
@@ -102,6 +103,7 @@ const VenueOwnerDashboard = () => {
   const handleSignOut = () => {
     try {
       signOut();
+      navigate('/venue-owner/auth', { replace: true });
     } catch (error) {
       console.error('Error signing out:', error);
       toast({
