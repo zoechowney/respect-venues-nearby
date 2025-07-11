@@ -106,6 +106,45 @@ export type Database = {
           },
         ]
       }
+      data_rights_requests: {
+        Row: {
+          created_at: string
+          details: string | null
+          email: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          request_type: string
+          response_notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          email: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type: string
+          response_notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          email?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type?: string
+          response_notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

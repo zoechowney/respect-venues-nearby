@@ -12,6 +12,7 @@ import ContentManagement from '@/components/admin/ContentManagement';
 import AnalyticsDashboard from '@/components/admin/AnalyticsDashboard';
 import UsersManagement from '@/components/admin/UsersManagement';
 import DataManagement from '@/components/admin/DataManagement';
+import DataRightsManagement from '@/components/admin/DataRightsManagement';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
@@ -145,6 +146,16 @@ const Admin = () => {
               Data Management
             </button>
             <button
+              onClick={() => setActiveTab('data-rights')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'data-rights'
+                  ? 'bg-trans-blue text-brand-navy shadow-sm'
+                  : 'text-brand-navy/70 hover:text-brand-navy'
+              }`}
+            >
+              GDPR Requests
+            </button>
+            <button
               onClick={() => setActiveTab('content')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'content'
@@ -165,6 +176,7 @@ const Admin = () => {
         {activeTab === 'sponsors-management' && <SponsorsManagement />}
         {activeTab === 'users' && <UsersManagement />}
         {activeTab === 'data-management' && <DataManagement />}
+        {activeTab === 'data-rights' && <DataRightsManagement />}
         {activeTab === 'content' && <ContentManagement />}
       </div>
     </div>

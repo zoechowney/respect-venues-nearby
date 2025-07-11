@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Trash2, Eye, Edit, Shield, FileText } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const DataRights = () => {
   const isMobile = useIsMobile();
@@ -19,14 +20,33 @@ const DataRights = () => {
     details: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // This would typically send to a backend service
-    toast({
-      title: "Request Submitted",
-      description: "We have received your data rights request and will respond within 30 days.",
-    });
-    setFormData({ email: '', requestType: '', details: '' });
+    
+    try {
+      const { error } = await supabase
+        .from('data_rights_requests')
+        .insert({
+          email: formData.email,
+          request_type: formData.requestType,
+          details: formData.details || null
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Request Submitted",
+        description: "We have received your data rights request and will respond within 30 days.",
+      });
+      setFormData({ email: '', requestType: '', details: '' });
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your request. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const requestTypes = [
