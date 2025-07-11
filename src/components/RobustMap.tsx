@@ -338,6 +338,20 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
     }
   }, [userLocation, mapStatus]);
 
+  // Update map center when user location becomes available
+  useEffect(() => {
+    if (!mapInstance.current || !userLocation || mapStatus !== 'loaded') return;
+    
+    // Only recenter if no specific center was provided (i.e., we're not viewing a shared location)
+    if (!center) {
+      console.log('📍 RobustMap: Centering map on user location');
+      mapInstance.current.setView([userLocation.latitude, userLocation.longitude], 14, {
+        animate: true,
+        duration: 1.0
+      });
+    }
+  }, [userLocation, mapStatus, center]);
+
   if (mapStatus === 'error') {
     return (
       <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
