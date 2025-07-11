@@ -33,13 +33,21 @@ const Map = () => {
   const { venues, isLoading, error } = useApprovedVenues();
   const { toast } = useToast();
   
-  // Get venue center coordinates from URL params
+  // Get venue center coordinates from URL params, or use user location if available
   const centerLat = searchParams.get('lat');
   const centerLng = searchParams.get('lng');
   const centerZoom = searchParams.get('zoom');
+  
   const mapCenter = (centerLat && centerLng) 
     ? { lat: parseFloat(centerLat), lng: parseFloat(centerLng), zoom: centerZoom ? parseInt(centerZoom) : 16 }
-    : null;
+    : userLocation 
+    ? { lat: userLocation.latitude, lng: userLocation.longitude, zoom: 14 }
+    : null; // Will default to Surrey in the map component
+
+  // Automatically get user's location when the page loads
+  useEffect(() => {
+    getUserLocation();
+  }, []);
 
   // Get user's current location
   const getUserLocation = async () => {
@@ -48,14 +56,11 @@ const Map = () => {
       setUserLocation(location);
       toast({
         title: "Location Found",
-        description: "Venues are now sorted by distance from your location.",
+        description: "Map centered on your location. Venues are now sorted by distance.",
       });
     } catch (error) {
-      toast({
-        title: "Location Error", 
-        description: "Could not get your location. You can still search venues.",
-        variant: "destructive"
-      });
+      console.log('Location access denied or failed, using default map center');
+      // Silently fail - map will use default Surrey location
     }
   };
 
@@ -210,9 +215,10 @@ const Map = () => {
               variant="outline"
               onClick={getUserLocation}
               className="border-trans-blue text-trans-blue hover:bg-trans-blue hover:text-white"
+              disabled={!!userLocation}
             >
               <NavigationIcon className="w-4 h-4 mr-2" />
-              Use My Location
+              {userLocation ? 'Location Active' : 'Use My Location'}
             </Button>
           </div>
         </div>
