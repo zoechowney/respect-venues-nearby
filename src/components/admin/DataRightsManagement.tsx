@@ -184,17 +184,82 @@ const DataRightsManagement = () => {
     });
   };
 
-  const handleQuickAction = async (request: DataRightsRequest, action: string) => {
-    if (action === 'export' && (request.request_type === 'access' || request.request_type === 'download')) {
-      exportUserDataMutation.mutate(request.email);
+  const generateAccessReportMutation = useMutation({
+    mutationFn: async (email: string) => {
+      // Generate a readable access report
+      const [profiles, reviews, venues] = await Promise.all([
+        supabase.from('profiles').select('*'),
+        supabase.from('venue_reviews').select('*'),
+        supabase.from('venue_applications').select('*')
+      ]);
+
+      const accessReport = {
+        email,
+        report_type: 'GDPR_ACCESS_REQUEST',
+        generated_at: new Date().toISOString(),
+        data_summary: {
+          total_profiles: profiles.data?.length || 0,
+          total_reviews: reviews.data?.length || 0,
+          total_applications: venues.data?.length || 0,
+        },
+        readable_summary: `
+Data Access Report for ${email}
+Generated on: ${new Date().toLocaleDateString()}
+
+SUMMARY:
+- Profiles: ${profiles.data?.length || 0} records
+- Reviews: ${reviews.data?.length || 0} records  
+- Venue Applications: ${venues.data?.length || 0} records
+
+This report provides an overview of personal data we process about you.
+For a complete data export, please submit a "Download Data" request.
+        `.trim()
+      };
+
+      return accessReport;
+    },
+    onSuccess: (data, email) => {
+      // Download as readable text file
+      const blob = new Blob([data.readable_summary], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `access-report-${email}-${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Access Report Generated",
+        description: "Readable access report has been generated for the user.",
+      });
     }
-    
-    // Auto-update status for quick actions
-    updateRequestMutation.mutate({
-      id: request.id,
-      status: action === 'export' ? 'completed' : 'in_progress',
-      notes: action === 'export' ? 'Data exported and downloaded' : 'Processing request'
-    });
+  });
+
+  const handleQuickAction = async (request: DataRightsRequest, action: string) => {
+    if (action === 'access' && request.request_type === 'access') {
+      generateAccessReportMutation.mutate(request.email);
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'completed',
+        notes: 'Access report generated and provided to user'
+      });
+    } else if (action === 'download' && request.request_type === 'download') {
+      exportUserDataMutation.mutate(request.email);
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'completed',
+        notes: 'Complete data export generated and provided to user'
+      });
+    } else {
+      // Auto-update status for other quick actions
+      updateRequestMutation.mutate({
+        id: request.id,
+        status: 'in_progress',
+        notes: 'Processing request'
+      });
+    }
   };
 
   if (isLoading) {
@@ -335,19 +400,30 @@ const DataRightsManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex space-x-2">
-                        {(request.request_type === 'access' || request.request_type === 'download') && 
-                         request.status === 'pending' && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleQuickAction(request, 'export')}
-                            disabled={exportUserDataMutation.isPending}
-                          >
-                            <Download className="w-4 h-4 mr-1" />
-                            Export
-                          </Button>
-                        )}
+                       <div className="flex space-x-2">
+                         {request.request_type === 'access' && request.status === 'pending' && (
+                           <Button
+                             size="sm"
+                             variant="outline"
+                             onClick={() => handleQuickAction(request, 'access')}
+                             disabled={generateAccessReportMutation.isPending}
+                           >
+                             <Eye className="w-4 h-4 mr-1" />
+                             Generate Report
+                           </Button>
+                         )}
+                         
+                         {request.request_type === 'download' && request.status === 'pending' && (
+                           <Button
+                             size="sm"
+                             variant="outline"
+                             onClick={() => handleQuickAction(request, 'download')}
+                             disabled={exportUserDataMutation.isPending}
+                           >
+                             <Download className="w-4 h-4 mr-1" />
+                             Export Data
+                           </Button>
+                         )}
                         
                         <Dialog>
                           <DialogTrigger asChild>
