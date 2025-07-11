@@ -43,12 +43,16 @@ const VenueOwnerDashboard = () => {
     if (!venueOwner?.id) return;
 
     try {
-      // Fetch venue applications
+      console.log('Fetching applications for venue owner:', venueOwner.id);
+      
+      // Fetch venue applications using a direct query since RLS policies use different auth mechanism
       const { data: appsData, error: appsError } = await supabase
         .from('venue_applications')
         .select('*')
         .eq('venue_owner_id', venueOwner.id)
         .order('created_at', { ascending: false });
+
+      console.log('Applications query result:', { data: appsData, error: appsError });
 
       if (appsError) throw appsError;
       setApplications(appsData || []);
