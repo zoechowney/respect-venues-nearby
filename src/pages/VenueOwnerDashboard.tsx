@@ -223,14 +223,51 @@ const VenueOwnerDashboard = () => {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Applications Status */}
-            {applications.length > 0 && (
+            {/* Your Pending Venues */}
+            {applications.filter(app => app.status === 'pending').length > 0 && (
+              <div>
+                <h2 className={`font-semibold text-brand-navy mb-4 ${isMobile ? 'text-lg' : 'text-xl'}`}>
+                  Your Pending Venues
+                </h2>
+                <div className="grid gap-4">
+                  {applications.filter(app => app.status === 'pending').map((app) => (
+                    <Card key={app.id} className="border-yellow-200 bg-yellow-50/30">
+                      <CardHeader className={isMobile ? 'pb-3' : ''}>
+                        <div className={`flex justify-between items-start ${isMobile ? 'flex-col space-y-2' : ''}`}>
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className={`text-brand-navy ${isMobile ? 'text-base' : 'text-lg'}`}>
+                              {app.business_name}
+                            </CardTitle>
+                            <p className="text-sm text-brand-navy/70">{app.business_type} • {app.address}</p>
+                          </div>
+                          <Badge variant="outline" className="border-yellow-500 text-yellow-700">
+                            <Clock className="w-3 h-3 mr-1" />
+                            Pending
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-brand-navy/70">
+                          Applied: {new Date(app.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-yellow-700 mt-2">
+                          Your venue application is currently under review by our admin team.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Other Application Status */}
+            {applications.filter(app => app.status !== 'pending').length > 0 && (
               <div>
                 <h2 className={`font-semibold text-brand-navy mb-4 ${isMobile ? 'text-lg' : 'text-xl'}`}>
                   Application Status
                 </h2>
                 <div className="grid gap-4">
-                  {applications.map((app) => (
+                  {applications.filter(app => app.status !== 'pending').map((app) => (
                     <Card key={app.id} className="border-trans-blue/20">
                       <CardHeader className={isMobile ? 'pb-3' : ''}>
                         <div className={`flex justify-between items-start ${isMobile ? 'flex-col space-y-2' : ''}`}>
