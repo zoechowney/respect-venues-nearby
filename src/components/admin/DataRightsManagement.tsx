@@ -31,6 +31,7 @@ const DataRightsManagement = () => {
   const [selectedRequest, setSelectedRequest] = useState<DataRightsRequest | null>(null);
   const [responseNotes, setResponseNotes] = useState('');
   const [newStatus, setNewStatus] = useState('');
+  const [viewingDetails, setViewingDetails] = useState<DataRightsRequest | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -439,9 +440,18 @@ For a complete data export, please submit a "Download Data" request.
                     <TableCell>
                       {request.details ? (
                         <div className="text-sm text-brand-navy max-w-xs">
-                          <div className="truncate" title={request.details}>
+                          <div className="truncate mb-1">
                             {request.details}
                           </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setViewingDetails(request)}
+                            className="h-6 px-2 text-xs"
+                          >
+                            <Eye className="w-3 h-3 mr-1" />
+                            View Full
+                          </Button>
                         </div>
                       ) : (
                         <span className="text-brand-navy/50 text-sm italic">No additional details</span>
@@ -548,6 +558,38 @@ For a complete data export, please submit a "Download Data" request.
           </div>
         </CardContent>
       </Card>
+
+      {/* Additional Details Modal */}
+      <Dialog open={!!viewingDetails} onOpenChange={() => setViewingDetails(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Additional Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-brand-navy">Request from:</label>
+              <p className="text-brand-navy">{viewingDetails?.email}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-brand-navy">Request Type:</label>
+              <div className="flex items-center gap-2 mt-1">
+                {viewingDetails && getRequestTypeIcon(viewingDetails.request_type)}
+                <span className="text-brand-navy">
+                  {viewingDetails && getRequestTypeLabel(viewingDetails.request_type)}
+                </span>
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-brand-navy">Additional Details:</label>
+              <div className="mt-2 p-3 bg-gray-50 rounded-md border">
+                <p className="text-brand-navy whitespace-pre-wrap">
+                  {viewingDetails?.details || 'No additional details provided.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
