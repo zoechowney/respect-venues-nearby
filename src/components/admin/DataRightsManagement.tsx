@@ -630,10 +630,10 @@ For a complete data export, please submit a "Download Data" request.
             <div>
               <label className="text-sm font-medium text-brand-navy">Status</label>
               <Select value={newStatus} onValueChange={setNewStatus}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
-                <SelectContent className="z-[60]">
+                <SelectContent className="z-[9999] bg-white border shadow-lg">
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
