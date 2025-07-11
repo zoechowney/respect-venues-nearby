@@ -7,6 +7,7 @@ import VenueReviews from './VenueReviews';
 import ReviewForm from './ReviewForm';
 import { useVenueReviews } from '@/hooks/useVenueReviews';
 import { ApprovedVenue } from '@/hooks/useApprovedVenues';
+import { getBusinessTypeColor } from '@/lib/utils';
 
 interface VenueDetailModalProps {
   venue: ApprovedVenue | null;
@@ -32,7 +33,7 @@ const VenueDetailModal = ({ venue, isOpen, onClose }: VenueDetailModalProps) => 
           {/* Venue Information */}
           <div className="space-y-4">
             <div>
-              <p className="text-trans-blue font-medium text-lg">{venue.type}</p>
+              <p className={`${getBusinessTypeColor(venue.type)} font-medium text-lg`}>{venue.type}</p>
               <div className="flex items-center space-x-2 mt-1">
                 {venue.rating > 0 ? (
                   <>

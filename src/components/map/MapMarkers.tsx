@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react';
 import { Venue } from '@/types/venue';
+import { getBusinessTypeHexColor } from '@/lib/utils';
 
 interface MapMarkersProps {
   map: any;
@@ -72,13 +73,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         el.style.zIndex = '10'; // Lower z-index to ensure modals appear above
         
         // Color code by venue type
-        if (venue.type.toLowerCase() === 'pub') {
-          el.style.backgroundColor = '#60a5fa'; // trans-blue
-        } else if (venue.type.toLowerCase() === 'restaurant') {
-          el.style.backgroundColor = '#f472b6'; // trans-pink
-        } else {
-          el.style.backgroundColor = '#374151'; // brand-navy
-        }
+        el.style.backgroundColor = getBusinessTypeHexColor(venue.type);
 
         console.log(`🎨 Created marker element for ${venue.name}`);
 
