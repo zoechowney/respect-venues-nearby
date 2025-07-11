@@ -7,22 +7,40 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getBusinessTypeColor(businessType: string): string {
   const type = businessType.toLowerCase();
-  if (type === 'pub') {
-    return 'text-trans-blue';
-  } else if (type === 'restaurant') {
-    return 'text-trans-pink';
-  } else {
-    return 'text-brand-navy';
+  switch (type) {
+    case 'pub':
+      return 'text-trans-blue';
+    case 'restaurant':
+      return 'text-trans-pink';
+    case 'shop':
+      return 'text-emerald-600';
+    case 'gym':
+      return 'text-orange-600';
+    case 'cinema':
+      return 'text-purple-600';
+    case 'office':
+      return 'text-amber-600';
+    default:
+      return 'text-brand-navy';
   }
 }
 
 export function getBusinessTypeHexColor(businessType: string): string {
   const type = businessType.toLowerCase();
-  if (type === 'pub') {
-    return '#60a5fa'; // trans-blue
-  } else if (type === 'restaurant') {
-    return '#f472b6'; // trans-pink
-  } else {
-    return '#374151'; // brand-navy
+  switch (type) {
+    case 'pub':
+      return '#60a5fa'; // trans-blue
+    case 'restaurant':
+      return '#f472b6'; // trans-pink
+    case 'shop':
+      return '#059669'; // emerald-600
+    case 'gym':
+      return '#ea580c'; // orange-600
+    case 'cinema':
+      return '#9333ea'; // purple-600
+    case 'office':
+      return '#d97706'; // amber-600
+    default:
+      return '#374151'; // brand-navy
   }
 }
