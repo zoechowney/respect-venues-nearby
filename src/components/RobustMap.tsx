@@ -17,12 +17,14 @@ interface RobustMapProps {
   venues?: Venue[];
   onVenueSelect?: (venue: Venue) => void;
   center?: { lat: number; lng: number; zoom?: number };
+  userLocation?: { latitude: number; longitude: number } | null;
 }
 
-const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, center }) => {
+const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, center, userLocation }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
+  const userLocationMarkerRef = useRef<L.Marker | null>(null);
   const [mapStatus, setMapStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [currentProvider, setCurrentProvider] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
@@ -270,6 +272,72 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
     console.log('✅ RobustMap: Added', markersRef.current.length, 'markers');
   }, [venues, onVenueSelect, mapStatus]);
 
+  // Add or update user location marker
+  useEffect(() => {
+    if (!mapInstance.current || mapStatus !== 'loaded') return;
+
+    // Remove existing user location marker
+    if (userLocationMarkerRef.current) {
+      mapInstance.current.removeLayer(userLocationMarkerRef.current);
+      userLocationMarkerRef.current = null;
+    }
+
+    // Add new user location marker if location is available
+    if (userLocation) {
+      console.log('📍 RobustMap: Adding user location marker');
+      
+      // Create a distinctive user location icon
+      const userLocationIcon = L.divIcon({
+        className: 'user-location-marker',
+        html: `<div style="
+          width: 20px; 
+          height: 20px; 
+          background-color: #3b82f6; 
+          border: 3px solid white; 
+          border-radius: 50%; 
+          box-shadow: 0 0 0 2px #3b82f6, 0 2px 4px rgba(0,0,0,0.3);
+          position: relative;
+        ">
+          <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+          "></div>
+        </div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+
+      userLocationMarkerRef.current = L.marker(
+        [userLocation.latitude, userLocation.longitude], 
+        { icon: userLocationIcon }
+      ).addTo(mapInstance.current);
+
+      // Add tooltip for user location
+      userLocationMarkerRef.current.bindTooltip('Your Location', {
+        permanent: false,
+        direction: 'top',
+        offset: [0, -10],
+        className: 'venue-tooltip'
+      });
+
+      // Add popup for user location
+      userLocationMarkerRef.current.bindPopup(`
+        <div style="min-width: 150px;">
+          <h3 style="margin: 0 0 8px 0; font-weight: 600; color: #1e293b;">📍 Your Location</h3>
+          <p style="margin: 0; font-size: 0.75rem; color: #94a3b8;">
+            ${userLocation.latitude.toFixed(6)}, ${userLocation.longitude.toFixed(6)}
+          </p>
+        </div>
+      `);
+    }
+  }, [userLocation, mapStatus]);
+
   if (mapStatus === 'error') {
     return (
       <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
@@ -320,27 +388,51 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
       </div>
 
       {/* Map Legend */}
-      {mapStatus === 'loaded' && venues.length > 0 && (
+      {mapStatus === 'loaded' && (venues.length > 0 || userLocation) && (
         <div className="bg-white/90 backdrop-blur-sm border border-trans-blue/20 rounded-lg p-4 shadow-sm">
-          <h4 className="text-sm font-semibold text-brand-navy mb-3">Business Types</h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { type: 'pub', label: 'Pubs' },
-              { type: 'restaurant', label: 'Restaurants' },
-              { type: 'shop', label: 'Shops' },
-              { type: 'gym', label: 'Gyms' },
-              { type: 'cinema', label: 'Cinemas' },
-              { type: 'office', label: 'Offices' }
-            ].map(({ type, label }) => (
-              <div key={type} className="flex items-center gap-2">
+          <h4 className="text-sm font-semibold text-brand-navy mb-3">Map Legend</h4>
+          
+          {/* User Location Legend */}
+          {userLocation && (
+            <div className="mb-3 pb-3 border-b border-gray-200">
+              <div className="flex items-center gap-2">
                 <div 
-                  className="w-4 h-4 rounded-full border-2 border-white shadow-sm flex-shrink-0"
-                  style={{ backgroundColor: getBusinessTypeHexColor(type) }}
-                />
-                <span className="text-xs text-brand-navy font-medium">{label}</span>
+                  className="w-4 h-4 rounded-full border-2 border-white shadow-sm flex-shrink-0 relative"
+                  style={{ 
+                    backgroundColor: '#3b82f6',
+                    boxShadow: '0 0 0 1px #3b82f6, 0 2px 4px rgba(0,0,0,0.2)'
+                  }}
+                >
+                  <div 
+                    className="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2"
+                  />
+                </div>
+                <span className="text-xs text-brand-navy font-medium">Your Location</span>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+          
+          {/* Business Types Legend */}
+          {venues.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { type: 'pub', label: 'Pubs' },
+                { type: 'restaurant', label: 'Restaurants' },
+                { type: 'shop', label: 'Shops' },
+                { type: 'gym', label: 'Gyms' },
+                { type: 'cinema', label: 'Cinemas' },
+                { type: 'office', label: 'Offices' }
+              ].map(({ type, label }) => (
+                <div key={type} className="flex items-center gap-2">
+                  <div 
+                    className="w-4 h-4 rounded-full border-2 border-white shadow-sm flex-shrink-0"
+                    style={{ backgroundColor: getBusinessTypeHexColor(type) }}
+                  />
+                  <span className="text-xs text-brand-navy font-medium">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

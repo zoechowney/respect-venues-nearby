@@ -277,6 +277,7 @@ const Map = () => {
               }
             }}
             center={mapCenter}
+            userLocation={userLocation}
           />
 
           {/* Venue List */}
