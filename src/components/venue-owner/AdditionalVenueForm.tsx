@@ -184,7 +184,7 @@ const AdditionalVenueForm: React.FC<AdditionalVenueFormProps> = ({ venueOwnerId,
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999] bg-white border shadow-lg">
                     <SelectItem value="pub">Pub / bar</SelectItem>
                     <SelectItem value="restaurant">Restaurant / café</SelectItem>
                     <SelectItem value="shop">Shop / retail</SelectItem>
@@ -263,7 +263,7 @@ const AdditionalVenueForm: React.FC<AdditionalVenueFormProps> = ({ venueOwnerId,
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a sign style" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-[9999] bg-white border shadow-lg">
                   <SelectItem value="classic">Classic Blue & White</SelectItem>
                   <SelectItem value="rainbow">Rainbow Pride</SelectItem>
                   <SelectItem value="minimalist">Minimalist Black</SelectItem>
