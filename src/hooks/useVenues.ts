@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { geocodeAddress } from '@/lib/geocoding';
 
 export interface Venue {
   id: string;
@@ -98,12 +99,48 @@ export const useVenues = () => {
           : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'
       };
 
-      const { error: insertError } = await supabase
+      const { data: insertedVenue, error: insertError } = await supabase
         .from('venues')
-        .insert([venueData]);
+        .insert([venueData])
+        .select()
+        .single();
 
       if (insertError) {
         throw insertError;
+      }
+
+      // Automatically geocode the venue after successful insertion
+      if (insertedVenue) {
+        try {
+          console.log('🗺️ Geocoding venue address:', application.address);
+          const geocodeResult = await geocodeAddress(application.address);
+          
+          if (geocodeResult) {
+            console.log('✅ Geocoding successful:', geocodeResult);
+            
+            // Update the venue with coordinates
+            const { error: geocodeUpdateError } = await supabase
+              .from('venues')
+              .update({ 
+                latitude: geocodeResult.latitude, 
+                longitude: geocodeResult.longitude 
+              })
+              .eq('id', insertedVenue.id);
+
+            if (geocodeUpdateError) {
+              console.error('❌ Failed to update venue coordinates:', geocodeUpdateError);
+              // Don't throw error - venue is still published successfully
+            } else {
+              console.log('✅ Venue coordinates updated successfully');
+            }
+          } else {
+            console.warn('⚠️ Geocoding failed for address:', application.address);
+            // Don't throw error - venue is still published successfully
+          }
+        } catch (geocodeError) {
+          console.error('❌ Error during geocoding:', geocodeError);
+          // Don't throw error - venue is still published successfully
+        }
       }
 
       // Update application status to 'published'
