@@ -123,7 +123,7 @@ const GeographicMap: React.FC<GeographicMapProps> = ({ venues = [], onVenueSelec
                       <div className="text-sm font-semibold text-brand-navy">{venue.name}</div>
                       <div className="text-xs text-brand-navy/60">{venue.type}</div>
                       <div className="text-xs text-brand-navy/50 mt-1">{venue.address}</div>
-                      <div className="text-xs text-brand-navy/60 mt-1">★ {venue.rating}</div>
+                      <div className="text-xs text-brand-navy/60 mt-1">★ {venue.rating > 0 ? venue.rating : '-'}</div>
                       {/* Tooltip arrow */}
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-white"></div>
                     </div>

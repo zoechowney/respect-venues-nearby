@@ -236,7 +236,7 @@ const VenuesManagement = () => {
                   )}
                   
                   <div className="text-xs text-brand-navy/50 pt-2 border-t">
-                    Rating: {venue.rating}/5 • {venue.reviews_count} reviews
+                    Rating: {venue.rating > 0 ? `${venue.rating}/5` : 'No rating'} • {venue.reviews_count} reviews
                     {venue.created_from_application_id && (
                       <span> • Created from application</span>
                     )}

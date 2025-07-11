@@ -73,7 +73,7 @@ const ProductionMapPlaceholder: React.FC<ProductionMapPlaceholderProps> = ({ ven
                     </div>
                     
                     <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>★ {venue.rating}</span>
+                      <span>★ {venue.rating > 0 ? venue.rating : '-'}</span>
                       <span>Lat: {venue.coordinates[1].toFixed(4)}</span>
                       <span>Lng: {venue.coordinates[0].toFixed(4)}</span>
                     </div>

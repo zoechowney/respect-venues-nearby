@@ -242,7 +242,7 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
           <p style="margin: 0 0 8px 0; font-size: 0.75rem; color: #94a3b8;">${venue.address}</p>
           <div style="display: flex; align-items: center; gap: 4px;">
             <span style="color: #eab308;">★</span>
-            <span style="font-weight: 500; color: #1e293b;">${venue.rating}</span>
+            <span style="font-weight: 500; color: #1e293b;">${venue.rating > 0 ? venue.rating : '-'}</span>
           </div>
         </div>
       `);

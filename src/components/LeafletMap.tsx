@@ -155,7 +155,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ venues = [], onVenueSelect }) =
           <p style="margin: 0 0 4px 0; font-size: 0.875rem; color: #64748b;">${venue.type} • ${venue.address}</p>
           <div style="display: flex; align-items: center; gap: 4px; margin-top: 8px;">
             <span style="color: #eab308;">★</span>
-            <span style="font-weight: 500; color: #1e293b;">${venue.rating}</span>
+            <span style="font-weight: 500; color: #1e293b;">${venue.rating > 0 ? venue.rating : '-'}</span>
           </div>
         </div>
       `);

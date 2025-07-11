@@ -313,9 +313,15 @@ const Map = () => {
                       <p className="text-sm text-trans-blue font-medium">{venue.type}</p>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
-                      <span className="text-xs text-brand-navy/60">({venue.reviews})</span>
+                      {venue.rating > 0 ? (
+                        <>
+                          <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                          <span className="text-sm font-medium text-brand-navy">{venue.rating}</span>
+                          <span className="text-xs text-brand-navy/60">({venue.reviews})</span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-brand-navy/60">No reviews yet</span>
+                      )}
                     </div>
                   </div>
                 </CardHeader>

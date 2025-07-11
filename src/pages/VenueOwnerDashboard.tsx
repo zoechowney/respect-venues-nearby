@@ -280,7 +280,7 @@ const VenueOwnerDashboard = () => {
                       <CardContent>
                         <div className={`flex items-center justify-between text-sm text-brand-navy/70 ${isMobile ? 'flex-col items-start space-y-1' : ''}`}>
                           <span>Published: {new Date(venue.published_at).toLocaleDateString()}</span>
-                          <span>Rating: {venue.rating}/5 • {venue.reviews_count} reviews</span>
+                          <span>Rating: {venue.rating > 0 ? `${venue.rating}/5` : 'No rating'} • {venue.reviews_count} reviews</span>
                         </div>
                         {!venue.is_active && (
                           <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
