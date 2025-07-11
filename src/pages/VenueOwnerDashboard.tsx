@@ -99,6 +99,19 @@ const VenueOwnerDashboard = () => {
     });
   };
 
+  const handleSignOut = () => {
+    try {
+      signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-light-blue via-trans-white to-trans-pink/10 flex items-center justify-center">
@@ -128,7 +141,7 @@ const VenueOwnerDashboard = () => {
               Welcome, {venueOwner?.contact_name}
             </p>
             <Button
-              onClick={signOut}
+              onClick={handleSignOut}
               variant="outline"
               size="sm"
               className="justify-start text-brand-navy border-brand-navy/20"
@@ -163,7 +176,7 @@ const VenueOwnerDashboard = () => {
                   Welcome, {venueOwner?.contact_name}
                 </span>
                 <Button
-                  onClick={signOut}
+                  onClick={handleSignOut}
                   variant="outline"
                   size="sm"
                   className="text-brand-navy border-brand-navy/20"
