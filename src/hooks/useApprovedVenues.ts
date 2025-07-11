@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { calculateDistance, getCurrentLocation, Coordinates } from '@/lib/geolocation';
 
 export interface ApprovedVenue {
   id: string;
@@ -24,6 +25,17 @@ export const useApprovedVenues = () => {
   const [venues, setVenues] = useState<ApprovedVenue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
+
+  // Get user location once when hook initializes
+  useEffect(() => {
+    getCurrentLocation()
+      .then(setUserLocation)
+      .catch(() => {
+        // Silently fail - we'll show distances as N/A if no location
+        console.log('User location not available for distance calculations');
+      });
+  }, []);
 
   useEffect(() => {
     const fetchApprovedVenues = async () => {
@@ -76,7 +88,9 @@ export const useApprovedVenues = () => {
             ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
             : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'),
           openNow: Math.random() > 0.3,
-          distance: `${(Math.random() * 2 + 0.1).toFixed(1)} miles`,
+          distance: userLocation && venue.latitude && venue.longitude 
+            ? `${(calculateDistance(userLocation, { latitude: venue.latitude, longitude: venue.longitude }) * 0.621371).toFixed(1)} miles`
+            : null, // No distance if no user location or venue coordinates
           latitude: venue.latitude,
           longitude: venue.longitude
         }));
@@ -94,7 +108,7 @@ export const useApprovedVenues = () => {
     };
 
     fetchApprovedVenues();
-  }, []);
+  }, [userLocation]); // Re-fetch when user location changes
 
   return { venues, isLoading, error };
 };

@@ -366,6 +366,12 @@ const Map = () => {
                       <span className="text-xs text-brand-navy/60">{venue.distance}</span>
                     </div>
                   )}
+                  
+                  {!venue.distance && (
+                    <div className="pt-2">
+                      <span className="text-xs text-brand-navy/40">Distance unavailable</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
