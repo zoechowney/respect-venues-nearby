@@ -13,6 +13,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import VenueUpdateForm from '@/components/venue-owner/VenueUpdateForm';
 import VenueOwnerReviews from '@/components/venue-owner/VenueOwnerReviews';
 import MobileVenueOwnerReviews from '@/components/venue-owner/MobileVenueOwnerReviews';
+import AdditionalVenueForm from '@/components/venue-owner/AdditionalVenueForm';
 
 const VenueOwnerDashboard = () => {
   const { venueOwner, signOut, loading } = useVenueOwnerAuth();
@@ -177,13 +178,21 @@ const VenueOwnerDashboard = () => {
       </nav>
 
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-${isMobile ? '4' : '8'}`}>
-        <div className={`mb-${isMobile ? '6' : '8'}`}>
-          <h1 className={`font-bold text-brand-navy mb-2 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
-            {isMobile ? 'Manage Venues' : 'Venue Management Dashboard'}
-          </h1>
-          <p className="text-brand-navy/70 text-sm">
-            {isMobile ? 'Track applications and respond to reviews' : 'Manage your venue information, track applications, and respond to reviews'}
-          </p>
+        <div className={`mb-${isMobile ? '6' : '8'} flex justify-between items-start`}>
+          <div>
+            <h1 className={`font-bold text-brand-navy mb-2 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>
+              {isMobile ? 'Manage Venues' : 'Venue Management Dashboard'}
+            </h1>
+            <p className="text-brand-navy/70 text-sm">
+              {isMobile ? 'Track applications and respond to reviews' : 'Manage your venue information, track applications, and respond to reviews'}
+            </p>
+          </div>
+          {venueOwner?.id && (
+            <AdditionalVenueForm 
+              venueOwnerId={venueOwner.id} 
+              onVenueAdded={fetchVenueData}
+            />
+          )}
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
