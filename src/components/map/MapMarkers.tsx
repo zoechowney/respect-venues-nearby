@@ -99,9 +99,9 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
               <div class="p-3">
                 <h3 class="font-semibold text-sm mb-1">${venue.name}</h3>
                 <p class="text-xs text-gray-600 mb-2">${venue.type} • ${venue.address}</p>
-                <div class="flex justify-end">
-                  <span class="text-xs font-medium">★ ${venue.rating}</span>
-                </div>
+                 <div class="flex justify-end">
+                   ${venue.rating > 0 ? `<span class="text-xs font-medium">★ ${venue.rating}</span>` : '<span class="text-xs text-gray-500">No reviews</span>'}
+                 </div>
               </div>
             `);
 

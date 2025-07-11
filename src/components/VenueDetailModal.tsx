@@ -34,9 +34,15 @@ const VenueDetailModal = ({ venue, isOpen, onClose }: VenueDetailModalProps) => 
             <div>
               <p className="text-trans-blue font-medium text-lg">{venue.type}</p>
               <div className="flex items-center space-x-2 mt-1">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="font-medium text-brand-navy">{venue.rating}</span>
-                <span className="text-brand-navy/60">({venue.reviews} reviews)</span>
+                {venue.rating > 0 ? (
+                  <>
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="font-medium text-brand-navy">{venue.rating}</span>
+                    <span className="text-brand-navy/60">({venue.reviews} reviews)</span>
+                  </>
+                ) : (
+                  <span className="text-brand-navy/60">No reviews yet</span>
+                )}
               </div>
             </div>
 

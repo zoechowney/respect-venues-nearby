@@ -62,8 +62,8 @@ export const useApprovedVenues = () => {
           phone: venue.phone || undefined,
           website: venue.website || undefined,
           description: venue.description || `A welcoming ${venue.business_type.toLowerCase()} that supports the transgender community.`,
-          rating: venue.rating || 4.8,
-          reviews: venue.reviews_count || Math.floor(Math.random() * 50) + 10,
+          rating: venue.rating || 0,
+          reviews: venue.reviews_count || 0,
           features: venue.features || [
             'Transgender Friendly',
             'Staff Trained',
