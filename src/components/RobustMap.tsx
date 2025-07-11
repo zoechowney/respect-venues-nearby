@@ -290,29 +290,56 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
   }
 
   return (
-    <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative z-10">
-      <div ref={mapRef} className="w-full h-full z-10" />
-      
-      {mapStatus === 'loading' && (
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-light-blue to-trans-pink/30 flex items-center justify-center">
-          <div className="text-center max-w-md bg-white/90 rounded-lg p-6 shadow-lg">
-            <div className="animate-spin w-8 h-8 border-4 border-trans-blue border-t-transparent rounded-full mx-auto mb-4"></div>
-            <h3 className="text-lg font-semibold text-brand-navy mb-2">Loading Map</h3>
-            <p className="text-brand-navy/70 text-sm">
-              Loading OpenStreetMap tiles...
-            </p>
+    <div className="space-y-4">
+      <div className="h-96 border-trans-blue/20 border rounded-lg overflow-hidden relative z-10">
+        <div ref={mapRef} className="w-full h-full z-10" />
+        
+        {mapStatus === 'loading' && (
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-light-blue to-trans-pink/30 flex items-center justify-center">
+            <div className="text-center max-w-md bg-white/90 rounded-lg p-6 shadow-lg">
+              <div className="animate-spin w-8 h-8 border-4 border-trans-blue border-t-transparent rounded-full mx-auto mb-4"></div>
+              <h3 className="text-lg font-semibold text-brand-navy mb-2">Loading Map</h3>
+              <p className="text-brand-navy/70 text-sm">
+                Loading OpenStreetMap tiles...
+              </p>
+            </div>
           </div>
-        </div>
-      )}
-      
-      {mapStatus === 'loaded' && venues.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center max-w-md bg-white/90 rounded-lg p-6 shadow-lg">
-            <MapPin className="w-12 h-12 text-brand-navy/40 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-brand-navy mb-2">No Venues to Display</h3>
-            <p className="text-brand-navy/70 text-sm">
-              Venues will appear on this map once they match your search criteria.
-            </p>
+        )}
+        
+        {mapStatus === 'loaded' && venues.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="text-center max-w-md bg-white/90 rounded-lg p-6 shadow-lg">
+              <MapPin className="w-12 h-12 text-brand-navy/40 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-brand-navy mb-2">No Venues to Display</h3>
+              <p className="text-brand-navy/70 text-sm">
+                Venues will appear on this map once they match your search criteria.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Map Legend */}
+      {mapStatus === 'loaded' && venues.length > 0 && (
+        <div className="bg-white/90 backdrop-blur-sm border border-trans-blue/20 rounded-lg p-4 shadow-sm">
+          <h4 className="text-sm font-semibold text-brand-navy mb-3">Business Types</h4>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {[
+              { type: 'pub', label: 'Pubs' },
+              { type: 'restaurant', label: 'Restaurants' },
+              { type: 'shop', label: 'Shops' },
+              { type: 'gym', label: 'Gyms' },
+              { type: 'cinema', label: 'Cinemas' },
+              { type: 'office', label: 'Offices' }
+            ].map(({ type, label }) => (
+              <div key={type} className="flex items-center gap-2">
+                <div 
+                  className="w-4 h-4 rounded-full border-2 border-white shadow-sm flex-shrink-0"
+                  style={{ backgroundColor: getBusinessTypeHexColor(type) }}
+                />
+                <span className="text-xs text-brand-navy font-medium">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       )}
