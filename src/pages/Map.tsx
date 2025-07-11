@@ -38,28 +38,36 @@ const Map = () => {
   const centerLng = searchParams.get('lng');
   const centerZoom = searchParams.get('zoom');
   
+  console.log('🌍 Map: Computing map center - URL params:', { centerLat, centerLng, centerZoom });
+  console.log('🌍 Map: User location:', userLocation);
+  
   const mapCenter = (centerLat && centerLng) 
     ? { lat: parseFloat(centerLat), lng: parseFloat(centerLng), zoom: centerZoom ? parseInt(centerZoom) : 16 }
     : userLocation 
     ? { lat: userLocation.latitude, lng: userLocation.longitude, zoom: 14 }
     : null; // Will default to Surrey in the map component
+    
+  console.log('🌍 Map: Final map center:', mapCenter);
 
   // Automatically get user's location when the page loads
   useEffect(() => {
+    console.log('🌍 Map: Auto-requesting user location on page load');
     getUserLocation();
   }, []);
 
   // Get user's current location
   const getUserLocation = async () => {
     try {
+      console.log('🌍 Map: Requesting user location...');
       const location = await getCurrentLocation();
+      console.log('🌍 Map: Location received:', location);
       setUserLocation(location);
       toast({
         title: "Location Found",
         description: "Map centered on your location. Venues are now sorted by distance.",
       });
     } catch (error) {
-      console.log('Location access denied or failed, using default map center');
+      console.log('🌍 Map: Location access denied or failed:', error);
       // Silently fail - map will use default Surrey location
     }
   };

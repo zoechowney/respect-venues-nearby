@@ -340,15 +340,24 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
 
   // Update map center when user location becomes available
   useEffect(() => {
-    if (!mapInstance.current || !userLocation || mapStatus !== 'loaded') return;
+    if (!mapInstance.current || !userLocation || mapStatus !== 'loaded') {
+      console.log('📍 RobustMap: Skipping recenter - missing requirements:', { 
+        hasMap: !!mapInstance.current, 
+        hasLocation: !!userLocation, 
+        status: mapStatus 
+      });
+      return;
+    }
     
     // Only recenter if no specific center was provided (i.e., we're not viewing a shared location)
     if (!center) {
-      console.log('📍 RobustMap: Centering map on user location');
+      console.log('📍 RobustMap: Centering map on user location:', userLocation);
       mapInstance.current.setView([userLocation.latitude, userLocation.longitude], 14, {
         animate: true,
         duration: 1.0
       });
+    } else {
+      console.log('📍 RobustMap: Skipping recenter - specific center provided:', center);
     }
   }, [userLocation, mapStatus, center]);
 
