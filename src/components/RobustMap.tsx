@@ -3,6 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Venue } from '@/types/venue';
 import { MapPin, AlertCircle, RefreshCw } from 'lucide-react';
+import { getBusinessTypeHexColor } from '@/lib/utils';
 
 // Fix for default markers in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -185,8 +186,7 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
 
     // Create custom icons for different venue types
     const createCustomIcon = (type: string) => {
-      const color = type.toLowerCase() === 'pub' ? '#60a5fa' : 
-                   type.toLowerCase() === 'restaurant' ? '#f472b6' : '#374151';
+      const color = getBusinessTypeHexColor(type);
       
       return L.divIcon({
         className: 'custom-marker',
