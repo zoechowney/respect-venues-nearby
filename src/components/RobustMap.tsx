@@ -18,9 +18,10 @@ interface RobustMapProps {
   onVenueSelect?: (venue: Venue) => void;
   center?: { lat: number; lng: number; zoom?: number };
   userLocation?: { latitude: number; longitude: number } | null;
+  centerFromUrl?: boolean;
 }
 
-const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, center, userLocation }) => {
+const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, center, userLocation, centerFromUrl = false }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
@@ -349,17 +350,17 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
       return;
     }
     
-    // Only recenter if no specific center was provided (i.e., we're not viewing a shared location)
-    if (!center) {
+    // Only recenter if no URL center was provided (allow recentering when center comes from user location)
+    if (!centerFromUrl) {
       console.log('📍 RobustMap: Centering map on user location:', userLocation);
       mapInstance.current.setView([userLocation.latitude, userLocation.longitude], 14, {
         animate: true,
         duration: 1.0
       });
     } else {
-      console.log('📍 RobustMap: Skipping recenter - specific center provided:', center);
+      console.log('📍 RobustMap: Skipping recenter - URL center provided:', center);
     }
-  }, [userLocation, mapStatus, center]);
+  }, [userLocation, mapStatus, centerFromUrl]);
 
   if (mapStatus === 'error') {
     return (

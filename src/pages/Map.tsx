@@ -41,13 +41,15 @@ const Map = () => {
   console.log('🌍 Map: Computing map center - URL params:', { centerLat, centerLng, centerZoom });
   console.log('🌍 Map: User location:', userLocation);
   
-  const mapCenter = (centerLat && centerLng) 
+  const hasUrlCenter = centerLat && centerLng;
+  
+  const mapCenter = hasUrlCenter
     ? { lat: parseFloat(centerLat), lng: parseFloat(centerLng), zoom: centerZoom ? parseInt(centerZoom) : 16 }
     : userLocation 
     ? { lat: userLocation.latitude, lng: userLocation.longitude, zoom: 14 }
     : null; // Will default to Surrey in the map component
     
-  console.log('🌍 Map: Final map center:', mapCenter);
+  console.log('🌍 Map: Final map center:', mapCenter, 'fromUrl:', !!hasUrlCenter);
 
   // Automatically get user's location when the page loads
   useEffect(() => {
@@ -292,6 +294,7 @@ const Map = () => {
             }}
             center={mapCenter}
             userLocation={userLocation}
+            centerFromUrl={!!(centerLat && centerLng)}
           />
 
           {/* Venue List */}
