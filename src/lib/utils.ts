@@ -19,7 +19,7 @@ export function getBusinessTypeColor(businessType: string): string {
     case 'cinema':
       return 'text-purple-600';
     case 'office':
-      return 'text-amber-600';
+      return 'text-teal-600';
     default:
       return 'text-brand-navy';
   }
@@ -39,7 +39,7 @@ export function getBusinessTypeHexColor(businessType: string): string {
     case 'cinema':
       return '#9333ea'; // purple-600
     case 'office':
-      return '#d97706'; // amber-600
+      return '#0d9488'; // teal-600
     default:
       return '#374151'; // brand-navy
   }
