@@ -16,7 +16,8 @@ export interface ApprovedVenue {
   features: string[];
   hours: string;
   openNow: boolean;
-  distance?: string;
+  distance?: string | null;
+  distanceInMiles?: number | null; // For sorting purposes
   latitude?: number;
   longitude?: number;
 }
@@ -46,7 +47,7 @@ export const useApprovedVenues = () => {
           .from('venues')
           .select('*, latitude, longitude')
           .eq('is_active', true)
-          .order('published_at', { ascending: false });
+          .order('published_at', { ascending: false }); // This will be re-sorted by distance after transformation
 
         console.log('🔍 Query completed. Data:', data, 'Error:', fetchError);
 
@@ -65,38 +66,59 @@ export const useApprovedVenues = () => {
 
         console.log('✅ Raw venue data received:', data.length, 'records');
 
-        // Transform venues data to match the expected interface
-        const transformedVenues: ApprovedVenue[] = data.map((venue) => ({
-          id: venue.id,
-          name: venue.business_name,
-          type: venue.business_type,
-          address: venue.address,
-          phone: venue.phone || undefined,
-          website: venue.website || undefined,
-          description: venue.description || `A welcoming ${venue.business_type.toLowerCase()} that supports the transgender community.`,
-          rating: venue.rating || 0,
-          reviews: venue.reviews_count || 0,
-          features: venue.features || [
-            'Transgender Friendly',
-            'Staff Trained',
-            'Safe Space',
-            venue.business_type === 'restaurant' ? 'All-Gender Facilities' : 'Accessible'
-          ],
-          hours: venue.hours || (venue.business_type === 'pub' 
-            ? 'Mon-Sun: 12:00 PM - 11:00 PM'
-            : venue.business_type === 'restaurant'
-            ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
-            : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'),
-          openNow: Math.random() > 0.3,
-          distance: userLocation && venue.latitude && venue.longitude 
-            ? `${(calculateDistance(userLocation, { latitude: venue.latitude, longitude: venue.longitude }) * 0.621371).toFixed(1)} miles`
-            : null, // No distance if no user location or venue coordinates
-          latitude: venue.latitude,
-          longitude: venue.longitude
-        }));
+        // Calculate distance for each venue and transform data
+        const transformedVenues: ApprovedVenue[] = data.map((venue) => {
+          const distanceInKm = userLocation && venue.latitude && venue.longitude 
+            ? calculateDistance(userLocation, { latitude: venue.latitude, longitude: venue.longitude })
+            : null;
+          const distanceInMiles = distanceInKm ? distanceInKm * 0.621371 : null;
 
-        console.log('✅ Transformed venues ready:', transformedVenues.length);
-        setVenues(transformedVenues);
+          return {
+            id: venue.id,
+            name: venue.business_name,
+            type: venue.business_type,
+            address: venue.address,
+            phone: venue.phone || undefined,
+            website: venue.website || undefined,
+            description: venue.description || `A welcoming ${venue.business_type.toLowerCase()} that supports the transgender community.`,
+            rating: venue.rating || 0,
+            reviews: venue.reviews_count || 0,
+            features: venue.features || [
+              'Transgender Friendly',
+              'Staff Trained',
+              'Safe Space',
+              venue.business_type === 'restaurant' ? 'All-Gender Facilities' : 'Accessible'
+            ],
+            hours: venue.hours || (venue.business_type === 'pub' 
+              ? 'Mon-Sun: 12:00 PM - 11:00 PM'
+              : venue.business_type === 'restaurant'
+              ? 'Mon-Fri: 7:00 AM - 6:00 PM, Sat-Sun: 8:00 AM - 5:00 PM'
+              : 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 9:00 AM - 5:00 PM'),
+            openNow: Math.random() > 0.3,
+            distance: distanceInMiles ? `${distanceInMiles.toFixed(1)} miles` : null,
+            distanceInMiles,
+            latitude: venue.latitude,
+            longitude: venue.longitude
+          };
+        });
+
+        // Sort venues by distance if user location is available, otherwise by publication date
+        const sortedVenues = userLocation 
+          ? transformedVenues.sort((a, b) => {
+              // Venues with distance come first, sorted by distance
+              if (a.distanceInMiles !== null && b.distanceInMiles !== null) {
+                return a.distanceInMiles - b.distanceInMiles;
+              }
+              // Venues without distance go to the end
+              if (a.distanceInMiles === null && b.distanceInMiles !== null) return 1;
+              if (a.distanceInMiles !== null && b.distanceInMiles === null) return -1;
+              // If both have no distance, sort by publication date (already sorted from DB)
+              return 0;
+            })
+          : transformedVenues; // Keep original publication date order if no location
+
+        console.log('✅ Transformed venues ready:', sortedVenues.length);
+        setVenues(sortedVenues);
         setError(null);
       } catch (err) {
         console.error('❌ Unexpected error in fetchApprovedVenues:', err);

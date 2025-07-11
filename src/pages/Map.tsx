@@ -48,7 +48,7 @@ const Map = () => {
       setUserLocation(location);
       toast({
         title: "Location Found",
-        description: "Now showing distances to venues from your location.",
+        description: "Venues are now sorted by distance from your location.",
       });
     } catch (error) {
       toast({
@@ -282,8 +282,11 @@ const Map = () => {
           {/* Venue List */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-brand-navy">
-              Nearby Venues ({isLoading ? '...' : filteredVenues.length})
+              {userLocation ? 'Nearby Venues' : 'Venues'} ({isLoading ? '...' : filteredVenues.length})
             </h2>
+            {userLocation && (
+              <p className="text-sm text-brand-navy/60">Sorted by distance from your location</p>
+            )}
             
             {/* Loading State */}
             {isLoading && (
