@@ -189,6 +189,12 @@ const VenuesManagement = () => {
               <CardContent>
                 <div className="space-y-3">
                   <div>
+                    <p className="text-sm font-medium text-brand-navy/70">Contact Information</p>
+                    <p className="text-brand-navy">{venue.contact_name}</p>
+                    <p className="text-brand-navy">{venue.email}</p>
+                  </div>
+                  
+                  <div>
                     <p className="text-sm font-medium text-brand-navy/70">Address</p>
                     <p className="text-brand-navy">{venue.address}</p>
                   </div>
