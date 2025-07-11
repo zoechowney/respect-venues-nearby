@@ -563,58 +563,15 @@ For a complete data export, please submit a "Download Data" request.
                               Process Deletion
                             </Button>
                           )}
-                        
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleProcess(request)}
-                            >
-                              <Edit className="w-4 h-4 mr-1" />
-                              Process
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-md">
-                            <DialogHeader>
-                              <DialogTitle>Process Data Rights Request</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <label className="text-sm font-medium text-brand-navy">Status</label>
-                                <Select value={newStatus} onValueChange={setNewStatus}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select status" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="in_progress">In Progress</SelectItem>
-                                    <SelectItem value="completed">Completed</SelectItem>
-                                    <SelectItem value="rejected">Rejected</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div>
-                                <label className="text-sm font-medium text-brand-navy">Response Notes</label>
-                                <Textarea
-                                  value={responseNotes}
-                                  onChange={(e) => setResponseNotes(e.target.value)}
-                                  placeholder="Add notes about how this request was processed..."
-                                  rows={3}
-                                />
-                              </div>
-                              
-                              <Button 
-                                onClick={handleUpdate} 
-                                disabled={updateRequestMutation.isPending}
-                                className="w-full"
-                              >
-                                Update Request
-                              </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                         
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           onClick={() => handleProcess(request)}
+                         >
+                           <Edit className="w-4 h-4 mr-1" />
+                           Process
+                         </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -659,6 +616,49 @@ For a complete data export, please submit a "Download Data" request.
                 </p>
               </div>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Process Request Modal */}
+      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Process Data Rights Request</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-brand-navy">Status</label>
+              <Select value={newStatus} onValueChange={setNewStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium text-brand-navy">Response Notes</label>
+              <Textarea
+                value={responseNotes}
+                onChange={(e) => setResponseNotes(e.target.value)}
+                placeholder="Add notes about how this request was processed..."
+                rows={3}
+              />
+            </div>
+            
+            <Button 
+              onClick={handleUpdate} 
+              disabled={updateRequestMutation.isPending}
+              className="w-full"
+            >
+              Update Request
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
