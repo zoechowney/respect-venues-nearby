@@ -418,6 +418,7 @@ For a complete data export, please submit a "Download Data" request.
                 <TableRow>
                   <TableHead>Email</TableHead>
                   <TableHead>Request Type</TableHead>
+                  <TableHead>Additional Details</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Submitted</TableHead>
                   <TableHead>Actions</TableHead>
@@ -428,17 +429,23 @@ For a complete data export, please submit a "Download Data" request.
                   <TableRow key={request.id}>
                     <TableCell>
                       <div className="font-medium text-brand-navy">{request.email}</div>
-                      {request.details && (
-                        <div className="text-sm text-brand-navy/70 truncate max-w-48">
-                          {request.details}
-                        </div>
-                      )}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {getRequestTypeIcon(request.request_type)}
                         <span className="text-brand-navy">{getRequestTypeLabel(request.request_type)}</span>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      {request.details ? (
+                        <div className="text-sm text-brand-navy max-w-xs">
+                          <div className="truncate" title={request.details}>
+                            {request.details}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-brand-navy/50 text-sm italic">No additional details</span>
+                      )}
                     </TableCell>
                     <TableCell>{getStatusBadge(request.status)}</TableCell>
                     <TableCell>
