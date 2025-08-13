@@ -51,26 +51,34 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
     try {
       console.log('🔍 Attempting to sign in venue owner with email:', email);
       
-      const { data: owner, error } = await supabase
-        .from('venue_owners')
-        .select('id, email, password_hash, business_name, contact_name, is_active')
-        .eq('email', email.toLowerCase())
-        .eq('is_active', true)
-        .single();
+      // First get the venue owner info (without password) using secure function
+      const { data: ownerInfo, error: ownerError } = await supabase
+        .rpc('get_venue_owner_by_email', { input_email: email.toLowerCase() });
 
-      console.log('🏢 Venue owner query result:', { owner, error });
+      console.log('🏢 Venue owner query result:', { ownerInfo, ownerError });
 
-      if (error || !owner) {
-        console.error('❌ Venue owner not found or query error:', error);
+      if (ownerError || !ownerInfo || ownerInfo.length === 0) {
+        console.error('❌ Venue owner not found or query error:', ownerError);
         return { error: 'Invalid email or password' };
       }
 
-      console.log('🔐 Comparing password with hash...');
-      const passwordMatch = await bcrypt.compare(password, owner.password_hash);
-      console.log('✅ Password match result:', passwordMatch);
+      const owner = ownerInfo[0];
 
-      if (!passwordMatch) {
-        console.error('❌ Password does not match');
+      // We need to compare the plain password with the stored hash
+      // Since we can't get the hash directly, we'll use a different approach
+      // Let's create a secure authentication function that handles password comparison internally
+      console.log('🔐 Authenticating with secure function...');
+      
+      const { data: authenticatedId, error: authError } = await supabase
+        .rpc('authenticate_venue_owner_with_password', { 
+          input_email: email.toLowerCase(), 
+          input_password: password 
+        });
+
+      console.log('✅ Authentication result:', { authenticatedId, authError });
+
+      if (authError || !authenticatedId) {
+        console.error('❌ Authentication failed');
         return { error: 'Invalid email or password' };
       }
 

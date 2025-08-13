@@ -685,9 +685,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      authenticate_venue_owner: {
+        Args: { input_email: string; input_password_hash: string }
+        Returns: string
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["app_role"]
+      }
+      get_venue_owner_by_email: {
+        Args: { input_email: string }
+        Returns: {
+          id: string
+          email: string
+          business_name: string
+          contact_name: string
+          is_active: boolean
+        }[]
       }
       has_role: {
         Args: {
