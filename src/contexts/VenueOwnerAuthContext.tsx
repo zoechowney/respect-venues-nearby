@@ -65,17 +65,16 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
       const owner = ownerInfo[0];
 
       // For password verification, we need to get the hash through a secure function
-      // that only returns the hash for password comparison
       const { data: passwordHash, error: hashError } = await supabase
         .rpc('get_venue_owner_password_hash', { input_email: email.toLowerCase() });
 
-      if (hashError || !passwordHash) {
+      if (hashError || !passwordHash || typeof passwordHash !== 'string') {
         console.error('❌ Could not retrieve password hash:', hashError);
         return { error: 'Invalid email or password' };
       }
 
       console.log('🔐 Comparing password with hash...');
-      const passwordMatch = await bcrypt.compare(password, passwordHash);
+      const passwordMatch = await bcrypt.compare(password, passwordHash as string);
       console.log('✅ Password match result:', passwordMatch);
 
       if (!passwordMatch) {

@@ -707,6 +707,10 @@ export type Database = {
           is_active: boolean
         }[]
       }
+      get_venue_owner_password_hash: {
+        Args: { input_email: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _user_id: string
