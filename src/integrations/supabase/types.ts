@@ -689,6 +689,10 @@ export type Database = {
         Args: { input_email: string; input_password_hash: string }
         Returns: string
       }
+      authenticate_venue_owner_with_password: {
+        Args: { input_email: string; input_password: string }
+        Returns: string
+      }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["app_role"]

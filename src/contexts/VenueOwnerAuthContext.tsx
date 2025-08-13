@@ -51,7 +51,7 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
     try {
       console.log('🔍 Attempting to sign in venue owner with email:', email);
       
-      // First get the venue owner info (without password) using secure function
+      // Get venue owner info using secure function (without password hash)
       const { data: ownerInfo, error: ownerError } = await supabase
         .rpc('get_venue_owner_by_email', { input_email: email.toLowerCase() });
 
@@ -64,21 +64,22 @@ export const VenueOwnerAuthProvider: React.FC<{ children: React.ReactNode }> = (
 
       const owner = ownerInfo[0];
 
-      // We need to compare the plain password with the stored hash
-      // Since we can't get the hash directly, we'll use a different approach
-      // Let's create a secure authentication function that handles password comparison internally
-      console.log('🔐 Authenticating with secure function...');
-      
-      const { data: authenticatedId, error: authError } = await supabase
-        .rpc('authenticate_venue_owner_with_password', { 
-          input_email: email.toLowerCase(), 
-          input_password: password 
-        });
+      // For password verification, we need to get the hash through a secure function
+      // that only returns the hash for password comparison
+      const { data: passwordHash, error: hashError } = await supabase
+        .rpc('get_venue_owner_password_hash', { input_email: email.toLowerCase() });
 
-      console.log('✅ Authentication result:', { authenticatedId, authError });
+      if (hashError || !passwordHash) {
+        console.error('❌ Could not retrieve password hash:', hashError);
+        return { error: 'Invalid email or password' };
+      }
 
-      if (authError || !authenticatedId) {
-        console.error('❌ Authentication failed');
+      console.log('🔐 Comparing password with hash...');
+      const passwordMatch = await bcrypt.compare(password, passwordHash);
+      console.log('✅ Password match result:', passwordMatch);
+
+      if (!passwordMatch) {
+        console.error('❌ Password does not match');
         return { error: 'Invalid email or password' };
       }
 
