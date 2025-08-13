@@ -7,9 +7,6 @@ export interface Venue {
   id: string;
   business_name: string;
   business_type: string;
-  contact_name: string;
-  email: string;
-  phone?: string;
   address: string;
   website?: string;
   description?: string;
@@ -20,10 +17,18 @@ export interface Venue {
   hours?: string;
   is_active: boolean;
   published_at: string;
-  created_from_application_id?: string;
-  venue_owner_id?: string;
   created_at: string;
   updated_at: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface AdminVenue extends Venue {
+  contact_name: string;
+  email: string;
+  phone?: string;
+  created_from_application_id?: string;
+  venue_owner_id?: string;
 }
 
 export const useVenues = () => {
@@ -34,13 +39,10 @@ export const useVenues = () => {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        console.log('🏢 Fetching venues from venues table...');
+        console.log('🏢 Fetching venues using secure function...');
         
         const { data, error: fetchError } = await supabase
-          .from('venues')
-          .select('*')
-          .eq('is_active', true)
-          .order('published_at', { ascending: false });
+          .rpc('get_public_venues');
 
         console.log('🔍 Venues query completed. Data:', data, 'Error:', fetchError);
 

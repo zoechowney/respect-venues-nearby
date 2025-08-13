@@ -697,6 +697,28 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      get_public_venues: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          business_name: string
+          business_type: string
+          address: string
+          website: string
+          description: string
+          sign_style: string
+          features: string[]
+          hours: string
+          rating: number
+          reviews_count: number
+          latitude: number
+          longitude: number
+          is_active: boolean
+          published_at: string
+          created_at: string
+          updated_at: string
+        }[]
+      }
       get_venue_owner_by_email: {
         Args: { input_email: string }
         Returns: {

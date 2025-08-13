@@ -41,13 +41,10 @@ export const useApprovedVenues = () => {
   useEffect(() => {
     const fetchApprovedVenues = async () => {
       try {
-        console.log('🏢 Starting venue fetch from venues table...');
+        console.log('🏢 Starting venue fetch using secure function...');
         
         const { data, error: fetchError } = await supabase
-          .from('venues')
-          .select('*, latitude, longitude')
-          .eq('is_active', true)
-          .order('published_at', { ascending: false }); // This will be re-sorted by distance after transformation
+          .rpc('get_public_venues');
 
         console.log('🔍 Query completed. Data:', data, 'Error:', fetchError);
 
@@ -78,7 +75,7 @@ export const useApprovedVenues = () => {
             name: venue.business_name,
             type: venue.business_type,
             address: venue.address,
-            phone: venue.phone || undefined,
+            phone: undefined, // Phone is not available in public data for security
             website: venue.website || undefined,
             description: venue.description || `A welcoming ${venue.business_type.toLowerCase()} that supports the transgender community.`,
             rating: venue.rating || 0,
