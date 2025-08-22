@@ -2,5 +2,6 @@
 deployment:
   tasks:
     - export NODE_ENV=production
+    - /home/u69608/nodevenv/respect-venues-nearby/20/bin/npm install --force
     - /home/u69608/nodevenv/respect-venues-nearby/20/bin/npm run build
-    - /bin/cp -r * /home/u69608/domains/restwithrespect.org/public_html
+    - /bin/cp -R dist /home/u69608/domains/restwithrespect.org/public_html
