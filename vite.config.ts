@@ -17,9 +17,4 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    // 👇 Use env var or fallback to "dist"
-    outDir: process.env.VITE_OUT_DIR || "dist",
-    emptyOutDir: true,
-  },
 }));
