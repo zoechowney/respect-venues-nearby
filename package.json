@@ -8,7 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:copy": "cp -r dist/* /home/u69608/domains/restwithrespect.org/public_html/"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
