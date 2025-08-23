@@ -6,4 +6,4 @@ deployment:
     - export VITE_SUPABASE_URL=https://unehnuoczenmcyqmvsvf.supabase.co
     - /home/u69608/nodevenv/dist/22/bin/npm install
     - /home/u69608/nodevenv/dist/22/bin/npm run build
-    - /bin/cp -R dist /home/u69608/domains/restwithrespect.org/public_html
+    - /bin/cp -R /home/u69608/dist/dist /home/u69608/domains/restwithrespect.org/public_html
