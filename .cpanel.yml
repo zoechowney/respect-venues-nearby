@@ -1,9 +1,7 @@
 ---
 deployment:
   tasks:
-    - export VITE_SUPABASE_PROJECT_ID=unehnuoczenmcyqmvsvf
-    - export VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZWhudW9jemVubWN5cW12c3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NjEyMDAsImV4cCI6MjA2NTEzNzIwMH0.jA4ftRwehwfMcI6Vuw92MAwBhK85Kgs51YrtH4Oz5e8
-    - export VITE_SUPABASE_URL=https://unehnuoczenmcyqmvsvf.supabase.co
-    - /home/u69608/nodevenv/dist/22/bin/npm install
-    - /home/u69608/nodevenv/dist/22/bin/npm run build
+    - export NODE_ENV=production
+    - /home/u69608/nodevenv/respect-venues-nearby/20/bin/npm install --force
+    - /home/u69608/nodevenv/respect-venues-nearby/20/bin/npm run build
     - /bin/cp -R dist /home/u69608/domains/restwithrespect.org/public_html
