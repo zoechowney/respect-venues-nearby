@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -384,6 +384,7 @@ export type Database = {
           created_at: string
           description: string | null
           email: string
+          features: string[] | null
           id: string
           phone: string | null
           sign_style: string | null
@@ -402,6 +403,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email: string
+          features?: string[] | null
           id?: string
           phone?: string | null
           sign_style?: string | null
@@ -420,6 +422,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string
+          features?: string[] | null
           id?: string
           phone?: string | null
           sign_style?: string | null
@@ -700,32 +703,32 @@ export type Database = {
       get_public_venues: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
+          address: string
           business_name: string
           business_type: string
-          address: string
-          website: string
+          created_at: string
           description: string
-          sign_style: string
           features: string[]
           hours: string
-          rating: number
-          reviews_count: number
+          id: string
+          is_active: boolean
           latitude: number
           longitude: number
-          is_active: boolean
           published_at: string
-          created_at: string
+          rating: number
+          reviews_count: number
+          sign_style: string
           updated_at: string
+          website: string
         }[]
       }
       get_venue_owner_by_email: {
         Args: { input_email: string }
         Returns: {
-          id: string
-          email: string
           business_name: string
           contact_name: string
+          email: string
+          id: string
           is_active: boolean
         }[]
       }
@@ -735,8 +738,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
         }
         Returns: boolean
       }

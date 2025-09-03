@@ -116,29 +116,61 @@ const VenueRegistrationForm = () => {
     }
 
     try {
-      // Create venue owner account first
-      const passwordHash = await bcrypt.hash(formData.password, 10);
-      
-      const { data: venueOwner, error: ownerError } = await supabase
+      // Check if email already exists
+      const { data: existingOwner, error: checkError } = await supabase
         .from('venue_owners')
-        .insert({
-          email: formData.email,
-          password_hash: passwordHash,
-          business_name: formData.businessName,
-          contact_name: formData.contactName
-        })
-        .select()
-        .single();
+        .select('id, email')
+        .eq('email', formData.email)
+        .maybeSingle();
 
-      if (ownerError) {
-        console.error('Error creating venue owner:', ownerError);
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Error checking existing email:', checkError);
         toast({
           title: "Error",
-          description: "Failed to create venue owner account. Email may already be in use.",
+          description: "Failed to verify email. Please try again.",
           variant: "destructive",
         });
         setIsSubmitting(false);
         return;
+      }
+
+      let venueOwnerId;
+      
+      if (existingOwner) {
+        // Email already exists, use existing owner ID
+        venueOwnerId = existingOwner.id;
+        toast({
+          title: "Using Existing Account",
+          description: "We found an existing account with this email. Your application will be linked to it.",
+          variant: "default",
+        });
+      } else {
+        // Create new venue owner account
+        const passwordHash = await bcrypt.hash(formData.password, 10);
+        
+        const { data: venueOwner, error: ownerError } = await supabase
+          .from('venue_owners')
+          .insert({
+            email: formData.email,
+            password_hash: passwordHash,
+            business_name: formData.businessName,
+            contact_name: formData.contactName
+          })
+          .select()
+          .single();
+
+        if (ownerError) {
+          console.error('Error creating venue owner:', ownerError);
+          toast({
+            title: "Error",
+            description: "Failed to create venue owner account. Please try again.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+        
+        venueOwnerId = venueOwner.id;
       }
 
       // Create venue application with venue owner reference (sanitize text inputs)
@@ -157,7 +189,7 @@ const VenueRegistrationForm = () => {
           features: formData.features.length > 0 ? formData.features : null,
           agree_to_terms: formData.agreeToTerms,
           agree_to_training: formData.agreeToTraining,
-          venue_owner_id: venueOwner.id
+          venue_owner_id: venueOwnerId
         });
 
       if (applicationError) {
