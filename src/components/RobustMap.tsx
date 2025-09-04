@@ -339,6 +339,17 @@ const RobustMap: React.FC<RobustMapProps> = ({ venues = [], onVenueSelect, cente
     }
   }, [userLocation, mapStatus]);
 
+  // Update map center when center prop changes (for "Show on Map" functionality)
+  useEffect(() => {
+    if (!mapInstance.current || mapStatus !== 'loaded' || !center) return;
+    
+    console.log('🗺️ RobustMap: Centering map on coordinates:', center);
+    mapInstance.current.setView([center.lat, center.lng], center.zoom || 14, {
+      animate: true,
+      duration: 1.0
+    });
+  }, [center, mapStatus]);
+
   // Update map center when user location becomes available
   useEffect(() => {
     if (!mapInstance.current || !userLocation || mapStatus !== 'loaded') {
