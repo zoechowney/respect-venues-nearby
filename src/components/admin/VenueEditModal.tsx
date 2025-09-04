@@ -107,48 +107,45 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Edit Venue Details</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="business_name">Business Name</Label>
-              <Input
-                id="business_name"
-                value={formData.business_name}
-                onChange={(e) => handleInputChange('business_name', e.target.value)}
-                required
-              />
-            </div>
+        <div className="overflow-y-auto max-h-[calc(80vh-8rem)]">
+          <form onSubmit={handleSubmit} className="space-y-4 p-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="business_name">Business Name</Label>
+                <Input
+                  id="business_name"
+                  value={formData.business_name}
+                  onChange={(e) => handleInputChange('business_name', e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="business_type">Business Type</Label>
-              <Select
-                value={formData.business_type}
-                onValueChange={(value) => handleInputChange('business_type', value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select business type" />
-                </SelectTrigger>
-                <SelectContent 
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-[100]"
-                  position="popper"
-                  side="bottom"
-                  align="start"
-                  sideOffset={4}
+              <div className="space-y-2">
+                <Label htmlFor="business_type">Business Type</Label>
+                <Select
+                  value={formData.business_type}
+                  onValueChange={(value) => handleInputChange('business_type', value)}
                 >
-                  <SelectItem value="pub">Pub</SelectItem>
-                  <SelectItem value="restaurant">Restaurant</SelectItem>
-                  <SelectItem value="shop">Shop</SelectItem>
-                  <SelectItem value="gym">Gym</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select business type" />
+                  </SelectTrigger>
+                  <SelectContent 
+                    className="bg-background border shadow-md z-[9999] max-h-[200px] overflow-auto"
+                  >
+                    <SelectItem value="pub">Pub</SelectItem>
+                    <SelectItem value="restaurant">Restaurant</SelectItem>
+                    <SelectItem value="shop">Shop</SelectItem>
+                    <SelectItem value="gym">Gym</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
 
           <div className="space-y-2">
             <Label htmlFor="address">Address</Label>
@@ -216,6 +213,7 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
             </Button>
           </div>
         </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
