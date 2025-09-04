@@ -51,7 +51,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
   const businessTypes = [
     'Pub / bar', 'Restaurant / café', 'Shop / retail', 
-    'Gym / fitness', 'Office / workplace', 'Cinema / theatre', 'Other'
+    'Gym / fitness', 'Cinema / theatre', 'Office / workplace', 'Other'
   ];
 
   const venueFeatures = [
