@@ -176,7 +176,7 @@ const Map = () => {
         if (selectedType === 'all') {
           matchesType = true;
         } else if (selectedType === 'other') {
-          const standardTypes = ['pub', 'restaurant', 'shop', 'gym', 'office', 'cinema'];
+          const standardTypes = ['pub', 'restaurant', 'shop', 'gym'];
           matchesType = !standardTypes.includes(venue.type.toLowerCase());
         } else {
           matchesType = venue.type.toLowerCase() === selectedType.toLowerCase();
@@ -231,8 +231,6 @@ const Map = () => {
     { value: 'restaurant', label: 'Café / restaurants' },
     { value: 'shop', label: 'Shops / retail' },
     { value: 'gym', label: 'Gyms / sports' },
-    { value: 'cinema', label: 'Cinema / theatre' },
-    { value: 'office', label: 'Office / workplace' },
     { value: 'other', label: 'Other' }
   ];
 
@@ -312,14 +310,12 @@ const Map = () => {
           {/* Desktop Tabs */}
           <div className="hidden lg:block">
             <Tabs value={selectedType} onValueChange={handleTypeChange}>
-              <TabsList className="grid w-full grid-cols-8 max-w-5xl">
+              <TabsList className="grid w-full grid-cols-6 max-w-4xl">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
                 <TabsTrigger value="restaurant">Café / restaurants</TabsTrigger>
                 <TabsTrigger value="shop">Shops / retail</TabsTrigger>
                 <TabsTrigger value="gym">Gyms / sports</TabsTrigger>
-                <TabsTrigger value="cinema">Cinema / theatre</TabsTrigger>
-                <TabsTrigger value="office">Office / workplace</TabsTrigger>
                 <TabsTrigger value="other">Other</TabsTrigger>
               </TabsList>
             </Tabs>
