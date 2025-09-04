@@ -58,8 +58,7 @@ const VenueRegistrationForm = () => {
   });
 
   const availableFeatures = [
-    'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
-    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
+    'Wheelchair Accessible', 'Gender Neutral Toilets', 'LGBTQ+ Events', 'Free WiFi'
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
