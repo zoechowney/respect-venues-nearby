@@ -25,39 +25,27 @@ export interface SearchFilters {
   distance: number; // in km
   businessTypes: string[];
   features: string[];
-  rating: number;
 }
 
 interface AdvancedSearchProps {
   onFiltersChange: (filters: SearchFilters) => void;
-  savedSearches: Array<{ id: string; name: string; filters: SearchFilters }>;
-  onSaveSearch: (name: string, filters: SearchFilters) => void;
-  onLoadSearch: (filters: SearchFilters) => void;
-  onDeleteSearch: (id: string) => void;
 }
 
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
-  onFiltersChange,
-  savedSearches,
-  onSaveSearch,
-  onLoadSearch,
-  onDeleteSearch
+  onFiltersChange
 }) => {
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
     location: null,
     distance: 25,
     businessTypes: [],
-    features: [],
-    rating: 0
+    features: []
   });
 
   const [locationSearch, setLocationSearch] = useState('');
   const [locationSuggestions, setLocationSuggestions] = useState<LocationResult[]>([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [isGettingCurrentLocation, setIsGettingCurrentLocation] = useState(false);
-  const [saveSearchName, setSaveSearchName] = useState('');
-  const [showSaveSearch, setShowSaveSearch] = useState(false);
 
   const { showError, showSuccess } = useToastNotifications();
 
@@ -164,13 +152,6 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     }));
   };
 
-  const handleSaveSearch = () => {
-    if (!saveSearchName.trim()) return;
-    onSaveSearch(saveSearchName, filters);
-    setSaveSearchName('');
-    setShowSaveSearch(false);
-    showSuccess('Search Saved', `Saved search "${saveSearchName}" successfully`);
-  };
 
   const clearFilters = () => {
     setFilters({
@@ -178,8 +159,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
       location: null,
       distance: 25,
       businessTypes: [],
-      features: [],
-      rating: 0
+      features: []
     });
     setLocationSearch('');
     setLocationSuggestions([]);
@@ -309,85 +289,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             </div>
           </div>
 
-          {/* Rating Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Minimum Rating</label>
-            <Select
-              value={filters.rating.toString()}
-              onValueChange={(value) => setFilters(prev => ({ ...prev, rating: parseInt(value) }))}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">Any Rating</SelectItem>
-                <SelectItem value="3">3+ Stars</SelectItem>
-                <SelectItem value="4">4+ Stars</SelectItem>
-                <SelectItem value="5">5 Stars Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
         </div>
-
-        {/* Save Search */}
-        <div className="space-y-2">
-          {!showSaveSearch ? (
-            <Button
-              variant="outline"
-              onClick={() => setShowSaveSearch(true)}
-              className="w-full"
-            >
-              <Bookmark className="w-4 h-4 mr-2" />
-              Save This Search
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Input
-                placeholder="Search name..."
-                value={saveSearchName}
-                onChange={(e) => setSaveSearchName(e.target.value)}
-                className="flex-1"
-              />
-              <Button onClick={handleSaveSearch} disabled={!saveSearchName.trim()}>
-                Save
-              </Button>
-              <Button variant="outline" onClick={() => setShowSaveSearch(false)}>
-                Cancel
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Saved Searches */}
-        {savedSearches.length > 0 && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Saved Searches</label>
-            <div className="space-y-1">
-              {savedSearches.map(search => (
-                <div key={search.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm">{search.name}</span>
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onLoadSearch(search.filters)}
-                    >
-                      Load
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onDeleteSearch(search.id)}
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

@@ -14,7 +14,6 @@ import Footer from '@/components/Footer';
 import VenueDetailModal from '@/components/VenueDetailModal';
 import AdvancedSearchModal from '@/components/AdvancedSearchModal';
 import { useApprovedVenues, ApprovedVenue } from '@/hooks/useApprovedVenues';
-import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { getCurrentLocation, filterVenuesByDistance, Coordinates } from '@/lib/geolocation';
 import { useToast } from '@/hooks/use-toast';
 import { getBusinessTypeColor } from '@/lib/utils';
@@ -140,11 +139,6 @@ const Map = () => {
       console.log('✅ Venues after feature filtering:', results.length);
     }
     
-    // Rating filter
-    if (filters.rating && filters.rating > 0) {
-      results = results.filter(venue => venue.rating >= filters.rating);
-    }
-    
     // Location and distance filtering
     if (filters.location && userLocation && filters.distance) {
       const venuesWithCoords = results.map(venue => ({
@@ -164,15 +158,6 @@ const Map = () => {
       }));
       
       results = filterVenuesByDistance(venuesWithCoords, userLocation, filters.distance);
-    }
-    
-    // Sort results
-    if (filters.sortBy === 'name') {
-      results.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (filters.sortBy === 'rating') {
-      results.sort((a, b) => b.rating - a.rating);
-    } else if (filters.sortBy === 'distance' && userLocation) {
-      // Distance sorting would be handled by filterVenuesByDistance
     }
     
     setFilteredVenues(results);

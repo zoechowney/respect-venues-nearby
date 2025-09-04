@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import AdvancedSearch, { SearchFilters } from '@/components/AdvancedSearch';
-import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { Coordinates } from '@/lib/geolocation';
 
 interface AdvancedSearchModalProps {
@@ -18,14 +17,12 @@ const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
   onSearch,
   userLocation
 }) => {
-  const { savedSearches, saveSearch, deleteSearch } = useSavedSearches();
   const [currentFilters, setCurrentFilters] = useState<SearchFilters>({
     query: '',
     location: null,
     distance: 25,
     businessTypes: [],
-    features: [],
-    rating: 0
+    features: []
   });
 
   const handleFiltersChange = (filters: SearchFilters) => {
@@ -38,20 +35,6 @@ const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
     onClose();
   };
 
-  const handleLoadSearch = (filters: SearchFilters) => {
-    setCurrentFilters(filters);
-    onSearch(filters);
-    onClose();
-  };
-
-  const handleSaveSearch = async (name: string, filters: SearchFilters) => {
-    await saveSearch(name, filters);
-  };
-
-  const handleDeleteSearch = async (id: string) => {
-    await deleteSearch(id);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -60,10 +43,6 @@ const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
         </DialogHeader>
         <AdvancedSearch
           onFiltersChange={handleFiltersChange}
-          savedSearches={savedSearches}
-          onSaveSearch={handleSaveSearch}
-          onLoadSearch={handleLoadSearch}
-          onDeleteSearch={handleDeleteSearch}
         />
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose}>
