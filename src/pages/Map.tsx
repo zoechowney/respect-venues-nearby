@@ -108,8 +108,8 @@ const Map = () => {
           return false;
         }
         
-        const hasMatchingFeature = venue.features.some((venueFeature: string) => 
-          filters.features.includes(venueFeature)
+        const hasMatchingFeature = filters.features.every((selectedFeature: string) => 
+          venue.features.includes(selectedFeature)
         );
         
         console.log(`🏢 Venue "${venue.name}" features:`, venue.features, 'matches:', hasMatchingFeature);
