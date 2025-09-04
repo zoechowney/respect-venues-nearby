@@ -133,7 +133,7 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
                 <SelectTrigger>
                   <SelectValue placeholder="Select business type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
                   <SelectItem value="pub">Pub</SelectItem>
                   <SelectItem value="restaurant">Restaurant</SelectItem>
                   <SelectItem value="shop">Shop</SelectItem>
