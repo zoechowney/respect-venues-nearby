@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon, RotateCcw } from 'lucide-react';
+import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon, RotateCcw, Map as MapIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -209,6 +209,32 @@ const Map = () => {
   const handleViewDetails = (venue: ApprovedVenue) => {
     setSelectedVenue(venue);
     setIsVenueDetailOpen(true);
+  };
+
+  const handleShowOnMap = (venue: ApprovedVenue) => {
+    // Center the map on the selected venue
+    if (venue.latitude && venue.longitude) {
+      // Update the URL with the venue coordinates
+      const params = new URLSearchParams(window.location.search);
+      params.set('lat', venue.latitude.toString());
+      params.set('lng', venue.longitude.toString());
+      params.set('zoom', '16'); // Zoom in closer to the venue
+      
+      // Update the URL without causing a page reload
+      window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+      
+      // Show success message
+      toast({
+        title: "Map Centered",
+        description: `Map centered on ${venue.name}`,
+      });
+    } else {
+      toast({
+        title: "Location Unavailable",
+        description: "This venue doesn't have location coordinates available.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Check if any filters are active
@@ -428,7 +454,7 @@ const Map = () => {
                     </div>
                   )}
 
-                  <div className="pt-2 border-t">
+                  <div className="pt-2 border-t space-y-2">
                     <Button 
                       size="sm" 
                       onClick={() => handleViewDetails(venue)}
@@ -436,6 +462,15 @@ const Map = () => {
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       View Details & Reviews
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleShowOnMap(venue)}
+                      className="w-full border-trans-blue text-trans-blue hover:bg-trans-blue/10"
+                    >
+                      <MapIcon className="w-4 h-4 mr-2" />
+                      Show on Map
                     </Button>
                   </div>
 
