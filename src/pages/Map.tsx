@@ -76,6 +76,7 @@ const Map = () => {
 
   // Handle advanced search - only called when user clicks "Apply Filters"
   const handleAdvancedSearch = (filters: any) => {
+    console.log('🔍 Advanced Search Filters:', filters);
     let results = [...venues];
     
     // Basic search filter
@@ -97,11 +98,24 @@ const Map = () => {
     
     // Features filter
     if (filters.features && filters.features.length > 0) {
-      results = results.filter(venue => 
-        venue.features && filters.features.some((feature: string) => 
-          venue.features.includes(feature)
-        )
-      );
+      console.log('🏷️ Filtering by features:', filters.features);
+      console.log('📊 Sample venue features before filtering:', results[0]?.features);
+      
+      results = results.filter(venue => {
+        if (!venue.features || !Array.isArray(venue.features)) {
+          console.log(`❌ Venue "${venue.name}" has no features or invalid features:`, venue.features);
+          return false;
+        }
+        
+        const hasMatchingFeature = venue.features.some((venueFeature: string) => 
+          filters.features.includes(venueFeature)
+        );
+        
+        console.log(`🏢 Venue "${venue.name}" features:`, venue.features, 'matches:', hasMatchingFeature);
+        return hasMatchingFeature;
+      });
+      
+      console.log('✅ Venues after feature filtering:', results.length);
     }
     
     // Rating filter
