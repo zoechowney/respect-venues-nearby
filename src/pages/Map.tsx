@@ -80,6 +80,17 @@ const Map = () => {
     console.log('🔍 Advanced Search Filters:', filters);
     let results = [...venues];
     
+    // Create mapping from display names to database values
+    const businessTypeMapping: { [key: string]: string } = {
+      'Pub / bar': 'pub',
+      'Restaurant / café': 'restaurant', 
+      'Shop / retail': 'shop',
+      'Gym / fitness': 'gym',
+      'Office / workplace': 'office',
+      'Cinema / theatre': 'cinema',
+      'Other': 'other'
+    };
+    
     // Basic search filter
     if (filters.query) {
       results = results.filter(venue => 
@@ -90,11 +101,21 @@ const Map = () => {
     
     // Business type filter  
     if (filters.businessTypes && filters.businessTypes.length > 0) {
-      results = results.filter(venue => 
-        filters.businessTypes.some((type: string) => 
-          venue.type.toLowerCase().includes(type.toLowerCase())
-        )
-      );
+      console.log('🏷️ Filtering by business types:', filters.businessTypes);
+      console.log('📊 Sample venue type before filtering:', results[0]?.type);
+      
+      results = results.filter(venue => {
+        // Convert display names to database values for comparison
+        const dbValues = filters.businessTypes.map((displayName: string) => 
+          businessTypeMapping[displayName] || displayName.toLowerCase()
+        );
+        
+        const matches = dbValues.includes(venue.type.toLowerCase());
+        console.log(`🏢 Venue "${venue.name}" type: "${venue.type}", matches:`, matches);
+        return matches;
+      });
+      
+      console.log('✅ Venues after business type filtering:', results.length);
     }
     
     // Features filter
