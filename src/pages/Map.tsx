@@ -247,6 +247,12 @@ const Map = () => {
       // Use setSearchParams to properly update the URL and trigger re-render
       setSearchParams(newParams);
       
+      // Scroll back up to make the map visible
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
       // Show success message
       toast({
         title: "Map Centered",
