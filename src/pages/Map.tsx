@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon } from 'lucide-react';
+import { Search, Filter, Heart, Star, MapPin, ExternalLink, Eye, Navigation as NavigationIcon, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -205,6 +205,20 @@ const Map = () => {
     setIsVenueDetailOpen(true);
   };
 
+  // Check if any filters are active
+  const hasActiveFilters = searchTerm || selectedType !== 'all' || hasAdvancedFilters;
+
+  // Clear all filters and show all venues
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setSelectedType('all');
+    setHasAdvancedFilters(false);
+    toast({
+      title: "Filters Cleared",
+      description: "Now showing all venues",
+    });
+  };
+
   const categoryOptions = [
     { value: 'all', label: 'All' },
     { value: 'pub', label: 'Pubs / bars' },
@@ -239,7 +253,7 @@ const Map = () => {
               className="pl-10"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
               onClick={() => setShowAdvancedSearch(true)}
@@ -257,6 +271,16 @@ const Map = () => {
               <NavigationIcon className="w-4 h-4 mr-2" />
               {userLocation ? 'Location Active' : 'Use My Location'}
             </Button>
+            {hasActiveFilters && (
+              <Button
+                variant="destructive"
+                onClick={clearAllFilters}
+                className="bg-red-500 hover:bg-red-600 text-white"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Clear All Filters
+              </Button>
+            )}
           </div>
         </div>
 
