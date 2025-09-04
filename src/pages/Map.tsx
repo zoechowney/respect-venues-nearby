@@ -74,6 +74,30 @@ const Map = () => {
     }
   };
 
+  // Center map on user's current location
+  const centerOnUserLocation = async () => {
+    // Clear URL parameters to remove venue-specific centering
+    setSearchParams(new URLSearchParams());
+    
+    // Get fresh location and update map
+    try {
+      console.log('🌍 Map: Centering on user location...');
+      const location = await getCurrentLocation();
+      setUserLocation(location);
+      toast({
+        title: "Map Centered",
+        description: "Map centered on your current location.",
+      });
+    } catch (error) {
+      console.log('🌍 Map: Location access failed:', error);
+      toast({
+        title: "Location Unavailable",
+        description: "Unable to access your location. Please enable location services.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Handle advanced search - only called when user clicks "Apply Filters"
   const handleAdvancedSearch = (filters: any) => {
     console.log('🔍 Advanced Search Filters:', filters);
@@ -303,6 +327,16 @@ const Map = () => {
               <NavigationIcon className="w-4 h-4 mr-2" />
               {userLocation ? 'Location Active' : 'Use My Location'}
             </Button>
+            {hasUrlCenter && userLocation && (
+              <Button
+                variant="default"
+                onClick={centerOnUserLocation}
+                className="bg-trans-blue hover:bg-trans-blue/90 text-white"
+              >
+                <NavigationIcon className="w-4 h-4 mr-2" />
+                Center on My Location
+              </Button>
+            )}
             {hasActiveFilters && (
               <Button
                 variant="destructive"
