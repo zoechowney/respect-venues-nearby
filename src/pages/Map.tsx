@@ -19,7 +19,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getBusinessTypeColor } from '@/lib/utils';
 
 const Map = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('all');
   const [selectedVenue, setSelectedVenue] = useState<ApprovedVenue | null>(null);
@@ -214,14 +214,14 @@ const Map = () => {
   const handleShowOnMap = (venue: ApprovedVenue) => {
     // Center the map on the selected venue
     if (venue.latitude && venue.longitude) {
-      // Update the URL with the venue coordinates
-      const params = new URLSearchParams(window.location.search);
-      params.set('lat', venue.latitude.toString());
-      params.set('lng', venue.longitude.toString());
-      params.set('zoom', '16'); // Zoom in closer to the venue
+      // Update search params to trigger re-render
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('lat', venue.latitude.toString());
+      newParams.set('lng', venue.longitude.toString());
+      newParams.set('zoom', '16'); // Zoom in closer to the venue
       
-      // Update the URL without causing a page reload
-      window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+      // Use setSearchParams to properly update the URL and trigger re-render
+      setSearchParams(newParams);
       
       // Show success message
       toast({
