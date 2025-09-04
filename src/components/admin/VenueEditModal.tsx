@@ -142,6 +142,7 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
                     <SelectItem value="shop">Shop</SelectItem>
                     <SelectItem value="gym">Gym</SelectItem>
                     <SelectItem value="cinema">Cinema / theatre</SelectItem>
+                    <SelectItem value="office">Office / workplace</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
