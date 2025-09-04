@@ -15,6 +15,7 @@ import {
   type Coordinates,
   type LocationResult 
 } from '@/lib/geolocation';
+import { supabase } from '@/integrations/supabase/client';
 import { useToastNotifications } from '@/hooks/useToastNotifications';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -79,31 +80,38 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   // Search locations with debounce
   useEffect(() => {
     const searchLocations = async () => {
-      if (locationSearch.length < 3) {
+      if (locationSearch.length < 2) {
         setLocationSuggestions([]);
         return;
       }
 
       setIsLoadingLocation(true);
       try {
-        // Show popular cities for short queries
-        if (locationSearch.length < 5) {
-          const cities = getPopularCities().filter(city =>
-            city.name.toLowerCase().includes(locationSearch.toLowerCase())
-          );
-          setLocationSuggestions(cities);
-        } else {
-          // Fallback to popular cities for now
-          // TODO: Implement Mapbox geocoding with Edge Function
+        // Use Supabase Edge Function for geocoding
+        const { data, error } = await supabase.functions.invoke('geocode', {
+          body: { query: locationSearch }
+        });
+
+        if (error) {
+          console.warn('Geocoding service error:', error);
+          // Fallback to popular cities
           const cities = getPopularCities().filter(city =>
             city.name.toLowerCase().includes(locationSearch.toLowerCase()) ||
             city.address.toLowerCase().includes(locationSearch.toLowerCase())
           );
           setLocationSuggestions(cities);
+        } else {
+          setLocationSuggestions(data.results || []);
         }
       } catch (error) {
-        showError('Search Error', 'Failed to search locations. Please try again.');
-        setLocationSuggestions([]);
+        console.warn('Location search failed:', error);
+        // Fallback to popular cities
+        const cities = getPopularCities().filter(city =>
+          city.name.toLowerCase().includes(locationSearch.toLowerCase()) ||
+          city.address.toLowerCase().includes(locationSearch.toLowerCase())
+        );
+        setLocationSuggestions(cities);
+        showError('Search Info', 'Using popular cities. For full location search, Mapbox API key needed.');
       } finally {
         setIsLoadingLocation(false);
       }
