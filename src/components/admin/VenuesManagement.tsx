@@ -232,7 +232,14 @@ const VenuesManagement = () => {
                     <div>
                       <p className="text-sm font-medium text-brand-navy/70">Features</p>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {venue.features.map((feature: string, index: number) => (
+                        {venue.features
+                          .filter((feature: string) => [
+                            'Gender Neutral Toilets',
+                            'LGBTQ+ Events', 
+                            'Free WiFi',
+                            'Wheelchair Accessible'
+                          ].includes(feature))
+                          .map((feature: string, index: number) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             {feature}
                           </Badge>

@@ -36,8 +36,10 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const availableFeatures = [
-    'Wheelchair Accessible', 'Gender Neutral Toilets', 'Staff Training',
-    'Safe Space Policy', 'LGBTQ+ Events', 'Free WiFi', 'Parking Available', 'Family Friendly'
+    'Gender Neutral Toilets',
+    'LGBTQ+ Events', 
+    'Free WiFi',
+    'Wheelchair Accessible'
   ];
 
   useEffect(() => {
