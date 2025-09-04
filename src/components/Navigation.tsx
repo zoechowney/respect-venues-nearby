@@ -45,6 +45,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
       >
         Our Sponsors
       </Link>
+      <Link 
+        to="/code-of-conduct" 
+        className={currentPage === 'code-of-conduct' ? 'text-trans-blue font-medium' : 'text-brand-navy hover:text-trans-blue transition-colors'}
+      >
+        Code of Conduct
+      </Link>
     </>
   );
 
