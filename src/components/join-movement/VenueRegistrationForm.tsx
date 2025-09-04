@@ -425,7 +425,7 @@ const VenueRegistrationForm = () => {
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    placeholder="Create a password (min 8 characters)"
+                    placeholder="Password (8+ chars)"
                     required
                     disabled={isSubmitting}
                     minLength={8}
