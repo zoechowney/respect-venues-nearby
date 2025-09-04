@@ -25,8 +25,7 @@ const AdvancedSearchModal: React.FC<AdvancedSearchModalProps> = ({
     distance: 25,
     businessTypes: [],
     features: [],
-    rating: 0,
-    sortBy: 'relevance'
+    rating: 0
   });
 
   const handleFiltersChange = (filters: SearchFilters) => {

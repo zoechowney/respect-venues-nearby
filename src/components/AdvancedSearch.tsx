@@ -26,7 +26,6 @@ export interface SearchFilters {
   businessTypes: string[];
   features: string[];
   rating: number;
-  sortBy: 'relevance' | 'distance' | 'rating' | 'name';
 }
 
 interface AdvancedSearchProps {
@@ -50,8 +49,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     distance: 25,
     businessTypes: [],
     features: [],
-    rating: 0,
-    sortBy: 'relevance'
+    rating: 0
   });
 
   const [locationSearch, setLocationSearch] = useState('');
@@ -181,8 +179,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
       distance: 25,
       businessTypes: [],
       features: [],
-      rating: 0,
-      sortBy: 'relevance'
+      rating: 0
     });
     setLocationSearch('');
     setLocationSuggestions([]);
@@ -331,24 +328,6 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             </Select>
           </div>
 
-          {/* Sort By */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Sort By</label>
-            <Select
-              value={filters.sortBy}
-              onValueChange={(value: any) => setFilters(prev => ({ ...prev, sortBy: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">Relevance</SelectItem>
-                <SelectItem value="distance">Distance</SelectItem>
-                <SelectItem value="rating">Rating</SelectItem>
-                <SelectItem value="name">Name A-Z</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         {/* Save Search */}
