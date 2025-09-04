@@ -62,7 +62,7 @@ const VenueEditModal: React.FC<VenueEditModalProps> = ({
 
     try {
       const { error } = await supabase
-        .from('venue_applications')
+        .from('venues')
         .update(formData)
         .eq('id', venue.id);
 
