@@ -84,19 +84,28 @@ const VenueDetailModal = ({ venue, isOpen, onClose }: VenueDetailModalProps) => 
               )}
             </div>
 
-            {venue.features && venue.features.length > 0 && (
-              <div>
-                <h4 className="font-medium text-brand-navy mb-2">Features:</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {venue.features.map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-trans-pink rounded-full"></div>
-                      <span className="text-sm text-brand-navy/70">{feature}</span>
-                    </div>
-                  ))}
+            {(() => {
+              const refinedFeatures = [
+                'Gender Neutral Toilets', 'LGBTQ+ Events', 'Free WiFi', 'Wheelchair Accessible'
+              ];
+              const displayFeatures = venue.features?.filter(feature => 
+                refinedFeatures.includes(feature)
+              ) || [];
+              
+              return displayFeatures.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-brand-navy mb-2">Features:</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {displayFeatures.map((feature, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-trans-pink rounded-full"></div>
+                        <span className="text-sm text-brand-navy/70">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           {/* Reviews Section */}
