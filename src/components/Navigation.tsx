@@ -66,14 +66,14 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
               </span>
             </Link>
           </div>
-          <div className="hidden lg:flex space-x-8">
+          <div className="hidden xl:flex space-x-8">
             <NavigationLinks />
           </div>
           <div className="flex items-center space-x-4">
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <UserMenu />
             </div>
-            <div className="lg:hidden">
+            <div className="xl:hidden">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="text-brand-navy">
