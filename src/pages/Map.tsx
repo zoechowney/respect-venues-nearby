@@ -29,6 +29,7 @@ const Map = () => {
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const [filteredVenues, setFilteredVenues] = useState<ApprovedVenue[]>([]);
+  const [hasAdvancedFilters, setHasAdvancedFilters] = useState(false);
   
   const { venues, isLoading, error } = useApprovedVenues();
   const { toast } = useToast();
@@ -154,12 +155,13 @@ const Map = () => {
     }
     
     setFilteredVenues(results);
+    setHasAdvancedFilters(true);
     // Don't close the modal here - it's handled in the modal component
   };
 
   // Apply basic filters
   useEffect(() => {
-    if (!showAdvancedSearch) {
+    if (!hasAdvancedFilters) {
       let results = venues.filter(venue => {
         const matchesSearch = venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                              venue.address.toLowerCase().includes(searchTerm.toLowerCase());
@@ -179,7 +181,18 @@ const Map = () => {
       
       setFilteredVenues(results);
     }
-  }, [venues, searchTerm, selectedType, showAdvancedSearch]);
+  }, [venues, searchTerm, selectedType, hasAdvancedFilters]);
+
+  // Reset advanced filters when basic search changes
+  const handleSearchTermChange = (value: string) => {
+    setSearchTerm(value);
+    setHasAdvancedFilters(false);
+  };
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value);
+    setHasAdvancedFilters(false);
+  };
 
   const handleVenueSelect = (venue: any) => {
     setSelectedVenue(venue);
@@ -222,7 +235,7 @@ const Map = () => {
               type="text"
               placeholder="Search by name or location..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchTermChange(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -251,7 +264,7 @@ const Map = () => {
         <div className="mb-8">
           {/* Mobile Select */}
           <div className="lg:hidden">
-            <Select value={selectedType} onValueChange={setSelectedType}>
+            <Select value={selectedType} onValueChange={handleTypeChange}>
               <SelectTrigger className="w-full">
                 <Filter className="w-4 h-4 mr-2" />
                 <SelectValue placeholder="Select category" />
@@ -268,7 +281,7 @@ const Map = () => {
 
           {/* Desktop Tabs */}
           <div className="hidden lg:block">
-            <Tabs value={selectedType} onValueChange={setSelectedType}>
+            <Tabs value={selectedType} onValueChange={handleTypeChange}>
               <TabsList className="grid w-full grid-cols-8 max-w-5xl">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="pub">Pubs / bars</TabsTrigger>
