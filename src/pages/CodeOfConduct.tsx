@@ -19,6 +19,7 @@ const CodeOfConduct = () => {
       <Link to="/directory" className="text-brand-navy hover:text-trans-blue transition-colors">Directory</Link>
       <Link to="/join" className="text-brand-navy hover:text-trans-blue transition-colors">Add a Venue</Link>
       <Link to="/resources" className="text-brand-navy hover:text-trans-blue transition-colors">Resources</Link>
+      <Link to="/sponsors" className="text-brand-navy hover:text-trans-blue transition-colors">Our Sponsors</Link>
     </>
   );
 
