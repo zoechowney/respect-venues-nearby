@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Search, Filter, Bookmark, X, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +34,7 @@ interface AdvancedSearchProps {
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   onFiltersChange
 }) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
     location: null,
@@ -48,6 +49,16 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
   const [isGettingCurrentLocation, setIsGettingCurrentLocation] = useState(false);
 
   const { showError, showSuccess } = useToastNotifications();
+
+  // Prevent auto-focus on mobile
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.blur();
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const businessTypes = [
     'Pub / bar', 'Restaurant / café', 'Shop / retail', 
@@ -174,6 +185,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
+                ref={searchInputRef}
                 placeholder="Search venues..."
                 value={filters.query}
                 onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
