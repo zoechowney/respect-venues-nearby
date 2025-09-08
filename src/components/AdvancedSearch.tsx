@@ -178,6 +178,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                 value={filters.query}
                 onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
                 className="pl-10"
+                autoFocus={false}
               />
             </div>
             <Button variant="outline" onClick={clearFilters}>
