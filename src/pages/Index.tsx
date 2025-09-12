@@ -16,7 +16,7 @@ const Index = () => {
       <section className={`relative py-${isMobile ? '12' : '20'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-4xl mx-auto text-center">
           <div className={`mb-${isMobile ? '6' : '8'}`}>
-            <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-16' : 'h-24'} w-auto mx-auto mb-${isMobile ? '4' : '6'}`} />
+            <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-20' : 'h-32'} w-auto mx-auto mb-${isMobile ? '4' : '6'}`} />
             <h1 className={`font-bold text-brand-navy mb-${isMobile ? '4' : '6'} ${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl'}`}>
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
