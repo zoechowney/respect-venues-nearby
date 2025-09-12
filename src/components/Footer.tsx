@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto">
           <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-col md:flex-row justify-between items-center'}`}>
             <Link to="/" className={`flex items-center space-x-3 ${isMobile ? 'justify-center' : 'mb-4 md:mb-0'} hover:opacity-80 transition-opacity`}>
-              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
+              <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
               <span className={`font-semibold ${isMobile ? 'text-base' : 'text-lg'}`}>Rest with Respect</span>
             </Link>
             <div className={`flex ${isMobile ? 'flex-col space-y-3 text-center' : 'space-x-6'}`}>

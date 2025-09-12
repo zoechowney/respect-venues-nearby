@@ -60,7 +60,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-3">
-              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-10 w-auto" />
+              <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className="h-10 w-auto" />
               <span className={`font-bold text-brand-navy ${isMobile ? 'text-lg' : 'text-xl'}`}>
                 {isMobile ? 'Rest w/ Respect' : 'Rest with Respect'}
               </span>
@@ -83,7 +83,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage }) => {
                 <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                   <div className="flex flex-col space-y-4 mt-8">
                     <div className="flex items-center space-x-3 pb-4 border-b">
-                      <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
+                      <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
                       <span className="font-bold text-brand-navy">Menu</span>
                     </div>
                     <NavigationLinks />

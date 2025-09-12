@@ -35,7 +35,7 @@ const SEO: React.FC<SEOProps> = ({
   noIndex = false
 }) => {
   const siteUrl = 'https://restwithrespect.org'; // Update with your actual domain
-  const defaultImage = `${siteUrl}/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png`;
+  const defaultImage = `${siteUrl}/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png`;
 
   const og = {
     type: 'website',
