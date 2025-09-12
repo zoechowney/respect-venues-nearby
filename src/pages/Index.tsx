@@ -16,7 +16,7 @@ const Index = () => {
       <section className={`relative py-${isMobile ? '12' : '20'} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-4xl mx-auto text-center">
           <div className={`mb-${isMobile ? '6' : '8'}`}>
-            <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-16' : 'h-24'} w-auto mx-auto mb-${isMobile ? '4' : '6'}`} />
+            <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-16' : 'h-24'} w-auto mx-auto mb-${isMobile ? '4' : '6'}`} />
             <h1 className={`font-bold text-brand-navy mb-${isMobile ? '4' : '6'} ${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl'}`}>
               Welcome to
               <span className="text-trans-blue block">Rest with Respect</span>
@@ -84,7 +84,7 @@ const Index = () => {
             
             <Card className={`text-center ${isMobile ? 'p-4' : 'p-6'} hover:shadow-lg transition-shadow border-trans-blue/20`}>
               <CardContent className={isMobile ? 'pt-4' : 'pt-6'}>
-                <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-10' : 'h-12'} w-auto mx-auto mb-4`} />
+                <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className={`${isMobile ? 'h-10' : 'h-12'} w-auto mx-auto mb-4`} />
                 <h3 className={`font-semibold mb-3 text-brand-navy ${isMobile ? 'text-lg' : 'text-xl'}`}>Share Experiences</h3>
                 <p className="text-brand-navy/70 text-sm leading-relaxed">
                   Help others by sharing your experiences and rating venues based on how welcomed and respected you felt.
@@ -133,7 +133,7 @@ const Index = () => {
         <div className="max-w-6xl mx-auto">
           <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'flex-col md:flex-row justify-between items-center'}`}>
             <div className={`flex items-center space-x-3 ${isMobile ? 'justify-center' : 'mb-4 md:mb-0'}`}>
-              <img src="/lovable-uploads/c0cdfb11-dd89-4a4f-8dca-44c6bc759037.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
+              <img src="/lovable-uploads/a9e36d24-0a59-4b2f-b9e5-135d1f71c3f5.png" alt="Rest with Respect Logo" className="h-8 w-auto" />
               <span className={`font-semibold ${isMobile ? 'text-base' : 'text-lg'}`}>Rest with Respect</span>
             </div>
             <div className={`flex ${isMobile ? 'flex-col space-y-3 text-center' : 'space-x-6'}`}>
