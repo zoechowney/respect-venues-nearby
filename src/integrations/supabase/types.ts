@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string
+          table_name: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id: string
+          table_name: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string
+          table_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       content_pages: {
         Row: {
           author_id: string | null
@@ -695,6 +731,10 @@ export type Database = {
       authenticate_venue_owner_with_password: {
         Args: { input_email: string; input_password: string }
         Returns: string
+      }
+      check_application_rate_limit: {
+        Args: { table_name: string; user_identifier: string }
+        Returns: boolean
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
