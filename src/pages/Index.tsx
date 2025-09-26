@@ -77,7 +77,7 @@ const Index = () => {
                 <MapPin className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} text-trans-pink mx-auto mb-4`} />
                 <h3 className={`font-semibold mb-3 text-brand-navy ${isMobile ? 'text-lg' : 'text-xl'}`}>Find Safe Spaces</h3>
                 <p className="text-brand-navy/70 text-sm leading-relaxed">
-                  Use our interactive map to locate transgender-friendly pubs, restaurants, shops, gyms, and other establishments in your area.
+                  Use our interactive map to locate trans / non-binary friendly pubs, restaurants, shops, gyms, and other establishments in your area.
                 </p>
               </CardContent>
             </Card>
