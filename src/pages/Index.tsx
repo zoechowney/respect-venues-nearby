@@ -100,7 +100,7 @@ const Index = () => {
           <h2 className={`font-bold text-brand-navy mb-6 ${isMobile ? 'text-2xl' : 'text-3xl'}`}>Our Mission</h2>
           <p className={`text-brand-navy/80 leading-relaxed mb-8 ${isMobile ? 'text-base' : 'text-lg'}`}>
             We believe everyone deserves to feel safe and respected when using public facilities. 
-            Rest with Respect connects transgender individuals with businesses that welcome them with open arms, 
+            Rest with Respect connects transgender and non-binary individuals with businesses that welcome them with open arms, 
             while helping establishments demonstrate their commitment to inclusivity and mutual respect.
           </p>
         </div>
