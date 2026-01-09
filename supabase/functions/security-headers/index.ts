@@ -9,11 +9,11 @@ const corsHeaders = {
 const securityHeaders = {
   'Content-Security-Policy': [
     "default-src 'self'",
-    "script-src 'self' https://api.mapbox.com https://*.supabase.co https://api.tinify.com",
+    "script-src 'self' https://api.mapbox.com https://*.supabase.co https://api.tinify.com https://www.googletagmanager.com https://www.google-analytics.com",
     "style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com",
-    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://tinypng.com https://api.tinify.com",
+    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://tinypng.com https://api.tinify.com https://www.google-analytics.com https://www.googletagmanager.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://api.tinify.com wss://*.supabase.co",
+    "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://api.tinify.com wss://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com",
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",

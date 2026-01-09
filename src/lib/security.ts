@@ -46,11 +46,11 @@ export const sanitizeUrl = (url: string): string | null => {
 export const generateCSP = (isDevelopment: boolean = false): string => {
   const basePolicy = [
     "default-src 'self'",
-    `script-src 'self' ${isDevelopment ? "'unsafe-eval' " : ""}https://api.mapbox.com https://*.supabase.co https://api.tinify.com`,
+    `script-src 'self' ${isDevelopment ? "'unsafe-eval' " : ""}https://api.mapbox.com https://*.supabase.co https://api.tinify.com https://www.googletagmanager.com https://www.google-analytics.com`,
     "style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com",
-    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://tinypng.com https://api.tinify.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://stamen-tiles-*.a.ssl.fastly.net https://cdnjs.cloudflare.com",
+    "img-src 'self' data: blob: https://*.supabase.co https://api.mapbox.com https://tinypng.com https://api.tinify.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://stamen-tiles-*.a.ssl.fastly.net https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.googletagmanager.com",
     "font-src 'self' https://fonts.gstatic.com",
-    "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://api.tinify.com wss://*.supabase.co https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://stamen-tiles-*.a.ssl.fastly.net",
+    "connect-src 'self' https://*.supabase.co https://api.mapbox.com https://api.tinify.com wss://*.supabase.co https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://stamen-tiles-*.a.ssl.fastly.net https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com",
     "frame-src 'none'",
     "object-src 'none'",
     "base-uri 'self'",
