@@ -27,6 +27,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { NetworkStatus } from "./components/ErrorMessage";
 import SecurityHeaders from "./components/SecurityHeaders";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
                 </Routes>
               </ErrorBoundary>
+              <CookieConsent />
             </BrowserRouter>
           </TooltipProvider>
         </VenueOwnerAuthProvider>
