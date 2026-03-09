@@ -33,7 +33,17 @@ import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
+const KEEP_ALIVE_INTERVAL = 4 * 24 * 60 * 60 * 1000; // 4 days in ms
+
 function App() {
+  useEffect(() => {
+    const ping = () => {
+      supabase.functions.invoke('keep-alive').catch(() => {});
+    };
+    ping();
+    const interval = setInterval(ping, KEEP_ALIVE_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
