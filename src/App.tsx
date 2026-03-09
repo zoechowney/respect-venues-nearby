@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VenueOwnerAuthProvider } from "@/contexts/VenueOwnerAuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import JoinMovement from "./pages/JoinMovement";
 import Map from "./pages/Map";
@@ -31,7 +33,17 @@ import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
+const KEEP_ALIVE_INTERVAL = 4 * 24 * 60 * 60 * 1000; // 4 days in ms
+
 function App() {
+  useEffect(() => {
+    const ping = () => {
+      supabase.functions.invoke('keep-alive').catch(() => {});
+    };
+    ping();
+    const interval = setInterval(ping, KEEP_ALIVE_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
